@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Connect 4</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        font-family: Arial, sans-serif;
+
+        background: #111827;
+        color: white;
+    }
+
+    .container {
+        width: min(95vw, 600px);
+        text-align: center;
+    }
+
+    h1 {
+        margin-bottom: 30px;
+    }
+
+    button,
+    input {
+        font-size: 18px;
+        padding: 12px 18px;
+        border-radius: 10px;
+        border: none;
+    }
+
+    button {
+        cursor: pointer;
+        background: #2563eb;
+        color: white;
+        margin: 5px;
+    }
+
+    button:hover {
+        background: #1d4ed8;
+    }
+
+    input {
+        width: 220px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    #roomCode {
+        font-size: 32px;
+        letter-spacing: 5px;
+        margin: 20px;
+    }
+
+    #status {
+        margin: 15px;
+        min-height: 25px;
+    }
+
+    #board {
+        margin: 20px auto;
+
+        display: grid;
+
+        grid-template-columns: repeat(7, 1fr);
+
+        gap: 8px;
+
+        background: #1d4ed8;
+
+        padding: 10px;
+
+        border-radius: 15px;
+
+        max-width: 560px;
+    }
+
+    .cell {
+        aspect-ratio: 1;
+
+        border-radius: 50%;
+
+        background: #e5e7eb;
+
+        cursor: pointer;
+    }
+
+    .red {
+        background: #ef4444;
+    }
+
+    .yellow {
+        background: #facc15;
+    }
+
+    #game {
+        margin-top: 20px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Connect 4</h1>
+
+    <!-- MENU -->
+
+    <div id="menu">
+
+        <button onclick="createRoom()">
+            Create Room
+        </button>
+
+        <br>
+
+        <input
+            id="roomInput"
+            placeholder="ROOM CODE"
+            maxlength="6"
+        >
+
+        <button onclick="joinRoom()">
+            Join Room
+        </button>
+
+    </div>
+
+
+    <!-- ROOM -->
+
+    <div id="room" class="hidden">
+
+        <p>Room code:</p>
+
+        <div id="roomCode"></div>
+
+        <p id="roomStatus">
+            Waiting for opponent...
+        </p>
+
+    </div>
+
+
+    <!-- GAME -->
+
+    <div id="game" class="hidden">
+
+        <div id="status"></div>
+
+        <div id="board"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const SIGNALING_SERVER =
+    "ws://YOUR_SERVER_IP:3000";
+
+let socket;
+
+let peer;
+
+let dataChannel;
+
+let isHost = false;
+
+let myColor = null;
+
+let currentTurn = "red";
+
+let gameStarted = false;
+
+const ROWS = 6;
+const COLS = 7;
+
+let board =
+    Array.from(
+        { length: ROWS },
+        () => Array(COLS).fill(null)
+    );
+
+
+// -------------------------
+// CONNECT SIGNALING SERVER
+// -------------------------
+
+function connectSocket() {
+
+    socket =
+        new WebSocket(SIGNALING_SERVER);
+
+    socket.onmessage = async event => {
+
+        const msg =
+            JSON.parse(event.data);
+
+        await handleSignal(msg);
+    };
+
+    socket.onclose = () => {
+
+        setStatus(
+            "Connection to signaling server lost."
+        );
+    };
+}
+
+
+// -------------------------
+// CREATE ROOM
+// -------------------------
+
+function createRoom() {
+
+    isHost = true;
+
+    myColor = "red";
+
+    connectSocket();
+
+    socket.onopen = () => {
+
+        socket.send(
+            JSON.stringify({
+                type: "create"
+            })
+        );
+    };
+
+}
+
+
+// -------------------------
+// JOIN ROOM
+// -------------------------
+
+function joinRoom() {
+
+    const code =
+        document
+            .getElementById("roomInput")
+            .value
+            .trim()
+            .toUpperCase();
+
+    if (code.length !== 6) {
+
+        alert("Enter a 6-character room code.");
+
+        return;
+    }
+
+    isHost = false;
+
+    myColor = "yellow";
+
+    connectSocket();
+
+    socket.onopen = () => {
+
+        socket.send(
+            JSON.stringify({
+                type: "join",
+                code
+            })
+        );
+    };
+
+}
+
+
+// -------------------------
+// SIGNALING
+// -------------------------
+
+async function handleSignal(msg) {
+
+    if (msg.type === "roomCreated") {
+
+        showRoom(msg.code);
+
+        return;
+    }
+
+
+    if (msg.type === "joined") {
+
+        showRoom(msg.code);
+
+        return;
+    }
+
+
+    if (msg.type === "playerJoined") {
+
+        document.getElementById(
+            "roomStatus"
+        ).textContent =
+            "Opponent connected!";
+
+        await createOffer();
+
+        return;
+    }
+
+
+    if (msg.type === "offer") {
+
+        await createPeerConnection();
+
+        await peer.setRemoteDescription(
+            msg.offer
+        );
+
+        const answer =
+            await peer.createAnswer();
+
+        await peer.setLocalDescription(
+            answer
+        );
+
+        socket.send(
+            JSON.stringify({
+                type: "answer",
+                answer
+            })
+        );
+
+        return;
+    }
+
+
+    if (msg.type === "answer") {
+
+        await peer.setRemoteDescription(
+            msg.answer
+        );
+
+        return;
+    }
+
+
+    if (msg.type === "candidate") {
+
+        if (peer) {
+
+            try {
+
+                await peer.addIceCandidate(
+                    msg.candidate
+                );
+
+            } catch (e) {
+
+                console.error(e);
+
+            }
+
+        }
+
+        return;
+    }
+
+
+    if (msg.type === "error") {
+
+        alert(msg.message);
+
+        return;
+    }
+
+
+    if (msg.type === "hostLeft") {
+
+        alert("Host left the game.");
+
+        location.reload();
+
+        return;
+    }
+
+
+    if (msg.type === "playerLeft") {
+
+        setStatus(
+            "Opponent disconnected."
+        );
+
+    }
+
+}
+
+
+// -------------------------
+// WEBRTC
+// -------------------------
+
+async function createPeerConnection() {
+
+    if (peer) return;
+
+    peer =
+        new RTCPeerConnection({
+            iceServers: [
+                {
+                    urls:
+                        "stun:stun.l.google.com:19302"
+                }
+            ]
+        });
+
+
+    peer.onicecandidate = event => {
+
+        if (!event.candidate)
+            return;
+
+        socket.send(
+            JSON.stringify({
+                type: "candidate",
+                candidate:
+                    event.candidate
+            })
+        );
+    };
+
+
+    peer.onconnectionstatechange = () => {
+
+        console.log(
+            "WebRTC:",
+            peer.connectionState
+        );
+
+        if (
+            peer.connectionState ===
+            "connected"
+        ) {
+
+            startGame();
+        }
+
+    };
+
+
+    peer.ondatachannel = event => {
+
+        dataChannel =
+            event.channel;
+
+        setupDataChannel();
+
+    };
+}
+
+
+// -------------------------
+// HOST CREATES OFFER
+// -------------------------
+
+async function createOffer() {
+
+    await createPeerConnection();
+
+    dataChannel =
+        peer.createDataChannel(
+            "game"
+        );
+
+    setupDataChannel();
+
+    const offer =
+        await peer.createOffer();
+
+    await peer.setLocalDescription(
+        offer
+    );
+
+    socket.send(
+        JSON.stringify({
+            type: "offer",
+            offer
+        })
+    );
+
+}
+
+
+// -------------------------
+// DATA CHANNEL
+// -------------------------
+
+function setupDataChannel() {
+
+    dataChannel.onopen = () => {
+
+        startGame();
+
+    };
+
+
+    dataChannel.onmessage =
+        event => {
+
+            const msg =
+                JSON.parse(event.data);
+
+            handleGameMessage(msg);
+
+        };
+
+}
+
+
+// -------------------------
+// START GAME
+// -------------------------
+
+function startGame() {
+
+    if (gameStarted)
+        return;
+
+    gameStarted = true;
+
+    document
+        .getElementById("room")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    if (isHost) {
+
+        currentTurn = "red";
+
+    }
+
+    updateStatus();
+
+    renderBoard();
+
+}
+
+
+// -------------------------
+// GAME MESSAGE
+// -------------------------
+
+function handleGameMessage(msg) {
+
+    if (msg.type === "move") {
+
+        board =
+            msg.board;
+
+        currentTurn =
+            msg.turn;
+
+        renderBoard();
+
+        updateStatus();
+
+    }
+
+
+    if (msg.type === "restart") {
+
+        board =
+            Array.from(
+                { length: ROWS },
+                () => Array(COLS).fill(null)
+            );
+
+        currentTurn = "red";
+
+        renderBoard();
+
+        updateStatus();
+
+    }
+
+}
+
+
+// -------------------------
+// MAKE MOVE
+// -------------------------
+
+function makeMove(col) {
+
+    if (!gameStarted)
+        return;
+
+    if (currentTurn !== myColor)
+        return;
+
+    const row =
+        findAvailableRow(col);
+
+    if (row === -1)
+        return;
+
+
+    board[row][col] =
+        myColor;
+
+
+    if (checkWin(
+        row,
+        col,
+        myColor
+    )) {
+
+        renderBoard();
+
+        setStatus(
+            myColor === "red"
+                ? "You win! 🎉"
+                : "You win! 🎉"
+        );
+
+        sendGameState();
+
+        return;
+    }
+
+
+    currentTurn =
+        currentTurn === "red"
+            ? "yellow"
+            : "red";
+
+
+    sendGameState();
+
+    renderBoard();
+
+    updateStatus();
+
+}
+
+
+// -------------------------
+// FIND ROW
+// -------------------------
+
+function findAvailableRow(col) {
+
+    for (
+        let r = ROWS - 1;
+        r >= 0;
+        r--
+    ) {
+
+        if (!board[r][col])
+            return r;
+
+    }
+
+    return -1;
+}
+
+
+// -------------------------
+// SEND GAME STATE
+// -------------------------
+
+function sendGameState() {
+
+    if (
+        dataChannel &&
+        dataChannel.readyState ===
+        "open"
+    ) {
+
+        dataChannel.send(
+            JSON.stringify({
+                type: "move",
+                board,
+                turn:
+                    currentTurn
+            })
+        );
+
+    }
+
+}
+
+
+// -------------------------
+// WIN CHECK
+// -------------------------
+
+function checkWin(
+    row,
+    col,
+    color
+) {
+
+    const directions = [
+        [1, 0],
+        [0, 1],
+        [1, 1],
+        [1, -1]
+    ];
+
+
+    for (const [dr, dc]
+        of directions) {
+
+        let count = 1;
+
+        count += countDirection(
+            row,
+            col,
+            dr,
+            dc,
+            color
+        );
+
+        count += countDirection(
+            row,
+            col,
+            -dr,
+            -dc,
+            color
+        );
+
+
+        if (count >= 4)
+            return true;
+
+    }
+
+    return false;
+}
+
+
+function countDirection(
+    row,
+    col,
+    dr,
+    dc,
+    color
+) {
+
+    let count = 0;
+
+    let r = row + dr;
+    let c = col + dc;
+
+
+    while (
+        r >= 0 &&
+        r < ROWS &&
+        c >= 0 &&
+        c < COLS &&
+        board[r][c] === color
+    ) {
+
+        count++;
+
+        r += dr;
+        c += dc;
+
+    }
+
+    return count;
+}
+
+
+// -------------------------
+// RENDER BOARD
+// -------------------------
+
+function renderBoard() {
+
+    const boardElement =
+        document.getElementById(
+            "board"
+        );
+
+    boardElement.innerHTML = "";
+
+
+    for (
+        let r = 0;
+        r < ROWS;
+        r++
+    ) {
+
+        for (
+            let c = 0;
+            c < COLS;
+            c++
+        ) {
+
+            const cell =
+                document.createElement(
+                    "div"
+                );
+
+            cell.className =
+                "cell";
+
+
+            if (board[r][c]) {
+
+                cell.classList.add(
+                    board[r][c]
+                );
+
+            }
+
+
+            cell.onclick = () => {
+
+                makeMove(c);
+
+            };
+
+
+            boardElement.appendChild(
+                cell
+            );
+
+        }
+
+    }
+
+}
+
+
+// -------------------------
+// UI
+// -------------------------
+
+function showRoom(code) {
+
+    document
+        .getElementById("menu")
+        .classList.add("hidden");
+
+    document
+        .getElementById("room")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("roomCode")
+        .textContent = code;
+
+}
+
+
+function setStatus(text) {
+
+    document
+        .getElementById("status")
+        .textContent = text;
+
+}
+
+
+function updateStatus() {
+
+    if (
+        currentTurn === myColor
+    ) {
+
+        setStatus(
+            "Your turn"
+        );
+
+    } else {
+
+        setStatus(
+            "Opponent's turn"
+        );
+
+    }
+
+}
+
+</script>
+
+</body>
+  </html>
