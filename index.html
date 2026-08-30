@@ -6,17 +6,17 @@
 <meta name="theme-color" content="#0b1020">
 <title>Connect 4 Online</title>
 
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
 
 <style>
 :root{
-    --bg:#0b1020;
-    --panel:#151f35;
-    --panel2:#1c2943;
+    --bg:#080d1a;
+    --panel:#121a2c;
+    --panel2:#1a2640;
     --text:#f8fafc;
     --muted:#94a3b8;
     --accent:#6366f1;
-    --accent2:#818cf8;
+    --accent2:#8b5cf6;
     --board:#2563eb;
     --red:#ef4444;
     --yellow:#facc15;
@@ -35,18 +35,24 @@ html,body{
 body{
     min-height:100vh;
     min-height:100dvh;
-    font-family:Inter,system-ui,-apple-system,
-        BlinkMacSystemFont,"Segoe UI",sans-serif;
     color:var(--text);
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
     background:
         radial-gradient(
-            circle at 20% 10%,
-            #6366f122,
+            circle at 15% 10%,
+            #6366f120,
             transparent 35%
         ),
         radial-gradient(
-            circle at 80% 90%,
-            #22d3ee18,
+            circle at 85% 90%,
+            #06b6d415,
             transparent 35%
         ),
         var(--bg);
@@ -60,61 +66,57 @@ button{
     border:0;
 }
 
-.app{
-    width:min(94vw,760px);
-    margin:auto;
-    padding:20px 0 40px;
-}
-
 .hidden{
     display:none !important;
 }
 
-/* TOP */
+.app{
+    width:min(94vw,760px);
+    margin:auto;
+    padding:16px 0 40px;
+}
 
 .topbar{
+    height:52px;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    margin-bottom:20px;
 }
 
 .logo{
     display:flex;
     align-items:center;
     gap:10px;
-    font-size:25px;
+    font-size:23px;
     font-weight:900;
-    letter-spacing:-1px;
+    letter-spacing:-.8px;
 }
 
 .logoDot{
-    width:14px;
-    height:14px;
+    width:13px;
+    height:13px;
     border-radius:50%;
     background:var(--accent);
     box-shadow:0 0 20px var(--accent);
 }
 
-.iconButton{
-    width:46px;
-    height:46px;
+.iconBtn{
+    width:44px;
+    height:44px;
     border-radius:14px;
     background:var(--panel);
     color:white;
     cursor:pointer;
 }
 
-/* GENERAL */
-
 .screen{
-    animation:screenIn .25s ease;
+    animation:screenIn .2s ease;
 }
 
 @keyframes screenIn{
     from{
         opacity:0;
-        transform:translateY(10px);
+        transform:translateY(8px);
     }
     to{
         opacity:1;
@@ -124,47 +126,47 @@ button{
 
 .hero{
     text-align:center;
-    padding:35px 10px 25px;
+    padding:42px 5px 28px;
 }
 
 .hero h1{
     margin:0;
     font-size:clamp(43px,11vw,72px);
-    line-height:1;
+    line-height:.95;
     letter-spacing:-4px;
 }
 
 .hero p{
     color:var(--muted);
-    margin:15px 0 0;
+    margin:16px 0 0;
 }
 
 .panel{
+    padding:22px;
+    border-radius:24px;
     background:
-        linear-gradient(145deg,#ffffff08,#ffffff02),
+        linear-gradient(145deg,#ffffff09,#ffffff02),
         var(--panel);
     border:1px solid #ffffff0d;
-    border-radius:24px;
-    padding:22px;
-    box-shadow:0 20px 60px #0008;
+    box-shadow:0 20px 70px #0008;
 }
 
-.menuButtons{
+.menu{
     display:grid;
     gap:12px;
 }
 
-.bigButton{
+.bigBtn{
     width:100%;
     min-height:58px;
     border-radius:17px;
     font-size:18px;
-    font-weight:800;
+    font-weight:850;
     cursor:pointer;
-    transition:.15s;
+    transition:.14s;
 }
 
-.bigButton:active{
+.bigBtn:active{
     transform:scale(.97);
 }
 
@@ -184,33 +186,18 @@ button{
 }
 
 .back{
+    padding:4px 0;
     color:var(--muted);
     background:none;
     cursor:pointer;
-    padding:4px 0;
 }
 
-.input{
-    width:100%;
-    min-height:54px;
-    padding:0 16px;
-    color:white;
-    background:#0004;
-    border:1px solid #ffffff12;
-    border-radius:15px;
-    outline:none;
+h2{
+    margin:18px 0 8px;
 }
 
-.input:focus{
-    border-color:var(--accent);
-}
-
-.codeInput{
-    text-align:center;
-    font-size:23px;
-    font-weight:900;
-    letter-spacing:7px;
-    text-transform:uppercase;
+.muted{
+    color:var(--muted);
 }
 
 .divider{
@@ -218,8 +205,6 @@ button{
     background:#ffffff0d;
     margin:22px 0;
 }
-
-/* CREATE SETTINGS */
 
 .settingsGrid{
     display:grid;
@@ -233,9 +218,9 @@ button{
 }
 
 .setting label{
+    font-size:11px;
     color:var(--muted);
-    font-size:12px;
-    font-weight:800;
+    font-weight:900;
 }
 
 .select{
@@ -246,9 +231,8 @@ button{
     background:var(--panel2);
     border:1px solid #ffffff10;
     border-radius:14px;
+    outline:none;
 }
-
-/* THEMES */
 
 .themeGrid{
     display:grid;
@@ -256,128 +240,159 @@ button{
     gap:10px;
 }
 
-.themeOption{
-    min-height:58px;
+.theme{
+    min-height:56px;
     border:2px solid transparent;
     border-radius:15px;
     color:white;
-    cursor:pointer;
     font-weight:800;
+    cursor:pointer;
 }
 
-.themeOption.active{
+.theme.active{
     border-color:white;
     box-shadow:0 0 0 2px var(--accent);
 }
 
-.theme-indigo{
+.t-indigo{
     background:linear-gradient(135deg,#4f46e5,#06b6d4);
 }
 
-.theme-sunset{
+.t-sunset{
     background:linear-gradient(135deg,#f43f5e,#f97316);
 }
 
-.theme-forest{
+.t-forest{
     background:linear-gradient(135deg,#15803d,#14b8a6);
 }
 
-.theme-ice{
+.t-ice{
     background:linear-gradient(135deg,#0284c7,#6366f1);
 }
 
-.theme-candy{
+.t-candy{
     background:linear-gradient(135deg,#ec4899,#a855f7);
 }
 
-.theme-mono{
+.t-mono{
     background:linear-gradient(135deg,#334155,#94a3b8);
 }
 
-/* ROOM */
-
-.roomCode{
+.code{
     text-align:center;
-    margin:12px 0 20px;
-    font-size:clamp(38px,12vw,64px);
+    margin:14px 0 18px;
+    font-size:clamp(36px,12vw,62px);
     font-weight:1000;
-    letter-spacing:9px;
+    letter-spacing:8px;
 }
 
-.roomHint{
-    color:var(--muted);
+.roomText{
     text-align:center;
     line-height:1.5;
+    color:var(--muted);
 }
 
-.copyButton{
+.copy{
     width:100%;
-    min-height:50px;
+    min-height:51px;
     border-radius:14px;
-    background:var(--panel2);
     color:white;
-    cursor:pointer;
+    background:var(--panel2);
     font-weight:800;
+    cursor:pointer;
 }
 
-/* GAME */
+.input{
+    width:100%;
+    min-height:55px;
+    border-radius:15px;
+    border:1px solid #ffffff12;
+    outline:none;
+    color:white;
+    background:#0005;
+    padding:0 16px;
+}
 
-.gameHeader{
+.input:focus{
+    border-color:var(--accent);
+}
+
+.codeInput{
+    text-align:center;
+    font-size:24px;
+    font-weight:900;
+    letter-spacing:6px;
+    text-transform:uppercase;
+}
+
+.error{
+    min-height:20px;
+    margin-top:12px;
+    text-align:center;
+    color:#f87171;
+    font-size:13px;
+    font-weight:700;
+}
+
+.gameTop{
     display:grid;
     grid-template-columns:1fr auto 1fr;
     align-items:center;
-    gap:10px;
-    margin-bottom:12px;
+    gap:8px;
+    margin-bottom:10px;
 }
 
-.playerCard{
+.player{
     display:flex;
     align-items:center;
     gap:8px;
     min-width:0;
-    padding:11px;
+    padding:10px;
+    border-radius:16px;
     background:var(--panel);
     border:1px solid #ffffff0c;
-    border-radius:17px;
 }
 
-.playerCard.right{
+.player.right{
     justify-content:flex-end;
 }
 
-.playerName{
-    font-weight:800;
-    white-space:nowrap;
+.name{
+    min-width:0;
     overflow:hidden;
+    white-space:nowrap;
     text-overflow:ellipsis;
+    font-weight:850;
+    font-size:14px;
 }
 
-.playerPiece{
-    width:19px;
-    height:19px;
+.dot{
+    width:18px;
+    height:18px;
     border-radius:50%;
     flex:none;
 }
 
-.playerPiece.red{
+.dot.red{
     background:var(--red);
-    box-shadow:0 0 14px #ef444488;
+    box-shadow:0 0 15px #ef444466;
 }
 
-.playerPiece.yellow{
+.dot.yellow{
     background:var(--yellow);
-    box-shadow:0 0 14px #facc1588;
+    box-shadow:0 0 15px #facc1566;
 }
 
 .vs{
     color:var(--muted);
+    font-size:12px;
     font-weight:900;
 }
 
 .status{
-    min-height:30px;
-    margin:8px 0;
     text-align:center;
+    min-height:30px;
+    margin:6px 0;
     font-size:20px;
     font-weight:900;
 }
@@ -386,10 +401,8 @@ button{
     text-align:center;
     color:var(--muted);
     font-size:12px;
-    margin-bottom:12px;
+    margin-bottom:11px;
 }
-
-/* BOARD */
 
 .board{
     --cols:7;
@@ -402,17 +415,17 @@ button{
     grid-template-columns:repeat(var(--cols),1fr);
     grid-template-rows:repeat(var(--rows),1fr);
 
-    gap:clamp(4px,1.2vw,9px);
-    padding:clamp(7px,2vw,13px);
+    gap:clamp(4px,1vw,8px);
+    padding:clamp(7px,2vw,12px);
 
     background:
-        linear-gradient(145deg,#ffffff12,#ffffff02),
+        linear-gradient(145deg,#ffffff12,#ffffff03),
         var(--board);
 
-    border-radius:clamp(15px,4vw,25px);
+    border-radius:24px;
 
     box-shadow:
-        0 25px 60px #0006,
+        0 25px 70px #0007,
         inset 0 2px 0 #ffffff18;
 }
 
@@ -421,27 +434,30 @@ button{
     min-width:0;
     min-height:0;
     border-radius:50%;
-    background:#02061766;
+    background:#02061770;
+
     box-shadow:
-        inset 0 5px 8px #0005,
+        inset 0 5px 9px #0006,
         0 1px 0 #ffffff18;
+
     cursor:pointer;
+    transition:transform .1s;
 }
 
 .cell:active{
-    transform:scale(.96);
+    transform:scale(.95);
 }
 
 .piece{
     position:absolute;
-    inset:6%;
+    inset:5%;
     border-radius:50%;
-    animation:pieceIn .2s ease-out;
+    animation:drop .2s ease-out;
 }
 
-@keyframes pieceIn{
+@keyframes drop{
     0%{
-        transform:scale(.1);
+        transform:scale(.15);
         opacity:0;
     }
     70%{
@@ -456,15 +472,16 @@ button{
 .piece.red{
     background:
         radial-gradient(
-            circle at 35% 27%,
+            circle at 34% 25%,
             #ffffff55,
             transparent 18%
         ),
         radial-gradient(
             circle,
-            #ff5757,
+            #ff5b5b,
             #dc2626
         );
+
     box-shadow:
         inset 0 -5px 8px #0003,
         0 5px 15px #ef444455;
@@ -473,7 +490,7 @@ button{
 .piece.yellow{
     background:
         radial-gradient(
-            circle at 35% 27%,
+            circle at 34% 25%,
             #ffffff66,
             transparent 18%
         ),
@@ -482,52 +499,51 @@ button{
             #fde047,
             #eab308
         );
+
     box-shadow:
         inset 0 -5px 8px #0003,
         0 5px 15px #facc1555;
 }
 
 .cell.winner .piece{
-    animation:winner .6s ease-in-out infinite alternate;
+    animation:pulseWinner .55s ease-in-out infinite alternate;
 }
 
-@keyframes winner{
+@keyframes pulseWinner{
     from{
         transform:scale(1);
     }
     to{
-        transform:scale(1.12);
+        transform:scale(1.13);
         filter:brightness(1.3);
     }
 }
 
-.gameActions{
+.gameButtons{
     display:flex;
     gap:10px;
-    margin-top:15px;
+    margin-top:14px;
 }
 
-.smallButton{
+.smallBtn{
     flex:1;
     min-height:50px;
     border-radius:15px;
-    background:var(--panel);
     color:white;
+    background:var(--panel);
     cursor:pointer;
     font-weight:800;
 }
-
-/* MODAL */
 
 .modal{
     position:fixed;
     inset:0;
     z-index:100;
     display:flex;
-    align-items:center;
     justify-content:center;
-    padding:20px;
-    background:#0009;
+    align-items:center;
+    padding:18px;
+    background:#000a;
     backdrop-filter:blur(10px);
 }
 
@@ -535,16 +551,16 @@ button{
     width:min(100%,520px);
     max-height:90vh;
     overflow:auto;
-    padding:24px;
+    padding:23px;
+    border-radius:24px;
     background:var(--panel);
-    border-radius:25px;
-    box-shadow:0 20px 70px #000;
+    box-shadow:0 25px 80px #000;
 }
 
 .modalHeader{
     display:flex;
-    align-items:center;
     justify-content:space-between;
+    align-items:center;
 }
 
 .modalHeader h2{
@@ -555,52 +571,50 @@ button{
     width:42px;
     height:42px;
     border-radius:12px;
-    background:var(--panel2);
     color:white;
+    background:var(--panel2);
     cursor:pointer;
 }
 
 .settingSection{
-    margin-top:24px;
+    margin-top:23px;
 }
 
 .settingSection h3{
-    margin:0 0 11px;
+    margin:0 0 10px;
     font-size:15px;
 }
 
-.checkboxRow{
+.check{
     display:flex;
     justify-content:space-between;
     align-items:center;
     padding:14px;
-    margin-top:10px;
+    margin-top:9px;
     border-radius:14px;
     background:var(--panel2);
 }
 
-.checkboxRow input{
+.check input{
     width:21px;
     height:21px;
 }
-
-/* TOAST */
 
 .toast{
     position:fixed;
     left:50%;
     bottom:25px;
     z-index:200;
-    padding:12px 18px;
-    border-radius:13px;
-    background:#020617ee;
-    color:white;
-    box-shadow:0 15px 40px #0008;
-
+    transform:translate(-50%,20px);
     opacity:0;
     pointer-events:none;
 
-    transform:translate(-50%,20px);
+    padding:12px 18px;
+    border-radius:13px;
+    color:white;
+    background:#020617ef;
+    box-shadow:0 15px 45px #0009;
+
     transition:.2s;
 }
 
@@ -613,7 +627,7 @@ button{
 
     .app{
         width:94vw;
-        padding-top:12px;
+        padding-top:10px;
     }
 
     .panel{
@@ -624,16 +638,18 @@ button{
         grid-template-columns:1fr;
     }
 
-    .playerCard{
-        padding:9px;
-        font-size:13px;
+    .player{
+        padding:8px;
     }
 
-    .playerPiece{
+    .dot{
         width:16px;
         height:16px;
     }
 
+    .name{
+        font-size:12px;
+    }
 }
 </style>
 </head>
@@ -642,529 +658,477 @@ button{
 
 <div class="app">
 
-<div class="topbar">
+    <div class="topbar">
 
-    <div class="logo">
-        <span class="logoDot"></span>
-        Connect 4
+        <div class="logo">
+            <span class="logoDot"></span>
+            Connect 4
+        </div>
+
+        <button
+            class="iconBtn"
+            onclick="openSettings()"
+        >⚙️</button>
+
     </div>
 
-    <button
-        class="iconButton"
-        onclick="openSettings()"
+
+    <!-- HOME -->
+
+    <section id="home" class="screen">
+
+        <div class="hero">
+            <h1>CONNECT 4</h1>
+            <p>Play online with your friends.</p>
+        </div>
+
+        <div class="panel">
+
+            <div class="menu">
+
+                <button
+                    class="bigBtn primary"
+                    onclick="showCreate()"
+                >
+                    🎮 Create Room
+                </button>
+
+                <button
+                    class="bigBtn secondary"
+                    onclick="showJoin()"
+                >
+                    🔗 Join Room
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CREATE -->
+
+    <section
+        id="create"
+        class="screen hidden"
     >
-        ⚙️
-    </button>
 
-</div>
-
-
-<!-- HOME -->
-
-<section
-    id="homeScreen"
-    class="screen"
->
-
-    <div class="hero">
-
-        <h1>CONNECT 4</h1>
-
-        <p>
-            Play with friends anywhere.
-        </p>
-
-    </div>
-
-    <div class="panel">
-
-        <div class="menuButtons">
+        <div class="panel">
 
             <button
-                class="bigButton primary"
-                onclick="showCreate()"
+                class="back"
+                onclick="goHome()"
             >
-                🎮 Create Room
+                ← Back
+            </button>
+
+            <h2>Create Room</h2>
+
+            <p class="muted">
+                Choose the rules for your game.
+            </p>
+
+            <div class="settingsGrid">
+
+                <div class="setting">
+
+                    <label>BOARD WIDTH</label>
+
+                    <select
+                        id="cols"
+                        class="select"
+                    >
+                        <option value="4">4 columns</option>
+                        <option value="5">5 columns</option>
+                        <option value="6">6 columns</option>
+                        <option value="7" selected>7 columns</option>
+                        <option value="8">8 columns</option>
+                        <option value="9">9 columns</option>
+                        <option value="10">10 columns</option>
+                    </select>
+
+                </div>
+
+                <div class="setting">
+
+                    <label>BOARD HEIGHT</label>
+
+                    <select
+                        id="rows"
+                        class="select"
+                    >
+                        <option value="4">4 rows</option>
+                        <option value="5">5 rows</option>
+                        <option value="6" selected>6 rows</option>
+                        <option value="7">7 rows</option>
+                        <option value="8">8 rows</option>
+                        <option value="9">9 rows</option>
+                    </select>
+
+                </div>
+
+                <div class="setting">
+
+                    <label>WIN CONDITION</label>
+
+                    <select
+                        id="win"
+                        class="select"
+                    ></select>
+
+                </div>
+
+            </div>
+
+            <div class="divider"></div>
+
+            <p><b>Theme</b></p>
+
+            <div class="themeGrid">
+
+                <button
+                    class="theme t-indigo"
+                    data-theme="indigo"
+                    onclick="setTheme('indigo')"
+                >🌌 Indigo</button>
+
+                <button
+                    class="theme t-sunset"
+                    data-theme="sunset"
+                    onclick="setTheme('sunset')"
+                >🌅 Sunset</button>
+
+                <button
+                    class="theme t-forest"
+                    data-theme="forest"
+                    onclick="setTheme('forest')"
+                >🌲 Forest</button>
+
+                <button
+                    class="theme t-ice"
+                    data-theme="ice"
+                    onclick="setTheme('ice')"
+                >❄️ Ice</button>
+
+                <button
+                    class="theme t-candy"
+                    data-theme="candy"
+                    onclick="setTheme('candy')"
+                >🍬 Candy</button>
+
+                <button
+                    class="theme t-mono"
+                    data-theme="mono"
+                    onclick="setTheme('mono')"
+                >🖤 Mono</button>
+
+            </div>
+
+            <div class="divider"></div>
+
+            <button
+                class="bigBtn primary"
+                onclick="createRoom()"
+            >
+                Create Room
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- JOIN -->
+
+    <section
+        id="join"
+        class="screen hidden"
+    >
+
+        <div class="panel">
+
+            <button
+                class="back"
+                onclick="goHome()"
+            >
+                ← Back
+            </button>
+
+            <h2>Join Room</h2>
+
+            <p class="muted">
+                Enter your friend's room code.
+            </p>
+
+            <input
+                id="joinCode"
+                class="input codeInput"
+                maxlength="8"
+                placeholder="AB12CD34"
+                autocomplete="off"
+                autocapitalize="characters"
+            >
+
+            <div
+                id="joinError"
+                class="error"
+            ></div>
+
+            <br>
+
+            <button
+                class="bigBtn primary"
+                onclick="joinRoom()"
+            >
+                Join Game
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- WAITING -->
+
+    <section
+        id="waiting"
+        class="screen hidden"
+    >
+
+        <div class="panel">
+
+            <p
+                class="roomText"
+                style="margin-bottom:0"
+            >
+                Your room code
+            </p>
+
+            <div
+                id="roomCode"
+                class="code"
+            >--------</div>
+
+            <button
+                class="copy"
+                onclick="copyCode()"
+            >
+                📋 Copy Room Code
+            </button>
+
+            <p
+                id="waitingText"
+                class="roomText"
+            >
+                Starting connection...
+            </p>
+
+            <div
+                id="waitingError"
+                class="error"
+            ></div>
+
+            <div class="divider"></div>
+
+            <div
+                id="roomRules"
+                class="roomText"
+            ></div>
+
+            <br>
+
+            <button
+                class="bigBtn secondary"
+                onclick="cancelRoom()"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- GAME -->
+
+    <section
+        id="game"
+        class="screen hidden"
+    >
+
+        <div class="gameTop">
+
+            <div class="player">
+
+                <span class="dot red"></span>
+
+                <span class="name">
+                    You / Red
+                </span>
+
+            </div>
+
+            <div class="vs">
+                VS
+            </div>
+
+            <div class="player right">
+
+                <span class="name">
+                    Yellow
+                </span>
+
+                <span class="dot yellow"></span>
+
+            </div>
+
+        </div>
+
+        <div
+            id="status"
+            class="status"
+        >
+            Connecting...
+        </div>
+
+        <div
+            id="connection"
+            class="connection"
+        >
+            🔄 Connecting...
+        </div>
+
+        <div
+            id="board"
+            class="board"
+        ></div>
+
+        <div class="gameButtons">
+
+            <button
+                class="smallBtn"
+                onclick="rematch()"
+            >
+                🔄 Rematch
             </button>
 
             <button
-                class="bigButton secondary"
-                onclick="showJoin()"
+                class="smallBtn"
+                onclick="leaveGame()"
             >
-                🔗 Join Room
+                🚪 Leave
             </button>
 
         </div>
 
-    </div>
-
-</section>
-
-
-<!-- CREATE -->
-
-<section
-    id="createScreen"
-    class="screen hidden"
->
-
-<div class="panel">
-
-    <button
-        class="back"
-        onclick="goHome()"
-    >
-        ← Back
-    </button>
-
-    <h2>Create Room</h2>
-
-    <p style="color:var(--muted)">
-        Choose the rules for your game.
-    </p>
-
-    <div class="settingsGrid">
-
-        <div class="setting">
-
-            <label>BOARD WIDTH</label>
-
-            <select
-                id="createCols"
-                class="select"
-            >
-                <option value="4">4 columns</option>
-                <option value="5">5 columns</option>
-                <option value="6">6 columns</option>
-                <option value="7" selected>
-                    7 columns
-                </option>
-                <option value="8">8 columns</option>
-                <option value="9">9 columns</option>
-                <option value="10">10 columns</option>
-            </select>
-
-        </div>
-
-        <div class="setting">
-
-            <label>BOARD HEIGHT</label>
-
-            <select
-                id="createRows"
-                class="select"
-            >
-                <option value="4">4 rows</option>
-                <option value="5">5 rows</option>
-                <option value="6" selected>
-                    6 rows
-                </option>
-                <option value="7">7 rows</option>
-                <option value="8">8 rows</option>
-                <option value="9">9 rows</option>
-            </select>
-
-        </div>
-
-        <div class="setting">
-
-            <label>ROWS TO WIN</label>
-
-            <select
-                id="createWin"
-                class="select"
-            ></select>
-
-        </div>
-
-    </div>
-
-    <div class="divider"></div>
-
-    <p style="font-weight:800">
-        Theme
-    </p>
-
-    <div class="themeGrid">
-
-        <button
-            class="themeOption theme-indigo"
-            data-theme="indigo"
-            onclick="chooseTheme('indigo')"
-        >
-            🌌 Indigo
-        </button>
-
-        <button
-            class="themeOption theme-sunset"
-            data-theme="sunset"
-            onclick="chooseTheme('sunset')"
-        >
-            🌅 Sunset
-        </button>
-
-        <button
-            class="themeOption theme-forest"
-            data-theme="forest"
-            onclick="chooseTheme('forest')"
-        >
-            🌲 Forest
-        </button>
-
-        <button
-            class="themeOption theme-ice"
-            data-theme="ice"
-            onclick="chooseTheme('ice')"
-        >
-            ❄️ Ice
-        </button>
-
-        <button
-            class="themeOption theme-candy"
-            data-theme="candy"
-            onclick="chooseTheme('candy')"
-        >
-            🍬 Candy
-        </button>
-
-        <button
-            class="themeOption theme-mono"
-            data-theme="mono"
-            onclick="chooseTheme('mono')"
-        >
-            🖤 Mono
-        </button>
-
-    </div>
-
-    <div class="divider"></div>
-
-    <button
-        class="bigButton primary"
-        onclick="createRoom()"
-    >
-        Create Room
-    </button>
+    </section>
 
 </div>
 
-</section>
 
-
-<!-- JOIN -->
-
-<section
-    id="joinScreen"
-    class="screen hidden"
->
-
-<div class="panel">
-
-    <button
-        class="back"
-        onclick="goHome()"
-    >
-        ← Back
-    </button>
-
-    <h2>Join Room</h2>
-
-    <p style="color:var(--muted)">
-        Enter your friend's room code.
-    </p>
-
-    <input
-        id="joinCode"
-        class="input codeInput"
-        maxlength="6"
-        autocomplete="off"
-        placeholder="ABC123"
-    >
-
-    <br><br>
-
-    <button
-        class="bigButton primary"
-        onclick="joinRoom()"
-    >
-        Join Game
-    </button>
-
-</div>
-
-</section>
-
-
-<!-- ROOM -->
-
-<section
-    id="roomScreen"
-    class="screen hidden"
->
-
-<div class="panel">
-
-    <p
-        style="
-        text-align:center;
-        color:var(--muted);
-        margin-bottom:0
-        "
-    >
-        Your room code
-    </p>
-
-    <div
-        id="roomCode"
-        class="roomCode"
-    >
-        ------
-    </div>
-
-    <button
-        class="copyButton"
-        onclick="copyRoomCode()"
-    >
-        📋 Copy Room Code
-    </button>
-
-    <p
-        id="roomStatus"
-        class="roomHint"
-    >
-        Waiting for your opponent...
-    </p>
-
-    <div class="divider"></div>
-
-    <div
-        id="hostSettingsSummary"
-        style="
-        text-align:center;
-        color:var(--muted);
-        font-size:14px
-        "
-    ></div>
-
-    <br>
-
-    <button
-        class="bigButton secondary"
-        onclick="cancelRoom()"
-    >
-        Cancel
-    </button>
-
-</div>
-
-</section>
-
-
-<!-- GAME -->
-
-<section
-    id="gameScreen"
-    class="screen hidden"
->
-
-<div class="gameHeader">
-
-    <div class="playerCard">
-
-        <span
-            class="playerPiece red"
-        ></span>
-
-        <span class="playerName">
-            Red
-        </span>
-
-    </div>
-
-    <div class="vs">
-        VS
-    </div>
-
-    <div class="playerCard right">
-
-        <span class="playerName">
-            Yellow
-        </span>
-
-        <span
-            class="playerPiece yellow"
-        ></span>
-
-    </div>
-
-</div>
-
-
-<div
-    id="gameStatus"
-    class="status"
->
-    Your turn
-</div>
-
-
-<div
-    id="connectionStatus"
-    class="connection"
->
-    🟢 Connected P2P
-</div>
-
-
-<div
-    id="board"
-    class="board"
-></div>
-
-
-<div class="gameActions">
-
-    <button
-        class="smallButton"
-        onclick="requestRematch()"
-    >
-        🔄 Rematch
-    </button>
-
-    <button
-        class="smallButton"
-        onclick="leaveGame()"
-    >
-        🚪 Leave
-    </button>
-
-</div>
-
-</section>
-
-</div>
-
-
-<!-- SETTINGS -->
+<!-- SETTINGS MODAL -->
 
 <div
     id="settingsModal"
     class="modal hidden"
-    onclick="closeSettingsOutside(event)"
+    onclick="modalOutside(event)"
 >
 
-<div class="modalCard">
+    <div class="modalCard">
 
-    <div class="modalHeader">
+        <div class="modalHeader">
 
-        <h2>Settings</h2>
-
-        <button
-            class="close"
-            onclick="closeSettings()"
-        >
-            ✕
-        </button>
-
-    </div>
-
-
-    <div class="settingSection">
-
-        <h3>Theme</h3>
-
-        <div class="themeGrid">
+            <h2>Settings</h2>
 
             <button
-                class="themeOption theme-indigo"
-                data-theme="indigo"
-                onclick="chooseTheme('indigo')"
+                class="close"
+                onclick="closeSettings()"
             >
-                🌌 Indigo
-            </button>
-
-            <button
-                class="themeOption theme-sunset"
-                data-theme="sunset"
-                onclick="chooseTheme('sunset')"
-            >
-                🌅 Sunset
-            </button>
-
-            <button
-                class="themeOption theme-forest"
-                data-theme="forest"
-                onclick="chooseTheme('forest')"
-            >
-                🌲 Forest
-            </button>
-
-            <button
-                class="themeOption theme-ice"
-                data-theme="ice"
-                onclick="chooseTheme('ice')"
-            >
-                ❄️ Ice
-            </button>
-
-            <button
-                class="themeOption theme-candy"
-                data-theme="candy"
-                onclick="chooseTheme('candy')"
-            >
-                🍬 Candy
-            </button>
-
-            <button
-                class="themeOption theme-mono"
-                data-theme="mono"
-                onclick="chooseTheme('mono')"
-            >
-                🖤 Mono
+                ✕
             </button>
 
         </div>
 
-    </div>
+        <div class="settingSection">
 
+            <h3>Theme</h3>
 
-    <div class="settingSection">
+            <div class="themeGrid">
 
-        <h3>Gameplay</h3>
+                <button
+                    class="theme t-indigo"
+                    data-theme="indigo"
+                    onclick="setTheme('indigo')"
+                >🌌 Indigo</button>
 
-        <div class="checkboxRow">
+                <button
+                    class="theme t-sunset"
+                    data-theme="sunset"
+                    onclick="setTheme('sunset')"
+                >🌅 Sunset</button>
 
-            <span>
-                Drop animations
-            </span>
+                <button
+                    class="theme t-forest"
+                    data-theme="forest"
+                    onclick="setTheme('forest')"
+                >🌲 Forest</button>
 
-            <input
-                id="animationToggle"
-                type="checkbox"
-                checked
-                onchange="saveSettings()"
-            >
+                <button
+                    class="theme t-ice"
+                    data-theme="ice"
+                    onclick="setTheme('ice')"
+                >❄️ Ice</button>
+
+                <button
+                    class="theme t-candy"
+                    data-theme="candy"
+                    onclick="setTheme('candy')"
+                >🍬 Candy</button>
+
+                <button
+                    class="theme t-mono"
+                    data-theme="mono"
+                    onclick="setTheme('mono')"
+                >🖤 Mono</button>
+
+            </div>
 
         </div>
 
-        <div class="checkboxRow">
+        <div class="settingSection">
 
-            <span>
-                Sound effects
-            </span>
+            <h3>Gameplay</h3>
 
-            <input
-                id="soundToggle"
-                type="checkbox"
-                checked
-                onchange="saveSettings()"
-            >
+            <div class="check">
+
+                <span>Drop animations</span>
+
+                <input
+                    id="animations"
+                    type="checkbox"
+                    checked
+                    onchange="saveSettings()"
+                >
+
+            </div>
+
+            <div class="check">
+
+                <span>Sound effects</span>
+
+                <input
+                    id="sounds"
+                    type="checkbox"
+                    checked
+                    onchange="saveSettings()"
+                >
+
+            </div>
 
         </div>
 
     </div>
-
-</div>
 
 </div>
 
@@ -1178,64 +1142,53 @@ button{
 <script>
 
 /* =========================================================
-   CONNECT 4
-   P2P MULTIPLAYER USING PEERJS + WEBRTC
-
-   NO NODE SERVER REQUIRED
+   CONNECT 4 ONLINE
+   PeerJS + WebRTC
 ========================================================= */
 
-
-/* -------------------------
-   GAME STATE
-------------------------- */
-
 let peer = null;
-let connection = null;
+let conn = null;
 
 let isHost = false;
 let myColor = null;
 
-let roomCodeValue = null;
+let roomCode = "";
 
 let ROWS = 6;
 let COLS = 7;
 let WIN = 4;
 
 let board = [];
-
 let turn = "red";
 
 let gameOver = false;
-
 let winningCells = [];
 
+let connectingTimeout = null;
 
-/* -------------------------
-   LOCAL SETTINGS
-------------------------- */
 
-let selectedTheme =
-    localStorage.getItem("c4-theme")
-    || "indigo";
+/* =========================================================
+   SETTINGS
+========================================================= */
 
-let animationsEnabled =
-    localStorage.getItem("c4-animation")
+let theme =
+    localStorage.getItem("c4-theme") ||
+    "indigo";
+
+let animations =
+    localStorage.getItem("c4-animations")
     !== "false";
 
-let soundEnabled =
-    localStorage.getItem("c4-sound")
+let sounds =
+    localStorage.getItem("c4-sounds")
     !== "false";
 
 
-/* -------------------------
-   THEMES
-------------------------- */
-
-const themes = {
+const themeData = {
 
     indigo:{
         accent:"#6366f1",
-        accent2:"#818cf8",
+        accent2:"#8b5cf6",
         board:"#2563eb"
     },
 
@@ -1272,30 +1225,35 @@ const themes = {
 };
 
 
-function applyTheme(name){
+function setTheme(name){
 
-    if(!themes[name])
+    if(!themeData[name])
         name = "indigo";
 
-    selectedTheme = name;
+    theme = name;
 
-    const root =
-        document.documentElement;
+    const t = themeData[name];
 
-    root.style.setProperty(
-        "--accent",
-        themes[name].accent
-    );
+    document.documentElement
+        .style
+        .setProperty(
+            "--accent",
+            t.accent
+        );
 
-    root.style.setProperty(
-        "--accent2",
-        themes[name].accent2
-    );
+    document.documentElement
+        .style
+        .setProperty(
+            "--accent2",
+            t.accent2
+        );
 
-    root.style.setProperty(
-        "--board",
-        themes[name].board
-    );
+    document.documentElement
+        .style
+        .setProperty(
+            "--board",
+            t.board
+        );
 
     localStorage.setItem(
         "c4-theme",
@@ -1303,12 +1261,12 @@ function applyTheme(name){
     );
 
     document
-        .querySelectorAll(".themeOption")
-        .forEach(button => {
+        .querySelectorAll(".theme")
+        .forEach(x => {
 
-            button.classList.toggle(
+            x.classList.toggle(
                 "active",
-                button.dataset.theme === name
+                x.dataset.theme === name
             );
 
         });
@@ -1316,72 +1274,32 @@ function applyTheme(name){
 }
 
 
-function chooseTheme(name){
-
-    applyTheme(name);
-
-    saveSettings();
-
-}
-
-
-/* -------------------------
-   SETTINGS
-------------------------- */
-
-function loadSettings(){
-
-    applyTheme(selectedTheme);
-
-    const animation =
-        document.getElementById(
-            "animationToggle"
-        );
-
-    const sound =
-        document.getElementById(
-            "soundToggle"
-        );
-
-    if(animation)
-        animation.checked =
-            animationsEnabled;
-
-    if(sound)
-        sound.checked =
-            soundEnabled;
-
-}
-
-
 function saveSettings(){
 
-    const animation =
+    const a =
         document.getElementById(
-            "animationToggle"
+            "animations"
         );
 
-    const sound =
+    const s =
         document.getElementById(
-            "soundToggle"
+            "sounds"
         );
 
-    if(animation)
-        animationsEnabled =
-            animation.checked;
+    if(a)
+        animations = a.checked;
 
-    if(sound)
-        soundEnabled =
-            sound.checked;
+    if(s)
+        sounds = s.checked;
 
     localStorage.setItem(
-        "c4-animation",
-        animationsEnabled
+        "c4-animations",
+        animations
     );
 
     localStorage.setItem(
-        "c4-sound",
-        soundEnabled
+        "c4-sounds",
+        sounds
     );
 
 }
@@ -1390,8 +1308,12 @@ function saveSettings(){
 function openSettings(){
 
     document
-        .getElementById("settingsModal")
-        .classList.remove("hidden");
+        .getElementById(
+            "settingsModal"
+        )
+        .classList.remove(
+            "hidden"
+        );
 
 }
 
@@ -1399,16 +1321,20 @@ function openSettings(){
 function closeSettings(){
 
     document
-        .getElementById("settingsModal")
-        .classList.add("hidden");
+        .getElementById(
+            "settingsModal"
+        )
+        .classList.add(
+            "hidden"
+        );
 
 }
 
 
-function closeSettingsOutside(event){
+function modalOutside(e){
 
     if(
-        event.target.id ===
+        e.target.id ===
         "settingsModal"
     ){
 
@@ -1419,26 +1345,22 @@ function closeSettingsOutside(event){
 }
 
 
-/* -------------------------
+/* =========================================================
    SCREENS
-------------------------- */
+========================================================= */
 
 function hideScreens(){
 
     document
         .querySelectorAll(".screen")
-        .forEach(screen => {
-
-            screen.classList.add(
-                "hidden"
-            );
-
-        });
+        .forEach(x =>
+            x.classList.add("hidden")
+        );
 
 }
 
 
-function showScreen(id){
+function screen(id){
 
     hideScreens();
 
@@ -1451,18 +1373,13 @@ function showScreen(id){
 
 function goHome(){
 
-    if(peer){
+    clearTimeout(
+        connectingTimeout
+    );
 
-        try{
-            peer.destroy();
-        }catch{}
+    destroyPeer();
 
-    }
-
-    peer = null;
-    connection = null;
-
-    showScreen("homeScreen");
+    screen("home");
 
 }
 
@@ -1471,19 +1388,21 @@ function showCreate(){
 
     updateWinOptions();
 
-    showScreen("createScreen");
+    screen("create");
 
 }
 
 
 function showJoin(){
 
-    showScreen("joinScreen");
+    screen("join");
 
     setTimeout(() => {
 
         document
-            .getElementById("joinCode")
+            .getElementById(
+                "joinCode"
+            )
             .focus();
 
     },100);
@@ -1491,32 +1410,35 @@ function showJoin(){
 }
 
 
-/* -------------------------
-   WIN OPTIONS
-------------------------- */
+/* =========================================================
+   WIN SELECT
+========================================================= */
 
 function updateWinOptions(){
 
     const rows =
         Number(
             document
-                .getElementById("createRows")
+                .getElementById("rows")
                 .value
         );
 
     const cols =
         Number(
             document
-                .getElementById("createCols")
+                .getElementById("cols")
                 .value
         );
 
     const max =
-        Math.min(rows,cols);
+        Math.min(
+            rows,
+            cols
+        );
 
     const select =
         document
-            .getElementById("createWin");
+            .getElementById("win");
 
     const old =
         Number(select.value);
@@ -1529,19 +1451,16 @@ function updateWinOptions(){
         i++
     ){
 
-        const option =
+        const o =
             document.createElement(
                 "option"
             );
 
-        option.value = i;
-
-        option.textContent =
+        o.value = i;
+        o.textContent =
             `${i} in a row`;
 
-        select.appendChild(
-            option
-        );
+        select.appendChild(o);
 
     }
 
@@ -1565,38 +1484,50 @@ function updateWinOptions(){
 
 
 document
-    .getElementById("createRows")
+    .getElementById("rows")
     .addEventListener(
         "change",
         updateWinOptions
     );
 
 document
-    .getElementById("createCols")
+    .getElementById("cols")
     .addEventListener(
         "change",
         updateWinOptions
     );
 
 
-/* -------------------------
+/* =========================================================
    ROOM CODE
-------------------------- */
+========================================================= */
 
-function generateRoomCode(){
+/*
+   PeerJS allows custom IDs.
+
+   We generate a random 8-character ID.
+   The chance of collision is extremely small.
+
+   This ID IS the room code.
+
+   Therefore there is no database or
+   second signaling server required.
+*/
+
+function randomRoomCode(){
 
     const chars =
         "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
-    let result = "";
+    let code = "";
 
     for(
         let i=0;
-        i<6;
+        i<8;
         i++
     ){
 
-        result +=
+        code +=
             chars[
                 Math.floor(
                     Math.random() *
@@ -1606,356 +1537,635 @@ function generateRoomCode(){
 
     }
 
-    return result;
+    return code;
 
 }
 
 
-/* -------------------------
+/* =========================================================
+   PEER CREATION
+========================================================= */
+
+function createPeer(id){
+
+    /*
+       IMPORTANT:
+
+       We deliberately do NOT provide a custom
+       host, port, key, or ICE configuration.
+
+       PeerJS will use its current cloud defaults.
+    */
+
+    return new Peer(
+        id,
+        {
+            debug:1
+        }
+    );
+
+}
+
+
+/* =========================================================
    CREATE ROOM
-------------------------- */
+========================================================= */
 
 function createRoom(){
 
     ROWS =
         Number(
             document
-                .getElementById("createRows")
+                .getElementById("rows")
                 .value
         );
 
     COLS =
         Number(
             document
-                .getElementById("createCols")
+                .getElementById("cols")
                 .value
         );
 
     WIN =
         Number(
             document
-                .getElementById("createWin")
+                .getElementById("win")
                 .value
         );
 
     isHost = true;
-
     myColor = "red";
 
-    roomCodeValue =
-        generateRoomCode();
+    roomCode =
+        randomRoomCode();
 
-    showScreen("roomScreen");
+
+    screen("waiting");
 
     document
         .getElementById("roomCode")
         .textContent =
-            roomCodeValue;
+            roomCode;
 
     document
-        .getElementById("roomStatus")
+        .getElementById("waitingText")
         .textContent =
-            "Creating room...";
+            "🔄 Connecting to multiplayer service...";
 
     document
-        .getElementById(
-            "hostSettingsSummary"
-        )
+        .getElementById("waitingError")
+        .textContent =
+            "";
+
+    document
+        .getElementById("roomRules")
         .textContent =
             `${COLS} × ${ROWS} board • ${WIN} in a row`;
 
 
-    /*
-      PeerJS uses the room code as the
-      host's peer ID.
-    */
-
     peer =
-        new Peer(
-            "c4-" + roomCodeValue,
-            {
-                debug:0,
-
-                config:{
-                    iceServers:[
-                        {
-                            urls:
-                            "stun:stun.l.google.com:19302"
-                        }
-                    ]
-                }
-            }
+        createPeer(
+            "c4-" + roomCode
         );
 
 
-    peer.on("open",() => {
+    peer.on(
+        "open",
+        id => {
 
-        document
-            .getElementById(
-                "roomStatus"
-            )
-            .textContent =
-                "🟢 Room ready! Send the code to your friend.";
-
-    });
-
-
-    peer.on("connection",conn => {
-
-        if(connection){
-
-            conn.close();
-
-            return;
-
-        }
-
-        connection = conn;
-
-        setupConnection();
-
-    });
-
-
-    peer.on("error",error => {
-
-        console.error(error);
-
-        if(
-            error.type ===
-            "unavailable-id"
-        ){
-
-            try{
-                peer.destroy();
-            }catch{}
-
-            setTimeout(
-                createRoom,
-                200
+            console.log(
+                "HOST PEER OPEN:",
+                id
             );
 
-            return;
+            document
+                .getElementById(
+                    "waitingText"
+                )
+                .textContent =
+                    "🟢 Room ready! Send the code to your friend.";
 
         }
+    );
 
-        document
-            .getElementById(
-                "roomStatus"
-            )
-            .textContent =
-                "❌ Could not create room.";
 
-    });
+    peer.on(
+        "connection",
+        incoming => {
+
+            console.log(
+                "Incoming connection",
+                incoming
+            );
+
+            if(conn){
+
+                incoming.close();
+
+                return;
+
+            }
+
+            conn =
+                incoming;
+
+            setupConnection();
+
+        }
+    );
+
+
+    peer.on(
+        "disconnected",
+        () => {
+
+            document
+                .getElementById(
+                    "waitingText"
+                )
+                .textContent =
+                    "⚠️ Multiplayer server disconnected. Reconnecting...";
+
+            if(
+                peer &&
+                !peer.destroyed
+            ){
+
+                peer.reconnect();
+
+            }
+
+        }
+    );
+
+
+    peer.on(
+        "error",
+        error => {
+
+            console.error(
+                "PEER ERROR:",
+                error
+            );
+
+            handlePeerError(
+                error
+            );
+
+        }
+    );
+
+
+    peer.on(
+        "close",
+        () => {
+
+            console.log(
+                "Peer closed"
+            );
+
+        }
+    );
+
+
+    connectingTimeout =
+        setTimeout(
+            () => {
+
+                if(
+                    !conn &&
+                    peer &&
+                    !peer.open
+                ){
+
+                    document
+                        .getElementById(
+                            "waitingError"
+                        )
+                        .textContent =
+                            "Still connecting. Check that this page is opened over HTTPS and that your network allows WebRTC.";
+
+                }
+
+            },
+            12000
+        );
 
 }
 
 
-/* -------------------------
+/* =========================================================
    JOIN ROOM
-------------------------- */
+========================================================= */
 
 function joinRoom(){
 
     const input =
         document
-            .getElementById("joinCode");
+            .getElementById(
+                "joinCode"
+            );
+
+    const error =
+        document
+            .getElementById(
+                "joinError"
+            );
 
     const code =
         input.value
             .trim()
             .toUpperCase();
 
+
+    error.textContent = "";
+
+
     if(
-        !/^[A-Z0-9]{6}$/.test(code)
+        !/^[A-Z0-9]{8}$/.test(code)
     ){
 
-        showToast(
-            "Enter a valid 6-character code."
-        );
+        error.textContent =
+            "Room codes are 8 characters.";
 
         return;
 
     }
 
-    isHost = false;
 
+    isHost = false;
     myColor = "yellow";
 
-    roomCodeValue = code;
+    roomCode = code;
 
-    showScreen("roomScreen");
+
+    screen("waiting");
 
     document
-        .getElementById("roomCode")
+        .getElementById(
+            "roomCode"
+        )
         .textContent =
             code;
 
     document
-        .getElementById("roomStatus")
+        .getElementById(
+            "waitingText"
+        )
         .textContent =
-            "Connecting to host...";
+            "🔄 Connecting to host...";
 
+    document
+        .getElementById(
+            "waitingError"
+        )
+        .textContent =
+            "";
+
+
+    /*
+       A joining player gets a random PeerJS ID.
+
+       Then it connects to the HOST's room ID.
+    */
 
     peer =
         new Peer(
             undefined,
             {
-                debug:0,
-
-                config:{
-                    iceServers:[
-                        {
-                            urls:
-                            "stun:stun.l.google.com:19302"
-                        }
-                    ]
-                }
+                debug:1
             }
         );
 
 
-    peer.on("open",() => {
+    peer.on(
+        "open",
+        id => {
 
-        connection =
-            peer.connect(
-                "c4-" + code,
-                {
-                    reliable:true
-                }
+            console.log(
+                "JOINER PEER OPEN:",
+                id
             );
 
-        setupConnection();
+            connectToHost();
 
-    });
+        }
+    );
 
 
-    peer.on("error",error => {
+    peer.on(
+        "error",
+        error => {
 
-        console.error(error);
+            console.error(
+                "JOINER ERROR:",
+                error
+            );
 
-        document
-            .getElementById(
-                "roomStatus"
-            )
-            .textContent =
-                "❌ Room not found or connection failed.";
+            handlePeerError(
+                error
+            );
 
-        showToast(
-            "Could not join that room."
+        }
+    );
+
+
+    peer.on(
+        "disconnected",
+        () => {
+
+            document
+                .getElementById(
+                    "waitingText"
+                )
+                .textContent =
+                    "⚠️ Connection server disconnected. Reconnecting...";
+
+            if(
+                peer &&
+                !peer.destroyed
+            ){
+
+                peer.reconnect();
+
+            }
+
+        }
+    );
+
+
+    connectingTimeout =
+        setTimeout(
+            () => {
+
+                if(!conn){
+
+                    document
+                        .getElementById(
+                            "waitingError"
+                        )
+                        .textContent =
+                            "Could not connect. Check the room code and try again.";
+
+                }
+
+            },
+            12000
         );
-
-    });
 
 }
 
 
-/* -------------------------
-   CONNECTION
-------------------------- */
+function connectToHost(){
 
-function setupConnection(){
-
-    if(!connection)
+    if(!peer)
         return;
 
 
-    connection.on("open",() => {
-
-        document
-            .getElementById(
-                "connectionStatus"
-            )
-            .textContent =
-                "🟢 Connected directly P2P";
+    console.log(
+        "Connecting to:",
+        "c4-" + roomCode
+    );
 
 
-        if(isHost){
-
-            startNewGame();
-
-            send({
-
-                type:"settings",
-
-                rows:ROWS,
-
-                cols:COLS,
-
-                win:WIN,
-
-                board:board,
-
-                turn:turn,
-
-                gameOver:false,
-
-                winningCells:[]
-
-            });
-
-        }
-
-    });
-
-
-    connection.on("data",message => {
-
-        handleMessage(message);
-
-    });
-
-
-    connection.on("close",() => {
-
-        document
-            .getElementById(
-                "connectionStatus"
-            )
-            .textContent =
-                "🔴 Opponent disconnected";
-
-        showToast(
-            "Opponent disconnected."
+    conn =
+        peer.connect(
+            "c4-" + roomCode,
+            {
+                reliable:true,
+                serialization:"json"
+            }
         );
 
-    });
 
-
-    connection.on("error",error => {
-
-        console.error(error);
-
-        showToast(
-            "Connection error."
-        );
-
-    });
+    setupConnection();
 
 }
 
 
-/* -------------------------
-   SEND
-------------------------- */
+/* =========================================================
+   CONNECTION SETUP
+========================================================= */
 
-function send(message){
+function setupConnection(){
+
+    if(!conn)
+        return;
+
+
+    conn.on(
+        "open",
+        () => {
+
+            console.log(
+                "DATA CONNECTION OPEN"
+            );
+
+            clearTimeout(
+                connectingTimeout
+            );
+
+
+            document
+                .getElementById(
+                    "connection"
+                )
+                .textContent =
+                    "🟢 Connected directly P2P";
+
+
+            if(isHost){
+
+                startGame();
+
+                send({
+                    type:"start",
+                    rows:ROWS,
+                    cols:COLS,
+                    win:WIN,
+                    board:board,
+                    turn:turn,
+                    gameOver:false,
+                    winningCells:[]
+                });
+
+            }
+
+        }
+    );
+
+
+    conn.on(
+        "data",
+        message => {
+
+            console.log(
+                "DATA:",
+                message
+            );
+
+            handleMessage(
+                message
+            );
+
+        }
+    );
+
+
+    conn.on(
+        "close",
+        () => {
+
+            document
+                .getElementById(
+                    "connection"
+                )
+                .textContent =
+                    "🔴 Opponent disconnected";
+
+            showToast(
+                "Opponent disconnected."
+            );
+
+        }
+    );
+
+
+    conn.on(
+        "error",
+        error => {
+
+            console.error(
+                "CONNECTION ERROR:",
+                error
+            );
+
+            document
+                .getElementById(
+                    "waitingError"
+                )
+                .textContent =
+                    "WebRTC connection failed.";
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PEER ERROR HANDLING
+========================================================= */
+
+function handlePeerError(error){
+
+    let message =
+        "Connection failed.";
+
+    switch(error.type){
+
+        case "peer-unavailable":
+
+            message =
+                "Room not found. Check the code.";
+
+            break;
+
+        case "unavailable-id":
+
+            message =
+                "That room code is already in use.";
+
+            break;
+
+        case "network":
+
+            message =
+                "Could not reach the multiplayer service.";
+
+            break;
+
+        case "server-error":
+
+            message =
+                "Multiplayer server error.";
+
+            break;
+
+        case "socket-error":
+
+            message =
+                "Connection to multiplayer server failed.";
+
+            break;
+
+        case "browser-incompatible":
+
+            message =
+                "This browser does not support WebRTC.";
+
+            break;
+
+        case "webrtc":
+
+            message =
+                "WebRTC connection failed.";
+
+            break;
+
+        default:
+
+            message =
+                "Error: " +
+                (
+                    error.message ||
+                    error.type ||
+                    "unknown"
+                );
+
+    }
+
+
+    document
+        .getElementById(
+            "waitingError"
+        )
+        .textContent =
+            message;
+
+}
+
+
+/* =========================================================
+   SEND
+========================================================= */
+
+function send(data){
 
     if(
-        connection &&
-        connection.open
+        conn &&
+        conn.open
     ){
 
-        connection.send(message);
+        conn.send(
+            data
+        );
+
+    }else{
+
+        console.warn(
+            "Tried to send without open connection"
+        );
 
     }
 
 }
 
 
-/* -------------------------
-   MESSAGE HANDLER
-------------------------- */
+/* =========================================================
+   MESSAGES
+========================================================= */
 
 function handleMessage(message){
 
@@ -1965,7 +2175,7 @@ function handleMessage(message){
 
     if(
         message.type ===
-        "settings"
+        "start"
     ){
 
         ROWS =
@@ -1989,9 +2199,9 @@ function handleMessage(message){
         winningCells =
             message.winningCells || [];
 
-        showScreen("gameScreen");
+        screen("game");
 
-        renderBoard();
+        render();
 
         updateStatus();
 
@@ -2002,7 +2212,7 @@ function handleMessage(message){
 
     if(
         message.type ===
-        "move"
+        "state"
     ){
 
         board =
@@ -2017,7 +2227,7 @@ function handleMessage(message){
         winningCells =
             message.winningCells || [];
 
-        renderBoard();
+        render();
 
         updateStatus();
 
@@ -2028,14 +2238,20 @@ function handleMessage(message){
 
     if(
         message.type ===
-        "requestRematch"
+        "rematchRequest"
     ){
 
         if(isHost){
 
-            startNewGame();
+            startGame();
 
             sendState();
+
+        }else{
+
+            showToast(
+                "Opponent requested a rematch."
+            );
 
         }
 
@@ -2063,17 +2279,15 @@ function handleMessage(message){
 }
 
 
-/* -------------------------
-   START NEW GAME
-------------------------- */
+/* =========================================================
+   GAME
+========================================================= */
 
-function startNewGame(){
+function startGame(){
 
     board =
         Array.from(
-            {
-                length:ROWS
-            },
+            {length:ROWS},
             () =>
                 Array(COLS).fill(null)
         );
@@ -2084,9 +2298,9 @@ function startNewGame(){
 
     winningCells = [];
 
-    showScreen("gameScreen");
+    screen("game");
 
-    renderBoard();
+    render();
 
     updateStatus();
 
@@ -2097,7 +2311,7 @@ function sendState(){
 
     send({
 
-        type:"move",
+        type:"state",
 
         board:board,
 
@@ -2113,9 +2327,9 @@ function sendState(){
 }
 
 
-/* -------------------------
-   PLAY
-------------------------- */
+/* =========================================================
+   MOVE
+========================================================= */
 
 function playColumn(col){
 
@@ -2127,9 +2341,12 @@ function playColumn(col){
 
 
     const row =
-        findOpenRow(col);
+        findOpenRow(
+            col
+        );
 
-    if(row === -1){
+
+    if(row < 0){
 
         showToast(
             "That column is full!"
@@ -2158,7 +2375,7 @@ function playColumn(col){
         gameOver = true;
 
         winningCells =
-            findWinningCells(
+            getWinningCells(
                 row,
                 col,
                 myColor
@@ -2174,16 +2391,16 @@ function playColumn(col){
     }
 
 
-    renderBoard();
+    render();
 
     updateStatus();
 
     sendState();
 
-    playSound(
+    playTone(
         gameOver
             ? "win"
-            : "drop"
+            : "move"
     );
 
 }
@@ -2192,16 +2409,16 @@ function playColumn(col){
 function findOpenRow(col){
 
     for(
-        let row=ROWS-1;
-        row>=0;
-        row--
+        let r=ROWS-1;
+        r>=0;
+        r--
     ){
 
         if(
-            !board[row][col]
+            board[r][col] === null
         ){
 
-            return row;
+            return r;
 
         }
 
@@ -2212,11 +2429,11 @@ function findOpenRow(col){
 }
 
 
-/* -------------------------
-   WIN DETECTION
-------------------------- */
+/* =========================================================
+   WIN CHECK
+========================================================= */
 
-const directions = [
+const dirs = [
 
     [1,0],
     [0,1],
@@ -2226,7 +2443,7 @@ const directions = [
 ];
 
 
-function countDirection(
+function count(
     row,
     col,
     dr,
@@ -2234,7 +2451,7 @@ function countDirection(
     color
 ){
 
-    let count = 0;
+    let total = 0;
 
     let r =
         row + dr;
@@ -2253,7 +2470,7 @@ function countDirection(
 
     ){
 
-        count++;
+        total++;
 
         r += dr;
         c += dc;
@@ -2261,7 +2478,7 @@ function countDirection(
     }
 
 
-    return count;
+    return total;
 
 }
 
@@ -2274,13 +2491,13 @@ function checkWin(
 
     for(
         const [dr,dc]
-        of directions
+        of dirs
     ){
 
         const total =
             1 +
 
-            countDirection(
+            count(
                 row,
                 col,
                 dr,
@@ -2288,7 +2505,7 @@ function checkWin(
                 color
             ) +
 
-            countDirection(
+            count(
                 row,
                 col,
                 -dr,
@@ -2297,8 +2514,13 @@ function checkWin(
             );
 
 
-        if(total >= WIN)
+        if(
+            total >= WIN
+        ){
+
             return true;
+
+        }
 
     }
 
@@ -2307,7 +2529,7 @@ function checkWin(
 }
 
 
-function findWinningCells(
+function getWinningCells(
     row,
     col,
     color
@@ -2318,12 +2540,11 @@ function findWinningCells(
 
     for(
         const [dr,dc]
-        of directions
+        of dirs
     ){
 
-        const line = [
-            [row,col]
-        ];
+        const line =
+            [[row,col]];
 
 
         let r =
@@ -2343,7 +2564,10 @@ function findWinningCells(
 
         ){
 
-            line.push([r,c]);
+            line.push([
+                r,
+                c
+            ]);
 
             r += dr;
             c += dc;
@@ -2368,7 +2592,10 @@ function findWinningCells(
 
         ){
 
-            line.unshift([r,c]);
+            line.unshift([
+                r,
+                c
+            ]);
 
             r -= dr;
             c -= dc;
@@ -2393,26 +2620,26 @@ function findWinningCells(
 }
 
 
-/* -------------------------
+/* =========================================================
    RENDER
-------------------------- */
+========================================================= */
 
-function renderBoard(){
+function render(){
 
-    const element =
+    const boardEl =
         document.getElementById(
             "board"
         );
 
-    element.innerHTML = "";
+    boardEl.innerHTML = "";
 
-    element.style
+    boardEl.style
         .setProperty(
             "--cols",
             COLS
         );
 
-    element.style
+    boardEl.style
         .setProperty(
             "--rows",
             ROWS
@@ -2420,15 +2647,15 @@ function renderBoard(){
 
 
     for(
-        let row=0;
-        row<ROWS;
-        row++
+        let r=0;
+        r<ROWS;
+        r++
     ){
 
         for(
-            let col=0;
-            col<COLS;
-            col++
+            let c=0;
+            c<COLS;
+            c++
         ){
 
             const cell =
@@ -2436,18 +2663,19 @@ function renderBoard(){
                     "div"
                 );
 
-            cell.className = "cell";
+            cell.className =
+                "cell";
 
 
-            const isWinner =
+            const winner =
                 winningCells.some(
-                    ([r,c]) =>
-                        r === row &&
-                        c === col
+                    ([wr,wc]) =>
+                        wr === r &&
+                        wc === c
                 );
 
 
-            if(isWinner){
+            if(winner){
 
                 cell.classList.add(
                     "winner"
@@ -2457,7 +2685,7 @@ function renderBoard(){
 
 
             const value =
-                board[row][col];
+                board[r][c];
 
 
             if(value){
@@ -2470,12 +2698,14 @@ function renderBoard(){
                 piece.className =
                     "piece " + value;
 
-                if(!animationsEnabled){
+
+                if(!animations){
 
                     piece.style.animation =
                         "none";
 
                 }
+
 
                 cell.appendChild(
                     piece
@@ -2484,14 +2714,11 @@ function renderBoard(){
             }
 
 
-            cell.onclick = () => {
-
-                playColumn(col);
-
-            };
+            cell.onclick = () =>
+                playColumn(c);
 
 
-            element.appendChild(
+            boardEl.appendChild(
                 cell
             );
 
@@ -2502,15 +2729,15 @@ function renderBoard(){
 }
 
 
-/* -------------------------
+/* =========================================================
    STATUS
-------------------------- */
+========================================================= */
 
 function updateStatus(){
 
     const status =
         document.getElementById(
-            "gameStatus"
+            "status"
         );
 
 
@@ -2518,20 +2745,26 @@ function updateStatus(){
 
         let winner = null;
 
-        if(winningCells.length){
+
+        if(
+            winningCells.length
+        ){
 
             const [
-                row,
-                col
-            ] = winningCells[0];
+                r,
+                c
+            ] =
+                winningCells[0];
 
             winner =
-                board[row][col];
+                board[r][c];
 
         }
 
 
-        if(winner === myColor){
+        if(
+            winner === myColor
+        ){
 
             status.textContent =
                 "🎉 YOU WIN!";
@@ -2548,7 +2781,9 @@ function updateStatus(){
     }
 
 
-    if(turn === myColor){
+    if(
+        turn === myColor
+    ){
 
         status.textContent =
             "🟢 Your turn";
@@ -2563,15 +2798,15 @@ function updateStatus(){
 }
 
 
-/* -------------------------
+/* =========================================================
    REMATCH
-------------------------- */
+========================================================= */
 
-function requestRematch(){
+function rematch(){
 
     if(
-        !connection ||
-        !connection.open
+        !conn ||
+        !conn.open
     ){
 
         showToast(
@@ -2585,16 +2820,14 @@ function requestRematch(){
 
     if(isHost){
 
-        startNewGame();
+        startGame();
 
         sendState();
 
     }else{
 
         send({
-
-            type:"requestRematch"
-
+            type:"rematchRequest"
         });
 
         showToast(
@@ -2606,9 +2839,9 @@ function requestRematch(){
 }
 
 
-/* -------------------------
+/* =========================================================
    LEAVE
-------------------------- */
+========================================================= */
 
 function leaveGame(){
 
@@ -2621,11 +2854,38 @@ function leaveGame(){
 }
 
 
-/* -------------------------
-   CANCEL ROOM
-------------------------- */
+/* =========================================================
+   CANCEL
+========================================================= */
 
 function cancelRoom(){
+
+    destroyPeer();
+
+    screen("home");
+
+}
+
+
+/* =========================================================
+   DESTROY PEER
+========================================================= */
+
+function destroyPeer(){
+
+    clearTimeout(
+        connectingTimeout
+    );
+
+
+    if(conn){
+
+        try{
+            conn.close();
+        }catch{}
+
+    }
+
 
     if(peer){
 
@@ -2635,26 +2895,25 @@ function cancelRoom(){
 
     }
 
-    peer = null;
-    connection = null;
 
-    showScreen("homeScreen");
+    conn = null;
+    peer = null;
 
 }
 
 
-/* -------------------------
-   COPY CODE
-------------------------- */
+/* =========================================================
+   COPY
+========================================================= */
 
-async function copyRoomCode(){
+async function copyCode(){
 
     try{
 
         await navigator
             .clipboard
             .writeText(
-                roomCodeValue
+                roomCode
             );
 
         showToast(
@@ -2664,7 +2923,7 @@ async function copyRoomCode(){
     }catch{
 
         showToast(
-            "Code: " + roomCodeValue
+            "Room: " + roomCode
         );
 
     }
@@ -2672,22 +2931,23 @@ async function copyRoomCode(){
 }
 
 
-/* -------------------------
+/* =========================================================
    TOAST
-------------------------- */
+========================================================= */
 
 let toastTimer = null;
 
 function showToast(text){
 
-    const toast =
+    const el =
         document.getElementById(
             "toast"
         );
 
-    toast.textContent = text;
+    el.textContent =
+        text;
 
-    toast.classList.add(
+    el.classList.add(
         "show"
     );
 
@@ -2699,7 +2959,7 @@ function showToast(text){
         setTimeout(
             () => {
 
-                toast.classList.remove(
+                el.classList.remove(
                     "show"
                 );
 
@@ -2710,24 +2970,24 @@ function showToast(text){
 }
 
 
-/* -------------------------
+/* =========================================================
    SOUND
-------------------------- */
+========================================================= */
 
-let audioContext = null;
+let audio = null;
 
 
-function playSound(type){
+function playTone(type){
 
-    if(!soundEnabled)
+    if(!sounds)
         return;
 
 
     try{
 
-        if(!audioContext){
+        if(!audio){
 
-            audioContext =
+            audio =
                 new (
                     window.AudioContext ||
                     window.webkitAudioContext
@@ -2737,45 +2997,45 @@ function playSound(type){
 
 
         const osc =
-            audioContext.createOscillator();
+            audio.createOscillator();
 
         const gain =
-            audioContext.createGain();
+            audio.createGain();
 
 
         osc.connect(gain);
 
         gain.connect(
-            audioContext.destination
+            audio.destination
         );
 
 
         osc.frequency.value =
             type === "win"
-                ? 620
-                : 320;
+                ? 650
+                : 340;
 
 
         gain.gain.setValueAtTime(
             .001,
-            audioContext.currentTime
+            audio.currentTime
         );
 
         gain.gain.exponentialRampToValueAtTime(
-            .08,
-            audioContext.currentTime + .01
+            .06,
+            audio.currentTime + .01
         );
 
         gain.gain.exponentialRampToValueAtTime(
             .001,
-            audioContext.currentTime + .12
+            audio.currentTime + .12
         );
 
 
         osc.start();
 
         osc.stop(
-            audioContext.currentTime + .13
+            audio.currentTime + .13
         );
 
     }catch{}
@@ -2783,15 +3043,55 @@ function playSound(type){
 }
 
 
-/* -------------------------
+/* =========================================================
    INIT
-------------------------- */
+========================================================= */
 
-loadSettings();
+setTheme(
+    theme
+);
+
+const animationsInput =
+    document.getElementById(
+        "animations"
+    );
+
+const soundsInput =
+    document.getElementById(
+        "sounds"
+    );
+
+if(animationsInput)
+    animationsInput.checked =
+        animations;
+
+if(soundsInput)
+    soundsInput.checked =
+        sounds;
 
 updateWinOptions();
+
+
+/* Allow pressing Enter in join box */
+
+document
+    .getElementById("joinCode")
+    .addEventListener(
+        "keydown",
+        e => {
+
+            if(
+                e.key === "Enter"
+            ){
+
+                joinRoom();
+
+            }
+
+        }
+    );
 
 </script>
 
 </body>
-</html>
+    </html>
