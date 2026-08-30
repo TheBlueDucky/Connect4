@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#101827">
+<meta name="theme-color" content="#0b1020">
 <title>Connect 4 Online</title>
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
@@ -11,7 +11,6 @@
 <style>
 :root{
     --bg:#0b1020;
-    --bg2:#121a2d;
     --panel:#151f35;
     --panel2:#1c2943;
     --text:#f8fafc;
@@ -21,9 +20,6 @@
     --board:#2563eb;
     --red:#ef4444;
     --yellow:#facc15;
-    --good:#22c55e;
-    --danger:#f43f5e;
-    --shadow:0 20px 60px #0008;
 }
 
 *{
@@ -39,15 +35,21 @@ html,body{
 body{
     min-height:100vh;
     min-height:100dvh;
-    font-family:
-        Inter,system-ui,-apple-system,BlinkMacSystemFont,
-        "Segoe UI",sans-serif;
+    font-family:Inter,system-ui,-apple-system,
+        BlinkMacSystemFont,"Segoe UI",sans-serif;
     color:var(--text);
     background:
-        radial-gradient(circle at 20% 10%,#6366f122,transparent 35%),
-        radial-gradient(circle at 80% 90%,#22d3ee18,transparent 35%),
+        radial-gradient(
+            circle at 20% 10%,
+            #6366f122,
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 80% 90%,
+            #22d3ee18,
+            transparent 35%
+        ),
         var(--bg);
-    overflow-x:hidden;
 }
 
 button,input,select{
@@ -61,14 +63,20 @@ button{
 .app{
     width:min(94vw,760px);
     margin:auto;
-    padding:24px 0 40px;
+    padding:20px 0 40px;
 }
+
+.hidden{
+    display:none !important;
+}
+
+/* TOP */
 
 .topbar{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    margin-bottom:22px;
+    margin-bottom:20px;
 }
 
 .logo{
@@ -93,13 +101,14 @@ button{
     height:46px;
     border-radius:14px;
     background:var(--panel);
-    color:var(--text);
+    color:white;
     cursor:pointer;
-    box-shadow:0 8px 30px #0003;
 }
 
+/* GENERAL */
+
 .screen{
-    animation:screenIn .3s ease;
+    animation:screenIn .25s ease;
 }
 
 @keyframes screenIn{
@@ -115,12 +124,12 @@ button{
 
 .hero{
     text-align:center;
-    padding:32px 10px 20px;
+    padding:35px 10px 25px;
 }
 
 .hero h1{
     margin:0;
-    font-size:clamp(42px,11vw,72px);
+    font-size:clamp(43px,11vw,72px);
     line-height:1;
     letter-spacing:-4px;
 }
@@ -128,17 +137,16 @@ button{
 .hero p{
     color:var(--muted);
     margin:15px 0 0;
-    font-size:16px;
 }
 
 .panel{
     background:
         linear-gradient(145deg,#ffffff08,#ffffff02),
         var(--panel);
-    border:1px solid #ffffff0c;
+    border:1px solid #ffffff0d;
     border-radius:24px;
     padding:22px;
-    box-shadow:var(--shadow);
+    box-shadow:0 20px 60px #0008;
 }
 
 .menuButtons{
@@ -146,106 +154,72 @@ button{
     gap:12px;
 }
 
-.primary{
-    background:linear-gradient(
-        135deg,
-        var(--accent),
-        var(--accent2)
-    );
-    color:white;
-}
-
-.secondary{
-    background:var(--panel2);
-    color:var(--text);
-}
-
 .bigButton{
     width:100%;
     min-height:58px;
     border-radius:17px;
-    font-weight:800;
     font-size:18px;
+    font-weight:800;
     cursor:pointer;
-    transition:.15s transform,.15s filter;
+    transition:.15s;
 }
 
-.bigButton:active,
-.smallButton:active,
-.iconButton:active{
+.bigButton:active{
     transform:scale(.97);
 }
 
-.bigButton:hover{
-    filter:brightness(1.08);
+.primary{
+    color:white;
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            var(--accent2)
+        );
 }
 
-.input{
-    width:100%;
-    min-height:54px;
-    border:1px solid #ffffff12;
-    background:#0003;
-    color:var(--text);
-    border-radius:15px;
-    outline:none;
-    padding:0 16px;
-}
-
-.input:focus{
-    border-color:var(--accent);
-    box-shadow:0 0 0 3px color-mix(
-        in srgb,var(--accent) 20%,transparent
-    );
-}
-
-.codeInput{
-    text-align:center;
-    letter-spacing:7px;
-    font-weight:900;
-    font-size:22px;
-    text-transform:uppercase;
-}
-
-.formTitle{
-    font-weight:800;
-    margin:0 0 12px;
-}
-
-.divider{
-    height:1px;
-    background:#ffffff0b;
-    margin:22px 0;
+.secondary{
+    color:white;
+    background:var(--panel2);
 }
 
 .back{
     color:var(--muted);
     background:none;
     cursor:pointer;
-    padding:8px 0;
+    padding:4px 0;
 }
 
-.roomCode{
-    text-align:center;
-    font-size:clamp(38px,12vw,64px);
-    font-weight:1000;
-    letter-spacing:9px;
-    margin:12px 0 20px;
-}
-
-.roomHint{
-    color:var(--muted);
-    text-align:center;
-}
-
-.copyButton{
+.input{
     width:100%;
-    min-height:50px;
-    border-radius:14px;
-    background:var(--panel2);
-    color:var(--text);
-    cursor:pointer;
-    font-weight:700;
+    min-height:54px;
+    padding:0 16px;
+    color:white;
+    background:#0004;
+    border:1px solid #ffffff12;
+    border-radius:15px;
+    outline:none;
 }
+
+.input:focus{
+    border-color:var(--accent);
+}
+
+.codeInput{
+    text-align:center;
+    font-size:23px;
+    font-weight:900;
+    letter-spacing:7px;
+    text-transform:uppercase;
+}
+
+.divider{
+    height:1px;
+    background:#ffffff0d;
+    margin:22px 0;
+}
+
+/* CREATE SETTINGS */
 
 .settingsGrid{
     display:grid;
@@ -260,19 +234,21 @@ button{
 
 .setting label{
     color:var(--muted);
-    font-size:13px;
-    font-weight:700;
+    font-size:12px;
+    font-weight:800;
 }
 
 .select{
     width:100%;
     min-height:50px;
-    border-radius:14px;
-    border:1px solid #ffffff10;
-    background:var(--panel2);
-    color:var(--text);
     padding:0 12px;
+    color:white;
+    background:var(--panel2);
+    border:1px solid #ffffff10;
+    border-radius:14px;
 }
+
+/* THEMES */
 
 .themeGrid{
     display:grid;
@@ -282,8 +258,8 @@ button{
 
 .themeOption{
     min-height:58px;
-    border-radius:15px;
     border:2px solid transparent;
+    border-radius:15px;
     color:white;
     cursor:pointer;
     font-weight:800;
@@ -318,6 +294,32 @@ button{
     background:linear-gradient(135deg,#334155,#94a3b8);
 }
 
+/* ROOM */
+
+.roomCode{
+    text-align:center;
+    margin:12px 0 20px;
+    font-size:clamp(38px,12vw,64px);
+    font-weight:1000;
+    letter-spacing:9px;
+}
+
+.roomHint{
+    color:var(--muted);
+    text-align:center;
+    line-height:1.5;
+}
+
+.copyButton{
+    width:100%;
+    min-height:50px;
+    border-radius:14px;
+    background:var(--panel2);
+    color:white;
+    cursor:pointer;
+    font-weight:800;
+}
+
 /* GAME */
 
 .gameHeader{
@@ -325,28 +327,34 @@ button{
     grid-template-columns:1fr auto 1fr;
     align-items:center;
     gap:10px;
-    margin-bottom:15px;
+    margin-bottom:12px;
 }
 
 .playerCard{
-    background:var(--panel);
-    border:1px solid #ffffff0b;
-    border-radius:17px;
-    padding:12px;
     display:flex;
     align-items:center;
-    gap:9px;
+    gap:8px;
     min-width:0;
+    padding:11px;
+    background:var(--panel);
+    border:1px solid #ffffff0c;
+    border-radius:17px;
 }
 
 .playerCard.right{
     justify-content:flex-end;
-    text-align:right;
+}
+
+.playerName{
+    font-weight:800;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
 .playerPiece{
-    width:20px;
-    height:20px;
+    width:19px;
+    height:19px;
     border-radius:50%;
     flex:none;
 }
@@ -361,24 +369,17 @@ button{
     box-shadow:0 0 14px #facc1588;
 }
 
-.playerName{
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-    font-weight:800;
-}
-
 .vs{
     color:var(--muted);
     font-weight:900;
 }
 
 .status{
+    min-height:30px;
+    margin:8px 0;
     text-align:center;
-    min-height:31px;
-    font-size:19px;
+    font-size:20px;
     font-weight:900;
-    margin:10px 0 14px;
 }
 
 .connection{
@@ -388,25 +389,20 @@ button{
     margin-bottom:12px;
 }
 
-.boardWrap{
-    position:relative;
-    width:100%;
-    overflow:hidden;
-}
+/* BOARD */
 
 .board{
     --cols:7;
     --rows:6;
 
     width:100%;
-    aspect-ratio:var(--cols) / var(--rows);
+    aspect-ratio:var(--cols)/var(--rows);
 
     display:grid;
     grid-template-columns:repeat(var(--cols),1fr);
     grid-template-rows:repeat(var(--rows),1fr);
 
     gap:clamp(4px,1.2vw,9px);
-
     padding:clamp(7px,2vw,13px);
 
     background:
@@ -432,27 +428,26 @@ button{
     cursor:pointer;
 }
 
-.cell:hover{
-    background:#02061788;
+.cell:active{
+    transform:scale(.96);
 }
 
 .piece{
     position:absolute;
-    inset:7%;
+    inset:6%;
     border-radius:50%;
-    transform:scale(.88);
-    animation:appear .18s ease-out forwards;
+    animation:pieceIn .2s ease-out;
 }
 
-@keyframes appear{
-    from{
+@keyframes pieceIn{
+    0%{
         transform:scale(.1);
         opacity:0;
     }
     70%{
-        transform:scale(1.06);
+        transform:scale(1.08);
     }
-    to{
+    100%{
         transform:scale(1);
         opacity:1;
     }
@@ -460,8 +455,16 @@ button{
 
 .piece.red{
     background:
-        radial-gradient(circle at 35% 28%,#ffffff55,transparent 18%),
-        radial-gradient(circle at 50% 50%,#ff5757,#dc2626);
+        radial-gradient(
+            circle at 35% 27%,
+            #ffffff55,
+            transparent 18%
+        ),
+        radial-gradient(
+            circle,
+            #ff5757,
+            #dc2626
+        );
     box-shadow:
         inset 0 -5px 8px #0003,
         0 5px 15px #ef444455;
@@ -469,16 +472,23 @@ button{
 
 .piece.yellow{
     background:
-        radial-gradient(circle at 35% 28%,#ffffff66,transparent 18%),
-        radial-gradient(circle at 50% 50%,#fde047,#eab308);
+        radial-gradient(
+            circle at 35% 27%,
+            #ffffff66,
+            transparent 18%
+        ),
+        radial-gradient(
+            circle,
+            #fde047,
+            #eab308
+        );
     box-shadow:
         inset 0 -5px 8px #0003,
         0 5px 15px #facc1555;
 }
 
 .cell.winner .piece{
-    animation:
-        winner .65s ease-in-out infinite alternate;
+    animation:winner .6s ease-in-out infinite alternate;
 }
 
 @keyframes winner{
@@ -502,70 +512,39 @@ button{
     min-height:50px;
     border-radius:15px;
     background:var(--panel);
-    color:var(--text);
+    color:white;
     cursor:pointer;
     font-weight:800;
 }
 
-.smallButton.primarySmall{
-    background:var(--accent);
-}
-
-.disabled{
-    opacity:.45;
-    pointer-events:none;
-}
-
-.toast{
-    position:fixed;
-    left:50%;
-    bottom:25px;
-    transform:translate(-50%,20px);
-    background:#020617ee;
-    border:1px solid #ffffff12;
-    color:white;
-    padding:12px 18px;
-    border-radius:13px;
-    box-shadow:0 15px 40px #0008;
-    opacity:0;
-    pointer-events:none;
-    transition:.2s;
-    z-index:100;
-}
-
-.toast.show{
-    opacity:1;
-    transform:translate(-50%,0);
-}
+/* MODAL */
 
 .modal{
     position:fixed;
     inset:0;
-    background:#0008;
-    backdrop-filter:blur(10px);
+    z-index:100;
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
     padding:20px;
-    z-index:50;
+    background:#0009;
+    backdrop-filter:blur(10px);
 }
 
 .modalCard{
     width:min(100%,520px);
     max-height:90vh;
     overflow:auto;
-    background:var(--panel);
-    border:1px solid #ffffff10;
-    border-radius:25px;
     padding:24px;
-    box-shadow:var(--shadow);
+    background:var(--panel);
+    border-radius:25px;
+    box-shadow:0 20px 70px #000;
 }
 
 .modalHeader{
     display:flex;
-    justify-content:space-between;
     align-items:center;
-    margin-bottom:20px;
+    justify-content:space-between;
 }
 
 .modalHeader h2{
@@ -573,31 +552,31 @@ button{
 }
 
 .close{
-    background:var(--panel2);
-    color:white;
-    border-radius:12px;
     width:42px;
     height:42px;
+    border-radius:12px;
+    background:var(--panel2);
+    color:white;
     cursor:pointer;
 }
 
 .settingSection{
-    margin-bottom:22px;
+    margin-top:24px;
 }
 
 .settingSection h3{
-    font-size:15px;
     margin:0 0 11px;
+    font-size:15px;
 }
 
 .checkboxRow{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    background:var(--panel2);
     padding:14px;
-    border-radius:14px;
     margin-top:10px;
+    border-radius:14px;
+    background:var(--panel2);
 }
 
 .checkboxRow input{
@@ -605,24 +584,44 @@ button{
     height:21px;
 }
 
+/* TOAST */
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:25px;
+    z-index:200;
+    padding:12px 18px;
+    border-radius:13px;
+    background:#020617ee;
+    color:white;
+    box-shadow:0 15px 40px #0008;
+
+    opacity:0;
+    pointer-events:none;
+
+    transform:translate(-50%,20px);
+    transition:.2s;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
 @media(max-width:520px){
 
     .app{
         width:94vw;
-        padding-top:14px;
+        padding-top:12px;
     }
 
     .panel{
         padding:17px;
-        border-radius:21px;
     }
 
     .settingsGrid{
         grid-template-columns:1fr;
-    }
-
-    .gameHeader{
-        grid-template-columns:1fr auto 1fr;
     }
 
     .playerCard{
@@ -643,389 +642,410 @@ button{
 
 <div class="app">
 
-    <div class="topbar">
+<div class="topbar">
 
-        <div class="logo">
-            <span class="logoDot"></span>
-            Connect 4
-        </div>
-
-        <button
-            class="iconButton"
-            onclick="openSettings()"
-            aria-label="Settings"
-        >
-            ⚙️
-        </button>
-
+    <div class="logo">
+        <span class="logoDot"></span>
+        Connect 4
     </div>
 
-
-    <!-- HOME -->
-
-    <section id="homeScreen" class="screen">
-
-        <div class="hero">
-
-            <h1>CONNECT 4</h1>
-
-            <p>
-                Challenge your friends online.
-            </p>
-
-        </div>
-
-        <div class="panel">
-
-            <div class="menuButtons">
-
-                <button
-                    class="bigButton primary"
-                    onclick="showCreate()"
-                >
-                    🎮 Create Room
-                </button>
-
-                <button
-                    class="bigButton secondary"
-                    onclick="showJoin()"
-                >
-                    🔗 Join Room
-                </button>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- CREATE -->
-
-    <section id="createScreen" class="screen hidden">
-
-        <div class="panel">
-
-            <button
-                class="back"
-                onclick="goHome()"
-            >
-                ← Back
-            </button>
-
-            <h2>Create Room</h2>
-
-            <p style="color:var(--muted)">
-                Choose your game rules.
-            </p>
-
-            <div class="settingsGrid">
-
-                <div class="setting">
-
-                    <label>BOARD WIDTH</label>
-
-                    <select
-                        id="createCols"
-                        class="select"
-                    >
-                        <option value="4">4 columns</option>
-                        <option value="5">5 columns</option>
-                        <option value="6">6 columns</option>
-                        <option value="7" selected>7 columns</option>
-                        <option value="8">8 columns</option>
-                        <option value="9">9 columns</option>
-                        <option value="10">10 columns</option>
-                    </select>
-
-                </div>
-
-                <div class="setting">
-
-                    <label>BOARD HEIGHT</label>
-
-                    <select
-                        id="createRows"
-                        class="select"
-                    >
-                        <option value="4">4 rows</option>
-                        <option value="5">5 rows</option>
-                        <option value="6" selected>6 rows</option>
-                        <option value="7">7 rows</option>
-                        <option value="8">8 rows</option>
-                        <option value="9">9 rows</option>
-                    </select>
-
-                </div>
-
-                <div class="setting">
-
-                    <label>ROWS TO WIN</label>
-
-                    <select
-                        id="createWin"
-                        class="select"
-                    >
-                    </select>
-
-                </div>
-
-            </div>
-
-            <div class="divider"></div>
-
-            <p class="formTitle">Theme</p>
-
-            <div class="themeGrid">
-
-                <button
-                    class="themeOption theme-indigo"
-                    data-theme="indigo"
-                    onclick="chooseTheme('indigo')"
-                >
-                    🌌 Indigo
-                </button>
-
-                <button
-                    class="themeOption theme-sunset"
-                    data-theme="sunset"
-                    onclick="chooseTheme('sunset')"
-                >
-                    🌅 Sunset
-                </button>
-
-                <button
-                    class="themeOption theme-forest"
-                    data-theme="forest"
-                    onclick="chooseTheme('forest')"
-                >
-                    🌲 Forest
-                </button>
-
-                <button
-                    class="themeOption theme-ice"
-                    data-theme="ice"
-                    onclick="chooseTheme('ice')"
-                >
-                    ❄️ Ice
-                </button>
-
-                <button
-                    class="themeOption theme-candy"
-                    data-theme="candy"
-                    onclick="chooseTheme('candy')"
-                >
-                    🍬 Candy
-                </button>
-
-                <button
-                    class="themeOption theme-mono"
-                    data-theme="mono"
-                    onclick="chooseTheme('mono')"
-                >
-                    🖤 Mono
-                </button>
-
-            </div>
-
-            <div class="divider"></div>
-
-            <button
-                class="bigButton primary"
-                onclick="createRoom()"
-            >
-                Create Room
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- JOIN -->
-
-    <section id="joinScreen" class="screen hidden">
-
-        <div class="panel">
-
-            <button
-                class="back"
-                onclick="goHome()"
-            >
-                ← Back
-            </button>
-
-            <h2>Join Room</h2>
-
-            <p style="color:var(--muted)">
-                Enter your friend's room code.
-            </p>
-
-            <input
-                id="joinCode"
-                class="input codeInput"
-                maxlength="6"
-                autocomplete="off"
-                placeholder="ABC123"
-            >
-
-            <br><br>
-
-            <button
-                class="bigButton primary"
-                onclick="joinRoom()"
-            >
-                Join Game
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- ROOM -->
-
-    <section id="roomScreen" class="screen hidden">
-
-        <div class="panel">
-
-            <p
-                style="
-                text-align:center;
-                color:var(--muted);
-                margin-bottom:0
-                "
-            >
-                Your room code
-            </p>
-
-            <div
-                id="roomCode"
-                class="roomCode"
-            >
-                ------
-            </div>
-
-            <button
-                class="copyButton"
-                onclick="copyRoomCode()"
-            >
-                📋 Copy Room Code
-            </button>
-
-            <p
-                id="roomStatus"
-                class="roomHint"
-            >
-                Waiting for your opponent...
-            </p>
-
-            <div class="divider"></div>
-
-            <div
-                id="hostSettingsSummary"
-                style="
-                text-align:center;
-                color:var(--muted);
-                font-size:14px
-                "
-            ></div>
-
-            <br>
-
-            <button
-                class="bigButton secondary"
-                onclick="cancelRoom()"
-            >
-                Cancel
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- GAME -->
-
-    <section id="gameScreen" class="screen hidden">
-
-        <div class="gameHeader">
-
-            <div class="playerCard">
-
-                <span
-                    class="playerPiece red"
-                ></span>
-
-                <span class="playerName">
-                    Red
-                </span>
-
-            </div>
-
-            <div class="vs">VS</div>
-
-            <div class="playerCard right">
-
-                <span class="playerName">
-                    Yellow
-                </span>
-
-                <span
-                    class="playerPiece yellow"
-                ></span>
-
-            </div>
-
-        </div>
-
-        <div
-            id="gameStatus"
-            class="status"
-        >
-            Your turn
-        </div>
-
-        <div
-            id="connectionStatus"
-            class="connection"
-        >
-            🟢 Connected P2P
-        </div>
-
-        <div class="boardWrap">
-
-            <div
-                id="board"
-                class="board"
-            ></div>
-
-        </div>
-
-        <div class="gameActions">
-
-            <button
-                class="smallButton"
-                onclick="requestRematch()"
-            >
-                🔄 Rematch
-            </button>
-
-            <button
-                class="smallButton"
-                onclick="leaveGame()"
-            >
-                🚪 Leave
-            </button>
-
-        </div>
-
-    </section>
+    <button
+        class="iconButton"
+        onclick="openSettings()"
+    >
+        ⚙️
+    </button>
 
 </div>
 
 
-<!-- SETTINGS MODAL -->
+<!-- HOME -->
+
+<section
+    id="homeScreen"
+    class="screen"
+>
+
+    <div class="hero">
+
+        <h1>CONNECT 4</h1>
+
+        <p>
+            Play with friends anywhere.
+        </p>
+
+    </div>
+
+    <div class="panel">
+
+        <div class="menuButtons">
+
+            <button
+                class="bigButton primary"
+                onclick="showCreate()"
+            >
+                🎮 Create Room
+            </button>
+
+            <button
+                class="bigButton secondary"
+                onclick="showJoin()"
+            >
+                🔗 Join Room
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CREATE -->
+
+<section
+    id="createScreen"
+    class="screen hidden"
+>
+
+<div class="panel">
+
+    <button
+        class="back"
+        onclick="goHome()"
+    >
+        ← Back
+    </button>
+
+    <h2>Create Room</h2>
+
+    <p style="color:var(--muted)">
+        Choose the rules for your game.
+    </p>
+
+    <div class="settingsGrid">
+
+        <div class="setting">
+
+            <label>BOARD WIDTH</label>
+
+            <select
+                id="createCols"
+                class="select"
+            >
+                <option value="4">4 columns</option>
+                <option value="5">5 columns</option>
+                <option value="6">6 columns</option>
+                <option value="7" selected>
+                    7 columns
+                </option>
+                <option value="8">8 columns</option>
+                <option value="9">9 columns</option>
+                <option value="10">10 columns</option>
+            </select>
+
+        </div>
+
+        <div class="setting">
+
+            <label>BOARD HEIGHT</label>
+
+            <select
+                id="createRows"
+                class="select"
+            >
+                <option value="4">4 rows</option>
+                <option value="5">5 rows</option>
+                <option value="6" selected>
+                    6 rows
+                </option>
+                <option value="7">7 rows</option>
+                <option value="8">8 rows</option>
+                <option value="9">9 rows</option>
+            </select>
+
+        </div>
+
+        <div class="setting">
+
+            <label>ROWS TO WIN</label>
+
+            <select
+                id="createWin"
+                class="select"
+            ></select>
+
+        </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <p style="font-weight:800">
+        Theme
+    </p>
+
+    <div class="themeGrid">
+
+        <button
+            class="themeOption theme-indigo"
+            data-theme="indigo"
+            onclick="chooseTheme('indigo')"
+        >
+            🌌 Indigo
+        </button>
+
+        <button
+            class="themeOption theme-sunset"
+            data-theme="sunset"
+            onclick="chooseTheme('sunset')"
+        >
+            🌅 Sunset
+        </button>
+
+        <button
+            class="themeOption theme-forest"
+            data-theme="forest"
+            onclick="chooseTheme('forest')"
+        >
+            🌲 Forest
+        </button>
+
+        <button
+            class="themeOption theme-ice"
+            data-theme="ice"
+            onclick="chooseTheme('ice')"
+        >
+            ❄️ Ice
+        </button>
+
+        <button
+            class="themeOption theme-candy"
+            data-theme="candy"
+            onclick="chooseTheme('candy')"
+        >
+            🍬 Candy
+        </button>
+
+        <button
+            class="themeOption theme-mono"
+            data-theme="mono"
+            onclick="chooseTheme('mono')"
+        >
+            🖤 Mono
+        </button>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <button
+        class="bigButton primary"
+        onclick="createRoom()"
+    >
+        Create Room
+    </button>
+
+</div>
+
+</section>
+
+
+<!-- JOIN -->
+
+<section
+    id="joinScreen"
+    class="screen hidden"
+>
+
+<div class="panel">
+
+    <button
+        class="back"
+        onclick="goHome()"
+    >
+        ← Back
+    </button>
+
+    <h2>Join Room</h2>
+
+    <p style="color:var(--muted)">
+        Enter your friend's room code.
+    </p>
+
+    <input
+        id="joinCode"
+        class="input codeInput"
+        maxlength="6"
+        autocomplete="off"
+        placeholder="ABC123"
+    >
+
+    <br><br>
+
+    <button
+        class="bigButton primary"
+        onclick="joinRoom()"
+    >
+        Join Game
+    </button>
+
+</div>
+
+</section>
+
+
+<!-- ROOM -->
+
+<section
+    id="roomScreen"
+    class="screen hidden"
+>
+
+<div class="panel">
+
+    <p
+        style="
+        text-align:center;
+        color:var(--muted);
+        margin-bottom:0
+        "
+    >
+        Your room code
+    </p>
+
+    <div
+        id="roomCode"
+        class="roomCode"
+    >
+        ------
+    </div>
+
+    <button
+        class="copyButton"
+        onclick="copyRoomCode()"
+    >
+        📋 Copy Room Code
+    </button>
+
+    <p
+        id="roomStatus"
+        class="roomHint"
+    >
+        Waiting for your opponent...
+    </p>
+
+    <div class="divider"></div>
+
+    <div
+        id="hostSettingsSummary"
+        style="
+        text-align:center;
+        color:var(--muted);
+        font-size:14px
+        "
+    ></div>
+
+    <br>
+
+    <button
+        class="bigButton secondary"
+        onclick="cancelRoom()"
+    >
+        Cancel
+    </button>
+
+</div>
+
+</section>
+
+
+<!-- GAME -->
+
+<section
+    id="gameScreen"
+    class="screen hidden"
+>
+
+<div class="gameHeader">
+
+    <div class="playerCard">
+
+        <span
+            class="playerPiece red"
+        ></span>
+
+        <span class="playerName">
+            Red
+        </span>
+
+    </div>
+
+    <div class="vs">
+        VS
+    </div>
+
+    <div class="playerCard right">
+
+        <span class="playerName">
+            Yellow
+        </span>
+
+        <span
+            class="playerPiece yellow"
+        ></span>
+
+    </div>
+
+</div>
+
+
+<div
+    id="gameStatus"
+    class="status"
+>
+    Your turn
+</div>
+
+
+<div
+    id="connectionStatus"
+    class="connection"
+>
+    🟢 Connected P2P
+</div>
+
+
+<div
+    id="board"
+    class="board"
+></div>
+
+
+<div class="gameActions">
+
+    <button
+        class="smallButton"
+        onclick="requestRematch()"
+    >
+        🔄 Rematch
+    </button>
+
+    <button
+        class="smallButton"
+        onclick="leaveGame()"
+    >
+        🚪 Leave
+    </button>
+
+</div>
+
+</section>
+
+</div>
+
+
+<!-- SETTINGS -->
 
 <div
     id="settingsModal"
@@ -1033,112 +1053,112 @@ button{
     onclick="closeSettingsOutside(event)"
 >
 
-    <div class="modalCard">
+<div class="modalCard">
 
-        <div class="modalHeader">
+    <div class="modalHeader">
 
-            <h2>Settings</h2>
+        <h2>Settings</h2>
+
+        <button
+            class="close"
+            onclick="closeSettings()"
+        >
+            ✕
+        </button>
+
+    </div>
+
+
+    <div class="settingSection">
+
+        <h3>Theme</h3>
+
+        <div class="themeGrid">
 
             <button
-                class="close"
-                onclick="closeSettings()"
+                class="themeOption theme-indigo"
+                data-theme="indigo"
+                onclick="chooseTheme('indigo')"
             >
-                ✕
+                🌌 Indigo
+            </button>
+
+            <button
+                class="themeOption theme-sunset"
+                data-theme="sunset"
+                onclick="chooseTheme('sunset')"
+            >
+                🌅 Sunset
+            </button>
+
+            <button
+                class="themeOption theme-forest"
+                data-theme="forest"
+                onclick="chooseTheme('forest')"
+            >
+                🌲 Forest
+            </button>
+
+            <button
+                class="themeOption theme-ice"
+                data-theme="ice"
+                onclick="chooseTheme('ice')"
+            >
+                ❄️ Ice
+            </button>
+
+            <button
+                class="themeOption theme-candy"
+                data-theme="candy"
+                onclick="chooseTheme('candy')"
+            >
+                🍬 Candy
+            </button>
+
+            <button
+                class="themeOption theme-mono"
+                data-theme="mono"
+                onclick="chooseTheme('mono')"
+            >
+                🖤 Mono
             </button>
 
         </div>
 
-        <div class="settingSection">
+    </div>
 
-            <h3>Theme</h3>
 
-            <div class="themeGrid">
+    <div class="settingSection">
 
-                <button
-                    class="themeOption theme-indigo"
-                    data-theme="indigo"
-                    onclick="chooseTheme('indigo')"
-                >
-                    🌌 Indigo
-                </button>
+        <h3>Gameplay</h3>
 
-                <button
-                    class="themeOption theme-sunset"
-                    data-theme="sunset"
-                    onclick="chooseTheme('sunset')"
-                >
-                    🌅 Sunset
-                </button>
+        <div class="checkboxRow">
 
-                <button
-                    class="themeOption theme-forest"
-                    data-theme="forest"
-                    onclick="chooseTheme('forest')"
-                >
-                    🌲 Forest
-                </button>
+            <span>
+                Drop animations
+            </span>
 
-                <button
-                    class="themeOption theme-ice"
-                    data-theme="ice"
-                    onclick="chooseTheme('ice')"
-                >
-                    ❄️ Ice
-                </button>
-
-                <button
-                    class="themeOption theme-candy"
-                    data-theme="candy"
-                    onclick="chooseTheme('candy')"
-                >
-                    🍬 Candy
-                </button>
-
-                <button
-                    class="themeOption theme-mono"
-                    data-theme="mono"
-                    onclick="chooseTheme('mono')"
-                >
-                    🖤 Mono
-                </button>
-
-            </div>
+            <input
+                id="animationToggle"
+                type="checkbox"
+                checked
+                onchange="saveSettings()"
+            >
 
         </div>
 
-        <div class="settingSection">
+        <div class="checkboxRow">
 
-            <h3>Gameplay</h3>
+            <span>
+                Sound effects
+            </span>
 
-            <div class="checkboxRow">
-
-                <span>
-                    Drop animations
-                </span>
-
-                <input
-                    id="animationToggle"
-                    type="checkbox"
-                    checked
-                    onchange="saveSettings()"
-                >
-
-            </div>
-
-            <div class="checkboxRow">
-
-                <span>
-                    Sound effects
-                </span>
-
-                <input
-                    id="soundToggle"
-                    type="checkbox"
-                    checked
-                    onchange="saveSettings()"
-                >
-
-            </div>
+            <input
+                id="soundToggle"
+                type="checkbox"
+                checked
+                onchange="saveSettings()"
+            >
 
         </div>
 
@@ -1146,32 +1166,33 @@ button{
 
 </div>
 
+</div>
+
 
 <div
     id="toast"
     class="toast"
->
-</div>
+></div>
 
 
 <script>
 
 /* =========================================================
-   CONNECT 4 ONLINE
-   PeerJS + WebRTC
-   No Node server required
+   CONNECT 4
+   P2P MULTIPLAYER USING PEERJS + WEBRTC
+
+   NO NODE SERVER REQUIRED
 ========================================================= */
 
 
 /* -------------------------
-   STATE
+   GAME STATE
 ------------------------- */
 
 let peer = null;
 let connection = null;
 
 let isHost = false;
-
 let myColor = null;
 
 let roomCodeValue = null;
@@ -1188,6 +1209,11 @@ let gameOver = false;
 
 let winningCells = [];
 
+
+/* -------------------------
+   LOCAL SETTINGS
+------------------------- */
+
 let selectedTheme =
     localStorage.getItem("c4-theme")
     || "indigo";
@@ -1202,42 +1228,42 @@ let soundEnabled =
 
 
 /* -------------------------
-   THEME
+   THEMES
 ------------------------- */
 
 const themes = {
 
-    indigo: {
+    indigo:{
         accent:"#6366f1",
         accent2:"#818cf8",
         board:"#2563eb"
     },
 
-    sunset: {
+    sunset:{
         accent:"#f43f5e",
         accent2:"#f97316",
         board:"#e11d48"
     },
 
-    forest: {
+    forest:{
         accent:"#16a34a",
         accent2:"#14b8a6",
         board:"#15803d"
     },
 
-    ice: {
+    ice:{
         accent:"#0284c7",
         accent2:"#6366f1",
         board:"#0369a1"
     },
 
-    candy: {
+    candy:{
         accent:"#ec4899",
         accent2:"#a855f7",
         board:"#9333ea"
     },
 
-    mono: {
+    mono:{
         accent:"#64748b",
         accent2:"#94a3b8",
         board:"#475569"
@@ -1401,9 +1427,13 @@ function hideScreens(){
 
     document
         .querySelectorAll(".screen")
-        .forEach(screen =>
-            screen.classList.add("hidden")
-        );
+        .forEach(screen => {
+
+            screen.classList.add(
+                "hidden"
+            );
+
+        });
 
 }
 
@@ -1500,24 +1530,34 @@ function updateWinOptions(){
     ){
 
         const option =
-            document.createElement("option");
+            document.createElement(
+                "option"
+            );
 
         option.value = i;
 
         option.textContent =
             `${i} in a row`;
 
-        select.appendChild(option);
+        select.appendChild(
+            option
+        );
 
     }
 
-    if(old >= 3 && old <= max){
+    if(
+        old >= 3 &&
+        old <= max
+    ){
 
         select.value = old;
 
     }else{
 
-        select.value = max >= 4 ? 4 : 3;
+        select.value =
+            max >= 4
+                ? 4
+                : 3;
 
     }
 
@@ -1559,7 +1599,8 @@ function generateRoomCode(){
         result +=
             chars[
                 Math.floor(
-                    Math.random()*chars.length
+                    Math.random() *
+                    chars.length
                 )
             ];
 
@@ -1623,36 +1664,36 @@ function createRoom(){
         .textContent =
             `${COLS} × ${ROWS} board • ${WIN} in a row`;
 
+
     /*
-      PeerJS room ID is the room code.
-      Prefix prevents collisions with unrelated
-      PeerJS users using the same numeric/string ID.
+      PeerJS uses the room code as the
+      host's peer ID.
     */
 
-    const peerId =
-        "c4-" + roomCodeValue;
-
     peer =
-        new Peer(peerId,{
+        new Peer(
+            "c4-" + roomCodeValue,
+            {
+                debug:0,
 
-            debug:0,
-
-            config:{
-                iceServers:[
-                    {
-                        urls:
-                        "stun:stun.l.google.com:19302"
-                    }
-                ]
+                config:{
+                    iceServers:[
+                        {
+                            urls:
+                            "stun:stun.l.google.com:19302"
+                        }
+                    ]
+                }
             }
+        );
 
-        });
 
-
-    peer.on("open",id => {
+    peer.on("open",() => {
 
         document
-            .getElementById("roomStatus")
+            .getElementById(
+                "roomStatus"
+            )
             .textContent =
                 "🟢 Room ready! Send the code to your friend.";
 
@@ -1685,15 +1726,9 @@ function createRoom(){
             "unavailable-id"
         ){
 
-            roomCodeValue =
-                generateRoomCode();
-
-            document
-                .getElementById("roomCode")
-                .textContent =
-                    roomCodeValue;
-
-            peer.destroy();
+            try{
+                peer.destroy();
+            }catch{}
 
             setTimeout(
                 createRoom,
@@ -1705,13 +1740,11 @@ function createRoom(){
         }
 
         document
-            .getElementById("roomStatus")
+            .getElementById(
+                "roomStatus"
+            )
             .textContent =
                 "❌ Could not create room.";
-
-        showToast(
-            "Could not create room."
-        );
 
     });
 
@@ -1733,7 +1766,9 @@ function joinRoom(){
             .trim()
             .toUpperCase();
 
-    if(!/^[A-Z0-9]{6}$/.test(code)){
+    if(
+        !/^[A-Z0-9]{6}$/.test(code)
+    ){
 
         showToast(
             "Enter a valid 6-character code."
@@ -1761,21 +1796,23 @@ function joinRoom(){
         .textContent =
             "Connecting to host...";
 
+
     peer =
-        new Peer(undefined,{
+        new Peer(
+            undefined,
+            {
+                debug:0,
 
-            debug:0,
-
-            config:{
-                iceServers:[
-                    {
-                        urls:
-                        "stun:stun.l.google.com:19302"
-                    }
-                ]
+                config:{
+                    iceServers:[
+                        {
+                            urls:
+                            "stun:stun.l.google.com:19302"
+                        }
+                    ]
+                }
             }
-
-        });
+        );
 
 
     peer.on("open",() => {
@@ -1798,7 +1835,9 @@ function joinRoom(){
         console.error(error);
 
         document
-            .getElementById("roomStatus")
+            .getElementById(
+                "roomStatus"
+            )
             .textContent =
                 "❌ Room not found or connection failed.";
 
@@ -1924,10 +1963,6 @@ function handleMessage(message){
         return;
 
 
-    /*
-      Host sends complete settings/state.
-    */
-
     if(
         message.type ===
         "settings"
@@ -1993,24 +2028,6 @@ function handleMessage(message){
 
     if(
         message.type ===
-        "rematch"
-    ){
-
-        startNewGame();
-
-        if(isHost){
-
-            sendState();
-
-        }
-
-        return;
-
-    }
-
-
-    if(
-        message.type ===
         "requestRematch"
     ){
 
@@ -2047,7 +2064,7 @@ function handleMessage(message){
 
 
 /* -------------------------
-   START GAME
+   START NEW GAME
 ------------------------- */
 
 function startNewGame(){
@@ -2088,7 +2105,8 @@ function sendState(){
 
         gameOver:gameOver,
 
-        winningCells:winningCells
+        winningCells:
+            winningCells
 
     });
 
@@ -2376,25 +2394,25 @@ function findWinningCells(
 
 
 /* -------------------------
-   RENDER BOARD
+   RENDER
 ------------------------- */
 
 function renderBoard(){
 
-    const boardElement =
+    const element =
         document.getElementById(
             "board"
         );
 
-    boardElement.innerHTML = "";
+    element.innerHTML = "";
 
-    boardElement.style
+    element.style
         .setProperty(
             "--cols",
             COLS
         );
 
-    boardElement.style
+    element.style
         .setProperty(
             "--rows",
             ROWS
@@ -2421,13 +2439,15 @@ function renderBoard(){
             cell.className = "cell";
 
 
-            if(
+            const isWinner =
                 winningCells.some(
                     ([r,c]) =>
                         r === row &&
                         c === col
-                )
-            ){
+                );
+
+
+            if(isWinner){
 
                 cell.classList.add(
                     "winner"
@@ -2471,7 +2491,7 @@ function renderBoard(){
             };
 
 
-            boardElement.appendChild(
+            element.appendChild(
                 cell
             );
 
@@ -2496,18 +2516,19 @@ function updateStatus(){
 
     if(gameOver){
 
-        const winner =
-            winningCells.length
-                ? board[
-                    winningCells[0][0]
-                ][
-                    winningCells[0][1]
-                ]
-                : (
-                    turn === "red"
-                        ? "yellow"
-                        : "red"
-                );
+        let winner = null;
+
+        if(winningCells.length){
+
+            const [
+                row,
+                col
+            ] = winningCells[0];
+
+            winner =
+                board[row][col];
+
+        }
 
 
         if(winner === myColor){
@@ -2548,7 +2569,10 @@ function updateStatus(){
 
 function requestRematch(){
 
-    if(!connection || !connection.open){
+    if(
+        !connection ||
+        !connection.open
+    ){
 
         showToast(
             "Opponent isn't connected."
@@ -2568,7 +2592,9 @@ function requestRematch(){
     }else{
 
         send({
+
             type:"requestRematch"
+
         });
 
         showToast(
@@ -2586,13 +2612,9 @@ function requestRematch(){
 
 function leaveGame(){
 
-    if(connection){
-
-        send({
-            type:"hostLeft"
-        });
-
-    }
+    send({
+        type:"hostLeft"
+    });
 
     goHome();
 
@@ -2616,7 +2638,7 @@ function cancelRoom(){
     peer = null;
     connection = null;
 
-    goHome();
+    showScreen("homeScreen");
 
 }
 
@@ -2627,14 +2649,13 @@ function cancelRoom(){
 
 async function copyRoomCode(){
 
-    const code =
-        roomCodeValue;
-
     try{
 
         await navigator
             .clipboard
-            .writeText(code);
+            .writeText(
+                roomCodeValue
+            );
 
         showToast(
             "Room code copied!"
@@ -2643,7 +2664,7 @@ async function copyRoomCode(){
     }catch{
 
         showToast(
-            "Your room code is " + code
+            "Code: " + roomCodeValue
         );
 
     }
@@ -2666,14 +2687,23 @@ function showToast(text){
 
     toast.textContent = text;
 
-    toast.classList.add("show");
+    toast.classList.add(
+        "show"
+    );
 
-    clearTimeout(toastTimer);
+    clearTimeout(
+        toastTimer
+    );
 
     toastTimer =
         setTimeout(
-            () =>
-                toast.classList.remove("show"),
+            () => {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
             2200
         );
 
@@ -2691,6 +2721,7 @@ function playSound(type){
 
     if(!soundEnabled)
         return;
+
 
     try{
 
@@ -2719,15 +2750,10 @@ function playSound(type){
         );
 
 
-        if(type === "win"){
-
-            osc.frequency.value = 620;
-
-        }else{
-
-            osc.frequency.value = 320;
-
-        }
+        osc.frequency.value =
+            type === "win"
+                ? 620
+                : 320;
 
 
         gain.gain.setValueAtTime(
