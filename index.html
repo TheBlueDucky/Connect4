@@ -971,1541 +971,500 @@ h2{
 <div id="toast" class="toast"></div>
 
 
-<!-- =====================================================
-     IMPORTANT:
-     THIS IS THE NEW NETWORKING SYSTEM.
-     NO PEERJS.
-     ===================================================== -->
+<script>
 
-<script type="module">
-
-import { joinRoom }
-    from "https://esm.run/trystero@0.25.3";
-
-
-/* =====================================================
-   GLOBALS
-===================================================== */
+const APP_ID = "connect4-online-tomer-v3";
 
 let room = null;
 let action = null;
-
 let isHost = false;
 let myColor = "red";
-
 let roomCode = "";
-
 let ROWS = 6;
 let COLS = 7;
 let WIN = 4;
-
 let board = [];
 let turn = "red";
-
 let gameOver = false;
 let winningCells = [];
-
 let connected = false;
-
 let reconnectTimer = null;
 
-
-/*
-   Unique app namespace.
-
-   Everyone using this HTML is on the same game network,
-   but rooms are separated by roomCode.
-*/
-const APP_ID =
-    "connect4-online-tomer-v3";
-
-
-/* =====================================================
-   THEME
-===================================================== */
-
-let theme =
-    localStorage.getItem("c4-theme") ||
-    "indigo";
-
-let animations =
-    localStorage.getItem("c4-animations") !== "false";
-
-let sounds =
-    localStorage.getItem("c4-sounds") !== "false";
-
+// Theme
+let theme = localStorage.getItem("c4-theme") || "indigo";
+let animations = localStorage.getItem("c4-animations") !== "false";
+let sounds = localStorage.getItem("c4-sounds") !== "false";
 
 const themeData = {
-
-indigo:{
-    accent:"#6366f1",
-    accent2:"#8b5cf6",
-    board:"#2563eb"
-},
-
-sunset:{
-    accent:"#f43f5e",
-    accent2:"#f97316",
-    board:"#e11d48"
-},
-
-forest:{
-    accent:"#16a34a",
-    accent2:"#14b8a6",
-    board:"#15803d"
-},
-
-ice:{
-    accent:"#0284c7",
-    accent2:"#6366f1",
-    board:"#0369a1"
-},
-
-candy:{
-    accent:"#ec4899",
-    accent2:"#a855f7",
-    board:"#9333ea"
-},
-
-mono:{
-    accent:"#64748b",
-    accent2:"#94a3b8",
-    board:"#475569"
-}
-
+  indigo: { accent: "#6366f1", accent2: "#8b5cf6", board: "#2563eb" },
+  sunset: { accent: "#f43f5e", accent2: "#f97316", board: "#e11d48" },
+  forest: { accent: "#16a34a", accent2: "#14b8a6", board: "#15803d" },
+  ice: { accent: "#0284c7", accent2: "#6366f1", board: "#0369a1" },
+  candy: { accent: "#ec4899", accent2: "#a855f7", board: "#9333ea" },
+  mono: { accent: "#64748b", accent2: "#94a3b8", board: "#475569" }
 };
 
-
-window.setTheme = function(name){
-
-const t =
-    themeData[name] ||
-    themeData.indigo;
-
-theme = name;
-
-document.documentElement.style
-    .setProperty("--accent",t.accent);
-
-document.documentElement.style
-    .setProperty("--accent2",t.accent2);
-
-document.documentElement.style
-    .setProperty("--board",t.board);
-
-localStorage.setItem(
-    "c4-theme",
-    name
-);
-
-document
-    .querySelectorAll(".theme")
-    .forEach(x =>
-        x.classList.toggle(
-            "active",
-            x.dataset.theme === name
-        )
-    );
-
+window.setTheme = function(name) {
+  const t = themeData[name] || themeData.indigo;
+  theme = name;
+  document.documentElement.style.setProperty("--accent", t.accent);
+  document.documentElement.style.setProperty("--accent2", t.accent2);
+  document.documentElement.style.setProperty("--board", t.board);
+  localStorage.setItem("c4-theme", name);
+  document.querySelectorAll(".theme").forEach(x =>
+    x.classList.toggle("active", x.dataset.theme === name)
+  );
 };
 
+window.openSettings = () => document.getElementById("settingsModal").classList.remove("hidden");
+window.closeSettings = () => document.getElementById("settingsModal").classList.add("hidden");
+window.modalOutside = (e) => { if(e.target.id === "settingsModal") closeSettings(); };
 
-window.openSettings = function(){
+function hideScreens() {
+  document.querySelectorAll(".screen").forEach(x => x.classList.add("hidden"));
+}
 
-document
-    .getElementById("settingsModal")
-    .classList.remove("hidden");
+function screen(id) {
+  hideScreens();
+  document.getElementById(id).classList.remove("hidden");
+}
 
+window.goHome = () => { leaveNetwork(); screen("home"); };
+window.showCreate = () => { updateWinOptions(); screen("create"); };
+window.showJoin = () => {
+  screen("join");
+  setTimeout(() => document.getElementById("joinCode").focus(), 100);
 };
 
+function updateWinOptions() {
+  const rows = Number(document.getElementById("rows").value);
+  const cols = Number(document.getElementById("cols").value);
+  const max = Math.min(rows, cols);
+  const select = document.getElementById("win");
+  const old = Number(select.value);
+  select.innerHTML = "";
+  for(let i = 3; i <= max; i++) {
+    const option = document.createElement("option");
+    option.value = i;
+    option.textContent = `${i} in a row`;
+    select.appendChild(option);
+  }
+  if(old >= 3 && old <= max) select.value = old;
+  else select.value = max >= 4 ? 4 : 3;
+}
 
-window.closeSettings = function(){
+document.getElementById("rows").addEventListener("change", updateWinOptions);
+document.getElementById("cols").addEventListener("change", updateWinOptions);
 
-document
-    .getElementById("settingsModal")
-    .classList.add("hidden");
+function makeCode() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = new Uint32Array(8);
+  crypto.getRandomValues(bytes);
+  let result = "";
+  for(let i = 0; i < 8; i++) result += chars[bytes[i] % chars.length];
+  return result;
+}
 
+window.createRoom = () => {
+  ROWS = Number(document.getElementById("rows").value);
+  COLS = Number(document.getElementById("cols").value);
+  WIN = Number(document.getElementById("win").value);
+  isHost = true;
+  myColor = "red";
+  roomCode = makeCode();
+  showWaiting();
+  connectToNetwork();
 };
 
-
-window.modalOutside = function(e){
-
-if(e.target.id === "settingsModal")
-    closeSettings();
-
+window.joinRoom = () => {
+  const input = document.getElementById("joinCode");
+  const error = document.getElementById("joinError");
+  const code = input.value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+  input.value = code;
+  error.textContent = "";
+  
+  if(!/^[A-Z0-9]{8}$/.test(code)) {
+    error.textContent = "Enter exactly 8 letters/numbers.";
+    return;
+  }
+  
+  isHost = false;
+  myColor = "yellow";
+  roomCode = code;
+  showWaiting();
+  connectToNetwork();
 };
 
-
-/* =====================================================
-   SCREEN
-===================================================== */
-
-function hideScreens(){
-
-document
-    .querySelectorAll(".screen")
-    .forEach(x =>
-        x.classList.add("hidden")
-    );
-
+function showWaiting() {
+  screen("waiting");
+  document.getElementById("roomCode").textContent = roomCode;
+  document.getElementById("waitingText").textContent = isHost
+    ? "🟢 Room created! Send the code to your friend."
+    : "🔎 Looking for the host...";
+  document.getElementById("waitingError").textContent = "";
+  document.getElementById("roomRules").textContent = isHost
+    ? `${COLS} × ${ROWS} • ${WIN} in a row`
+    : "Waiting for the host to send the game settings...";
 }
 
-
-function screen(id){
-
-hideScreens();
-
-document
-    .getElementById(id)
-    .classList.remove("hidden");
-
-}
-
-
-window.goHome = function(){
-
-leaveNetwork();
-
-screen("home");
-
-};
-
-
-window.showCreate = function(){
-
-updateWinOptions();
-
-screen("create");
-
-};
-
-
-window.showJoin = function(){
-
-screen("join");
-
-setTimeout(() =>
-    document
-        .getElementById("joinCode")
-        .focus(),
-    100
-);
-
-};
-
-
-/* =====================================================
-   WIN OPTIONS
-===================================================== */
-
-function updateWinOptions(){
-
-const rows =
-    Number(
-        document.getElementById("rows").value
-    );
-
-const cols =
-    Number(
-        document.getElementById("cols").value
-    );
-
-const max =
-    Math.min(rows,cols);
-
-const select =
-    document.getElementById("win");
-
-const old =
-    Number(select.value);
-
-select.innerHTML = "";
-
-for(let i=3;i<=max;i++){
-
-const option =
-    document.createElement("option");
-
-option.value = i;
-
-option.textContent =
-    `${i} in a row`;
-
-select.appendChild(option);
-
-}
-
-if(old >= 3 && old <= max)
-    select.value = old;
-else
-    select.value = max >= 4 ? 4 : 3;
-
-}
-
-
-document
-    .getElementById("rows")
-    .addEventListener(
-        "change",
-        updateWinOptions
-    );
-
-document
-    .getElementById("cols")
-    .addEventListener(
-        "change",
-        updateWinOptions
-    );
-
-
-/* =====================================================
-   ROOM CODE
-===================================================== */
-
-function makeCode(){
-
-const chars =
-    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-const bytes =
-    new Uint32Array(8);
-
-crypto
-    .getRandomValues(bytes);
-
-let result = "";
-
-for(let i=0;i<8;i++){
-
-result +=
-    chars[
-        bytes[i] %
-        chars.length
-    ];
-
-}
-
-return result;
-
-}
-
-
-/* =====================================================
-   CREATE
-===================================================== */
-
-window.createRoom = function(){
-
-ROWS =
-    Number(
-        document.getElementById("rows").value
-    );
-
-COLS =
-    Number(
-        document.getElementById("cols").value
-    );
-
-WIN =
-    Number(
-        document.getElementById("win").value
-    );
-
-isHost = true;
-
-myColor = "red";
-
-roomCode = makeCode();
-
-showWaiting();
-
-connectToTrystero();
-
-};
-
-
-/* =====================================================
-   JOIN
-===================================================== */
-
-window.joinRoom = function(){
-
-const input =
-    document.getElementById("joinCode");
-
-const error =
-    document.getElementById("joinError");
-
-const code =
-    input.value
-        .trim()
-        .toUpperCase()
-        .replace(/[^A-Z0-9]/g,"");
-
-input.value = code;
-
-error.textContent = "";
-
-if(!/^[A-Z0-9]{8}$/.test(code)){
-
-error.textContent =
-    "Enter exactly 8 letters/numbers.";
-
-return;
-
-}
-
-isHost = false;
-
-myColor = "yellow";
-
-roomCode = code;
-
-showWaiting();
-
-connectToTrystero();
-
-};
-
-
-/* =====================================================
-   WAITING
-===================================================== */
-
-function showWaiting(){
-
-screen("waiting");
-
-document
-    .getElementById("roomCode")
-    .textContent =
-        roomCode;
-
-document
-    .getElementById("waitingText")
-    .textContent =
-        isHost
-            ? "🟢 Room created! Send the code to your friend."
-            : "🔎 Looking for the host...";
-
-document
-    .getElementById("waitingError")
-    .textContent = "";
-
-document
-    .getElementById("roomRules")
-    .textContent =
-        isHost
-            ? `${COLS} × ${ROWS} • ${WIN} in a row`
-            : "Waiting for the host to send the game settings...";
-
-}
-
-
-/* =====================================================
-   TRYSTERO - FIXED
-===================================================== */
-
-function connectToTrystero(){
-
-connected = false;
-
-let connectionAttempted = false;
-
-try{
-
-room =
-    joinRoom(
-        {
-            appId:APP_ID,
-
-            /*
-               Encrypt the signaling information.
-               This password is identical for both clients.
-            */
-            password:
-                "connect4-online-public-v3"
-
-        },
-
-        roomCode,
-
-        {
-
-            /*
-               Increased timeout to allow more time
-               for peers to discover each other.
-            */
-            handshakeTimeoutMs:30000,
-
-            onError(error){
-
-                console.error(
-                    "TRYSTERO ERROR",
-                    error
-                );
-
-                if(!connectionAttempted){
-
-                    document
-                        .getElementById("waitingError")
-                        .textContent =
-                            "Connection failed. Check your internet and try again.";
-
-                    document
-                        .getElementById("waitingText")
-                        .textContent =
-                            "🔴 Could not connect.";
-
-                }
-
-            },
-
-            onJoinError(details){
-
-                console.error(
-                    "TRYSTERO JOIN ERROR",
-                    details
-                );
-
-                if(!connectionAttempted){
-
-                    document
-                        .getElementById("waitingError")
-                        .textContent =
-                            "Could not reach signaling server. Try creating a new room.";
-
-                    document
-                        .getElementById("waitingText")
-                        .textContent =
-                            "🔴 Connection failed.";
-
-                }
-
-            }
-
-        }
-    );
-
-if(!room){
-
-throw new Error(
-    "Failed to initialize room"
-);
-
-}
-
-/*
-   ONE action is used for all game messages.
-*/
-
-action =
-    room.makeAction("game-state");
-
-if(!action){
-
-throw new Error(
-    "Failed to create action"
-);
-
-}
-
-/*
-   Someone entered our room.
-*/
-
-room.onPeerJoin =
-    peerId => {
-
-        console.log(
-            "PEER JOINED:",
-            peerId
-        );
-
-        connectionAttempted = true;
-
-        connected = true;
-
-        clearTimeout(
-            reconnectTimer
-        );
-
-        document
-            .getElementById("waitingText")
-            .textContent =
-                "🟢 Opponent connected!";
-
-        document
-            .getElementById("connection")
-            .textContent =
-                "🟢 Connected P2P";
-
-        document
-            .getElementById("waitingError")
-            .textContent = "";
-
-        if(isHost){
-
-            startGame();
-
-            /*
-               Send the complete game state
-               to the new player.
-            */
-
-            send({
-                type:"start",
-
-                rows:ROWS,
-                cols:COLS,
-                win:WIN,
-
-                board:board,
-                turn:turn,
-
-                gameOver:false,
-                winningCells:[]
-            });
-
-        }
-
+// ===== NETWORK CONNECTION =====
+
+async function connectToNetwork() {
+  try {
+    console.log("Attempting to connect with code:", roomCode);
+    
+    // Dynamically import Trystero
+    const { joinRoom: trysteroJoinRoom } = await import("https://esm.run/trystero@0.25.3");
+    
+    room = trysteroJoinRoom({
+      appId: APP_ID,
+      password: "connect4-online-public-v3"
+    }, roomCode);
+    
+    if (!room) throw new Error("Failed to join room");
+    
+    action = room.makeAction("game-state");
+    if (!action) throw new Error("Failed to create action");
+    
+    console.log("Room created successfully, waiting for peer...");
+    
+    // Peer join
+    room.onPeerJoin = (peerId) => {
+      console.log("PEER JOINED:", peerId);
+      connected = true;
+      clearTimeout(reconnectTimer);
+      
+      document.getElementById("waitingText").textContent = "🟢 Opponent connected!";
+      document.getElementById("connection").textContent = "🟢 Connected";
+      document.getElementById("waitingError").textContent = "";
+      
+      if(isHost) {
+        startGame();
+        send({
+          type: "start",
+          rows: ROWS,
+          cols: COLS,
+          win: WIN,
+          board: board,
+          turn: turn,
+          gameOver: false,
+          winningCells: []
+        });
+      }
     };
-
-
-/*
-   Receive game messages.
-*/
-
-action.onMessage =
-    (message,{peerId}) => {
-
-        console.log(
-            "GAME MESSAGE",
-            message
-        );
-
-        handleMessage(message);
-
+    
+    // Message handler
+    action.onMessage = (message) => {
+      console.log("Message received:", message);
+      handleMessage(message);
     };
-
-
-/*
-   Opponent leaves.
-*/
-
-room.onPeerLeave =
-    peerId => {
-
-        console.log(
-            "PEER LEFT:",
-            peerId
-        );
-
-        connected = false;
-
-        document
-            .getElementById("connection")
-            .textContent =
-                "🔴 Opponent disconnected";
-
-        showToast(
-            "Opponent disconnected."
-        );
-
+    
+    // Peer leave
+    room.onPeerLeave = (peerId) => {
+      console.log("PEER LEFT");
+      connected = false;
+      document.getElementById("connection").textContent = "🔴 Opponent disconnected";
+      showToast("Opponent disconnected.");
     };
-
-
-/*
-   This timer exists specifically so you
-   NEVER get another 2-hour "Connecting..."
-   situation.
-*/
-
-reconnectTimer =
-    setTimeout(() => {
-
-        if(!connected && !connectionAttempted){
-
-            document
-                .getElementById("waitingText")
-                .textContent =
-                    "⚠️ No connection yet.";
-
-            document
-                .getElementById("waitingError")
-                .textContent =
-                    isHost
-                        ? "Make sure your friend has your room code and can access the internet."
-                        : "Double-check the room code and make sure the host is still waiting.";
-
-        }
-
-    },30000);
-
-
-}catch(error){
-
-console.error(
-    "TRYSTERO CONNECTION ERROR:",
-    error
-);
-
-document
-    .getElementById("waitingError")
-    .textContent =
-        "Could not initialize connection. " + (error.message || "Please try again.");
-
-document
-    .getElementById("waitingText")
-    .textContent =
-        "🔴 Connection error";
-
+    
+    // Timeout check
+    reconnectTimer = setTimeout(() => {
+      if (!connected) {
+        console.log("No peer joined after timeout");
+        document.getElementById("waitingText").textContent = "⚠️ Waiting for opponent...";
+        document.getElementById("waitingError").textContent = isHost
+          ? "Make sure your friend has the code and good internet."
+          : "Double-check the room code.";
+      }
+    }, 20000);
+    
+  } catch(error) {
+    console.error("Connection error:", error);
+    document.getElementById("waitingError").textContent = "Connection error: " + error.message;
+    document.getElementById("waitingText").textContent = "🔴 Failed";
+  }
 }
 
-}
-
-
-/* =====================================================
-   SEND
-===================================================== */
-
-function send(data){
-
-if(!action){
-
-console.warn(
-    "Action not ready, cannot send"
-);
-
-return;
-
-}
-
-try{
-
-action.send(data);
-
-}catch(error){
-
-console.error(
-    "SEND ERROR",
-    error
-);
-
-showToast(
-    "Failed to send move. Reconnecting..."
-);
-
-}
-
-}
-
-
-/* =====================================================
-   RECEIVE
-===================================================== */
-
-function handleMessage(message){
-
-if(!message)
+function send(data) {
+  if(!action) {
+    console.warn("Action not ready");
     return;
-
-
-if(message.type === "start"){
-
-ROWS =
-    Number(message.rows);
-
-COLS =
-    Number(message.cols);
-
-WIN =
-    Number(message.win);
-
-board =
-    message.board;
-
-turn =
-    message.turn;
-
-gameOver =
-    message.gameOver;
-
-winningCells =
-    message.winningCells || [];
-
-screen("game");
-
-render();
-
-updateStatus();
-
-return;
-
+  }
+  try {
+    action.send(data);
+  } catch(error) {
+    console.error("Send error:", error);
+  }
 }
 
-
-if(message.type === "state"){
-
-board =
-    message.board;
-
-turn =
-    message.turn;
-
-gameOver =
-    message.gameOver;
-
-winningCells =
-    message.winningCells || [];
-
-render();
-
-updateStatus();
-
-return;
-
-}
-
-
-if(message.type === "rematch"){
-
-if(isHost){
-
-startGame();
-
-sendState();
-
-}
-
-return;
-
-}
-
-}
-
-
-/* =====================================================
-   START GAME
-===================================================== */
-
-function startGame(){
-
-board =
-    Array.from(
-        {length:ROWS},
-        () =>
-            Array(COLS).fill(null)
-    );
-
-turn = "red";
-
-gameOver = false;
-
-winningCells = [];
-
-screen("game");
-
-render();
-
-updateStatus();
-
-}
-
-
-/* =====================================================
-   SEND STATE
-===================================================== */
-
-function sendState(){
-
-send({
-
-type:"state",
-
-board:board,
-
-turn:turn,
-
-gameOver:gameOver,
-
-winningCells:winningCells
-
-});
-
-}
-
-
-/* =====================================================
-   GAMEPLAY
-===================================================== */
-
-function findOpenRow(col){
-
-for(
-    let r=ROWS-1;
-    r>=0;
-    r--
-){
-
-if(board[r][col] === null)
-    return r;
-
-}
-
-return -1;
-
-}
-
-
-function count(
-    row,
-    col,
-    dr,
-    dc,
-    color
-){
-
-let total = 0;
-
-let r =
-    row + dr;
-
-let c =
-    col + dc;
-
-while(
-
-r >= 0 &&
-r < ROWS &&
-c >= 0 &&
-c < COLS &&
-board[r][c] === color
-
-){
-
-total++;
-
-r += dr;
-c += dc;
-
-}
-
-return total;
-
-}
-
-
-const directions = [
-
-[1,0],
-[0,1],
-[1,1],
-[1,-1]
-
-];
-
-
-function checkWin(
-    row,
-    col,
-    color
-){
-
-for(
-    const [dr,dc]
-    of directions
-){
-
-const total =
-    1 +
-
-    count(
-        row,
-        col,
-        dr,
-        dc,
-        color
-    ) +
-
-    count(
-        row,
-        col,
-        -dr,
-        -dc,
-        color
-    );
-
-if(total >= WIN)
-    return true;
-
-}
-
-return false;
-
-}
-
-
-function getWinningCells(
-    row,
-    col,
-    color
-){
-
-let best = [];
-
-for(
-    const [dr,dc]
-    of directions
-){
-
-let line =
-    [[row,col]];
-
-let r =
-    row + dr;
-
-let c =
-    col + dc;
-
-while(
-
-r >= 0 &&
-r < ROWS &&
-c >= 0 &&
-c < COLS &&
-board[r][c] === color
-
-){
-
-line.push([r,c]);
-
-r += dr;
-c += dc;
-
-}
-
-r =
-    row - dr;
-
-c =
-    col - dc;
-
-while(
-
-r >= 0 &&
-r < ROWS &&
-c >= 0 &&
-c < COLS &&
-board[r][c] === color
-
-){
-
-line.unshift([r,c]);
-
-r -= dr;
-c -= dc;
-
-}
-
-if(
-    line.length >= WIN &&
-    line.length > best.length
-){
-
-best = line;
-
-}
-
-}
-
-return best;
-
-}
-
-
-window.playColumn = function(col){
-
-if(gameOver)
+function handleMessage(message) {
+  if(!message) return;
+  
+  if(message.type === "start") {
+    ROWS = Number(message.rows);
+    COLS = Number(message.cols);
+    WIN = Number(message.win);
+    board = message.board;
+    turn = message.turn;
+    gameOver = message.gameOver;
+    winningCells = message.winningCells || [];
+    screen("game");
+    render();
+    updateStatus();
     return;
-
-if(turn !== myColor)
+  }
+  
+  if(message.type === "state") {
+    board = message.board;
+    turn = message.turn;
+    gameOver = message.gameOver;
+    winningCells = message.winningCells || [];
+    render();
+    updateStatus();
     return;
-
-if(!connected)
+  }
+  
+  if(message.type === "rematch") {
+    if(isHost) {
+      startGame();
+      sendState();
+    }
     return;
-
-const row =
-    findOpenRow(col);
-
-if(row < 0){
-
-showToast(
-    "That column is full!"
-);
-
-return;
-
+  }
 }
 
-board[row][col] =
-    myColor;
-
-winningCells = [];
-
-if(
-    checkWin(
-        row,
-        col,
-        myColor
-    )
-){
-
-gameOver = true;
-
-winningCells =
-    getWinningCells(
-        row,
-        col,
-        myColor
-    );
-
-}else{
-
-turn =
-    turn === "red"
-        ? "yellow"
-        : "red";
-
+function startGame() {
+  board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+  turn = "red";
+  gameOver = false;
+  winningCells = [];
+  screen("game");
+  render();
+  updateStatus();
 }
 
-render();
+function sendState() {
+  send({
+    type: "state",
+    board: board,
+    turn: turn,
+    gameOver: gameOver,
+    winningCells: winningCells
+  });
+}
 
-updateStatus();
+// ===== GAMEPLAY =====
 
-sendState();
+function findOpenRow(col) {
+  for(let r = ROWS - 1; r >= 0; r--) {
+    if(board[r][col] === null) return r;
+  }
+  return -1;
+}
 
-playTone(
-    gameOver
-        ? "win"
-        : "move"
-);
+function count(row, col, dr, dc, color) {
+  let total = 0;
+  let r = row + dr;
+  let c = col + dc;
+  while(r >= 0 && r < ROWS && c >= 0 && c < COLS && board[r][c] === color) {
+    total++;
+    r += dr;
+    c += dc;
+  }
+  return total;
+}
 
+const directions = [[1,0], [0,1], [1,1], [1,-1]];
+
+function checkWin(row, col, color) {
+  for(const [dr, dc] of directions) {
+    const total = 1 + count(row, col, dr, dc, color) + count(row, col, -dr, -dc, color);
+    if(total >= WIN) return true;
+  }
+  return false;
+}
+
+function getWinningCells(row, col, color) {
+  let best = [];
+  for(const [dr, dc] of directions) {
+    let line = [[row, col]];
+    let r = row + dr, c = col + dc;
+    while(r >= 0 && r < ROWS && c >= 0 && c < COLS && board[r][c] === color) {
+      line.push([r, c]);
+      r += dr;
+      c += dc;
+    }
+    r = row - dr;
+    c = col - dc;
+    while(r >= 0 && r < ROWS && c >= 0 && c < COLS && board[r][c] === color) {
+      line.unshift([r, c]);
+      r -= dr;
+      c -= dc;
+    }
+    if(line.length >= WIN && line.length > best.length) best = line;
+  }
+  return best;
+}
+
+window.playColumn = function(col) {
+  if(gameOver) return;
+  if(turn !== myColor) return;
+  if(!connected) return;
+  
+  const row = findOpenRow(col);
+  if(row < 0) {
+    showToast("That column is full!");
+    return;
+  }
+  
+  board[row][col] = myColor;
+  winningCells = [];
+  
+  if(checkWin(row, col, myColor)) {
+    gameOver = true;
+    winningCells = getWinningCells(row, col, myColor);
+  } else {
+    turn = turn === "red" ? "yellow" : "red";
+  }
+  
+  render();
+  updateStatus();
+  sendState();
+  playTone(gameOver ? "win" : "move");
 };
 
+// ===== RENDER =====
 
-/* =====================================================
-   RENDER
-===================================================== */
-
-function render(){
-
-const boardEl =
-    document.getElementById("board");
-
-boardEl.innerHTML = "";
-
-boardEl.style.setProperty(
-    "--cols",
-    COLS
-);
-
-boardEl.style.setProperty(
-    "--rows",
-    ROWS
-);
-
-
-for(
-    let r=0;
-    r<ROWS;
-    r++
-){
-
-for(
-    let c=0;
-    c<COLS;
-    c++
-){
-
-const cell =
-    document.createElement("div");
-
-cell.className = "cell";
-
-
-const winner =
-    winningCells.some(
-        ([wr,wc]) =>
-            wr === r &&
-            wc === c
-    );
-
-if(winner)
-    cell.classList.add("winner");
-
-
-const value =
-    board[r][c];
-
-if(value){
-
-const piece =
-    document.createElement("div");
-
-piece.className =
-    `piece ${value}`;
-
-if(!animations)
-    piece.style.animation = "none";
-
-cell.appendChild(piece);
-
+function render() {
+  const boardEl = document.getElementById("board");
+  boardEl.innerHTML = "";
+  boardEl.style.setProperty("--cols", COLS);
+  boardEl.style.setProperty("--rows", ROWS);
+  
+  for(let r = 0; r < ROWS; r++) {
+    for(let c = 0; c < COLS; c++) {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      
+      const winner = winningCells.some(([wr, wc]) => wr === r && wc === c);
+      if(winner) cell.classList.add("winner");
+      
+      const value = board[r][c];
+      if(value) {
+        const piece = document.createElement("div");
+        piece.className = `piece ${value}`;
+        if(!animations) piece.style.animation = "none";
+        cell.appendChild(piece);
+      }
+      
+      cell.onclick = () => playColumn(c);
+      boardEl.appendChild(cell);
+    }
+  }
 }
 
-
-cell.onclick =
-    () => playColumn(c);
-
-boardEl.appendChild(cell);
-
+function updateStatus() {
+  const status = document.getElementById("status");
+  if(gameOver) {
+    let winner = null;
+    if(winningCells.length) {
+      const [r, c] = winningCells[0];
+      winner = board[r][c];
+    }
+    status.textContent = winner === myColor ? "🎉 YOU WIN!" : "😢 YOU LOST";
+    return;
+  }
+  status.textContent = turn === myColor ? "🟢 Your turn" : "🟡 Opponent's turn";
 }
 
-}
-
-}
-
-
-/* =====================================================
-   STATUS
-===================================================== */
-
-function updateStatus(){
-
-const status =
-    document.getElementById("status");
-
-if(gameOver){
-
-let winner = null;
-
-if(winningCells.length){
-
-const [r,c] =
-    winningCells[0];
-
-winner =
-    board[r][c];
-
-}
-
-if(winner === myColor){
-
-status.textContent =
-    "🎉 YOU WIN!";
-
-}else{
-
-status.textContent =
-    "😢 YOU LOST";
-
-}
-
-return;
-
-}
-
-if(turn === myColor){
-
-status.textContent =
-    "🟢 Your turn";
-
-}else{
-
-status.textContent =
-    "🟡 Opponent's turn";
-
-}
-
-}
-
-
-/* =====================================================
-   REMATCH
-===================================================== */
-
-window.rematch = function(){
-
-if(!connected){
-
-showToast(
-    "Opponent isn't connected."
-);
-
-return;
-
-}
-
-if(isHost){
-
-startGame();
-
-sendState();
-
-}else{
-
-send({
-    type:"rematch"
-});
-
-showToast(
-    "Rematch requested!"
-);
-
-}
-
+window.rematch = function() {
+  if(!connected) {
+    showToast("Opponent isn't connected.");
+    return;
+  }
+  if(isHost) {
+    startGame();
+    sendState();
+  } else {
+    send({ type: "rematch" });
+    showToast("Rematch requested!");
+  }
 };
 
+window.leaveGame = () => { leaveNetwork(); screen("home"); };
 
-/* =====================================================
-   LEAVE
-===================================================== */
+function leaveNetwork() {
+  clearTimeout(reconnectTimer);
+  if(room) {
+    try { room.leave(); } catch{}
+  }
+  room = null;
+  action = null;
+  connected = false;
+}
 
-window.leaveGame = function(){
-
-leaveNetwork();
-
-screen("home");
-
+window.copyCode = async function() {
+  try {
+    await navigator.clipboard.writeText(roomCode);
+    showToast("Room code copied!");
+  } catch {
+    showToast(roomCode);
+  }
 };
 
-
-function leaveNetwork(){
-
-clearTimeout(reconnectTimer);
-
-if(room){
-
-try{
-    room.leave();
-}catch{}
-
-}
-
-room = null;
-
-action = null;
-
-connected = false;
-
-}
-
-
-/* =====================================================
-   COPY
-===================================================== */
-
-window.copyCode = async function(){
-
-try{
-
-await navigator.clipboard.writeText(
-    roomCode
-);
-
-showToast(
-    "Room code copied!"
-);
-
-}catch{
-
-showToast(
-    roomCode
-);
-
-}
-
+window.cancelRoom = function() {
+  leaveNetwork();
+  screen("home");
 };
-
-
-/* =====================================================
-   TOAST
-===================================================== */
 
 let toastTimer;
-
-function showToast(text){
-
-const toast =
-    document.getElementById("toast");
-
-toast.textContent = text;
-
-toast.classList.add("show");
-
-clearTimeout(toastTimer);
-
-toastTimer =
-    setTimeout(
-        () =>
-            toast.classList.remove("show"),
-        2200
-    );
-
+function showToast(text) {
+  const toast = document.getElementById("toast");
+  toast.textContent = text;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
 }
-
-
-/* =====================================================
-   SOUND
-===================================================== */
 
 let audioContext = null;
-
-function playTone(type){
-
-if(!sounds)
-    return;
-
-try{
-
-if(!audioContext){
-
-audioContext =
-    new (
-        window.AudioContext ||
-        window.webkitAudioContext
-    )();
-
+function playTone(type) {
+  if(!sounds) return;
+  try {
+    if(!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+    oscillator.frequency.value = type === "win" ? 650 : 340;
+    gain.gain.setValueAtTime(.001, audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.06, audioContext.currentTime + .01);
+    gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + .12);
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + .13);
+  } catch{}
 }
 
-const oscillator =
-    audioContext.createOscillator();
+document.getElementById("joinCode").addEventListener("input", e => {
+  e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
+});
 
-const gain =
-    audioContext.createGain();
-
-oscillator.connect(gain);
-
-gain.connect(
-    audioContext.destination
-);
-
-oscillator.frequency.value =
-    type === "win"
-        ? 650
-        : 340;
-
-gain.gain.setValueAtTime(
-    .001,
-    audioContext.currentTime
-);
-
-gain.gain.exponentialRampToValueAtTime(
-    .06,
-    audioContext.currentTime + .01
-);
-
-gain.gain.exponentialRampToValueAtTime(
-    .001,
-    audioContext.currentTime + .12
-);
-
-oscillator.start();
-
-oscillator.stop(
-    audioContext.currentTime + .13
-);
-
-}catch{}
-
-}
-
-
-/* =====================================================
-   INPUT
-===================================================== */
-
-document
-    .getElementById("joinCode")
-    .addEventListener(
-        "input",
-        e => {
-
-            e.target.value =
-                e.target.value
-                    .toUpperCase()
-                    .replace(
-                        /[^A-Z0-9]/g,
-                        ""
-                    )
-                    .slice(0,8);
-
-        }
-    );
-
-
-document
-    .getElementById("joinCode")
-    .addEventListener(
-        "keydown",
-        e => {
-
-            if(e.key === "Enter")
-                joinRoom();
-
-        }
-    );
-
-
-/* =====================================================
-   SETTINGS INIT
-===================================================== */
+document.getElementById("joinCode").addEventListener("keydown", e => {
+  if(e.key === "Enter") joinRoom();
+});
 
 setTheme(theme);
+document.getElementById("animations").checked = animations;
+document.getElementById("sounds").checked = sounds;
 
-document
-    .getElementById("animations")
-    .checked =
-        animations;
+document.getElementById("animations").addEventListener("change", e => {
+  animations = e.target.checked;
+  localStorage.setItem("c4-animations", animations);
+});
 
-document
-    .getElementById("sounds")
-    .checked =
-        sounds;
-
-document
-    .getElementById("animations")
-    .addEventListener(
-        "change",
-        e => {
-
-            animations =
-                e.target.checked;
-
-            localStorage.setItem(
-                "c4-animations",
-                animations
-            );
-
-        }
-    );
-
-document
-    .getElementById("sounds")
-    .addEventListener(
-        "change",
-        e => {
-
-            sounds =
-                e.target.checked;
-
-            localStorage.setItem(
-                "c4-sounds",
-                sounds
-            );
-
-        }
-    );
+document.getElementById("sounds").addEventListener("change", e => {
+  sounds = e.target.checked;
+  localStorage.setItem("c4-sounds", sounds);
+});
 
 updateWinOptions();
 
