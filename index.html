@@ -2,761 +2,2210 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101827">
+<title>Connect 4 Online</title>
 
-<title>Connect 4</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
 <style>
-    * {
-        box-sizing: border-box;
+:root{
+    --bg:#0b1020;
+    --bg2:#121a2d;
+    --panel:#151f35;
+    --panel2:#1c2943;
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --accent:#6366f1;
+    --accent2:#818cf8;
+    --board:#2563eb;
+    --red:#ef4444;
+    --yellow:#facc15;
+    --good:#22c55e;
+    --danger:#f43f5e;
+    --shadow:0 20px 60px #0008;
+}
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    min-height:100%;
+}
+
+body{
+    min-height:100vh;
+    min-height:100dvh;
+    font-family:
+        Inter,system-ui,-apple-system,BlinkMacSystemFont,
+        "Segoe UI",sans-serif;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 20% 10%,#6366f122,transparent 35%),
+        radial-gradient(circle at 80% 90%,#22d3ee18,transparent 35%),
+        var(--bg);
+    overflow-x:hidden;
+}
+
+button,input,select{
+    font:inherit;
+}
+
+button{
+    border:0;
+}
+
+.app{
+    width:min(94vw,760px);
+    margin:auto;
+    padding:24px 0 40px;
+}
+
+.topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:25px;
+    font-weight:900;
+    letter-spacing:-1px;
+}
+
+.logoDot{
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 20px var(--accent);
+}
+
+.iconButton{
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    background:var(--panel);
+    color:var(--text);
+    cursor:pointer;
+    box-shadow:0 8px 30px #0003;
+}
+
+.screen{
+    animation:screenIn .3s ease;
+}
+
+@keyframes screenIn{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.hero{
+    text-align:center;
+    padding:32px 10px 20px;
+}
+
+.hero h1{
+    margin:0;
+    font-size:clamp(42px,11vw,72px);
+    line-height:1;
+    letter-spacing:-4px;
+}
+
+.hero p{
+    color:var(--muted);
+    margin:15px 0 0;
+    font-size:16px;
+}
+
+.panel{
+    background:
+        linear-gradient(145deg,#ffffff08,#ffffff02),
+        var(--panel);
+    border:1px solid #ffffff0c;
+    border-radius:24px;
+    padding:22px;
+    box-shadow:var(--shadow);
+}
+
+.menuButtons{
+    display:grid;
+    gap:12px;
+}
+
+.primary{
+    background:linear-gradient(
+        135deg,
+        var(--accent),
+        var(--accent2)
+    );
+    color:white;
+}
+
+.secondary{
+    background:var(--panel2);
+    color:var(--text);
+}
+
+.bigButton{
+    width:100%;
+    min-height:58px;
+    border-radius:17px;
+    font-weight:800;
+    font-size:18px;
+    cursor:pointer;
+    transition:.15s transform,.15s filter;
+}
+
+.bigButton:active,
+.smallButton:active,
+.iconButton:active{
+    transform:scale(.97);
+}
+
+.bigButton:hover{
+    filter:brightness(1.08);
+}
+
+.input{
+    width:100%;
+    min-height:54px;
+    border:1px solid #ffffff12;
+    background:#0003;
+    color:var(--text);
+    border-radius:15px;
+    outline:none;
+    padding:0 16px;
+}
+
+.input:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px color-mix(
+        in srgb,var(--accent) 20%,transparent
+    );
+}
+
+.codeInput{
+    text-align:center;
+    letter-spacing:7px;
+    font-weight:900;
+    font-size:22px;
+    text-transform:uppercase;
+}
+
+.formTitle{
+    font-weight:800;
+    margin:0 0 12px;
+}
+
+.divider{
+    height:1px;
+    background:#ffffff0b;
+    margin:22px 0;
+}
+
+.back{
+    color:var(--muted);
+    background:none;
+    cursor:pointer;
+    padding:8px 0;
+}
+
+.roomCode{
+    text-align:center;
+    font-size:clamp(38px,12vw,64px);
+    font-weight:1000;
+    letter-spacing:9px;
+    margin:12px 0 20px;
+}
+
+.roomHint{
+    color:var(--muted);
+    text-align:center;
+}
+
+.copyButton{
+    width:100%;
+    min-height:50px;
+    border-radius:14px;
+    background:var(--panel2);
+    color:var(--text);
+    cursor:pointer;
+    font-weight:700;
+}
+
+.settingsGrid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.setting{
+    display:grid;
+    gap:8px;
+}
+
+.setting label{
+    color:var(--muted);
+    font-size:13px;
+    font-weight:700;
+}
+
+.select{
+    width:100%;
+    min-height:50px;
+    border-radius:14px;
+    border:1px solid #ffffff10;
+    background:var(--panel2);
+    color:var(--text);
+    padding:0 12px;
+}
+
+.themeGrid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.themeOption{
+    min-height:58px;
+    border-radius:15px;
+    border:2px solid transparent;
+    color:white;
+    cursor:pointer;
+    font-weight:800;
+}
+
+.themeOption.active{
+    border-color:white;
+    box-shadow:0 0 0 2px var(--accent);
+}
+
+.theme-indigo{
+    background:linear-gradient(135deg,#4f46e5,#06b6d4);
+}
+
+.theme-sunset{
+    background:linear-gradient(135deg,#f43f5e,#f97316);
+}
+
+.theme-forest{
+    background:linear-gradient(135deg,#15803d,#14b8a6);
+}
+
+.theme-ice{
+    background:linear-gradient(135deg,#0284c7,#6366f1);
+}
+
+.theme-candy{
+    background:linear-gradient(135deg,#ec4899,#a855f7);
+}
+
+.theme-mono{
+    background:linear-gradient(135deg,#334155,#94a3b8);
+}
+
+/* GAME */
+
+.gameHeader{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.playerCard{
+    background:var(--panel);
+    border:1px solid #ffffff0b;
+    border-radius:17px;
+    padding:12px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    min-width:0;
+}
+
+.playerCard.right{
+    justify-content:flex-end;
+    text-align:right;
+}
+
+.playerPiece{
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    flex:none;
+}
+
+.playerPiece.red{
+    background:var(--red);
+    box-shadow:0 0 14px #ef444488;
+}
+
+.playerPiece.yellow{
+    background:var(--yellow);
+    box-shadow:0 0 14px #facc1588;
+}
+
+.playerName{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-weight:800;
+}
+
+.vs{
+    color:var(--muted);
+    font-weight:900;
+}
+
+.status{
+    text-align:center;
+    min-height:31px;
+    font-size:19px;
+    font-weight:900;
+    margin:10px 0 14px;
+}
+
+.connection{
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:12px;
+}
+
+.boardWrap{
+    position:relative;
+    width:100%;
+    overflow:hidden;
+}
+
+.board{
+    --cols:7;
+    --rows:6;
+
+    width:100%;
+    aspect-ratio:var(--cols) / var(--rows);
+
+    display:grid;
+    grid-template-columns:repeat(var(--cols),1fr);
+    grid-template-rows:repeat(var(--rows),1fr);
+
+    gap:clamp(4px,1.2vw,9px);
+
+    padding:clamp(7px,2vw,13px);
+
+    background:
+        linear-gradient(145deg,#ffffff12,#ffffff02),
+        var(--board);
+
+    border-radius:clamp(15px,4vw,25px);
+
+    box-shadow:
+        0 25px 60px #0006,
+        inset 0 2px 0 #ffffff18;
+}
+
+.cell{
+    position:relative;
+    min-width:0;
+    min-height:0;
+    border-radius:50%;
+    background:#02061766;
+    box-shadow:
+        inset 0 5px 8px #0005,
+        0 1px 0 #ffffff18;
+    cursor:pointer;
+}
+
+.cell:hover{
+    background:#02061788;
+}
+
+.piece{
+    position:absolute;
+    inset:7%;
+    border-radius:50%;
+    transform:scale(.88);
+    animation:appear .18s ease-out forwards;
+}
+
+@keyframes appear{
+    from{
+        transform:scale(.1);
+        opacity:0;
+    }
+    70%{
+        transform:scale(1.06);
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+.piece.red{
+    background:
+        radial-gradient(circle at 35% 28%,#ffffff55,transparent 18%),
+        radial-gradient(circle at 50% 50%,#ff5757,#dc2626);
+    box-shadow:
+        inset 0 -5px 8px #0003,
+        0 5px 15px #ef444455;
+}
+
+.piece.yellow{
+    background:
+        radial-gradient(circle at 35% 28%,#ffffff66,transparent 18%),
+        radial-gradient(circle at 50% 50%,#fde047,#eab308);
+    box-shadow:
+        inset 0 -5px 8px #0003,
+        0 5px 15px #facc1555;
+}
+
+.cell.winner .piece{
+    animation:
+        winner .65s ease-in-out infinite alternate;
+}
+
+@keyframes winner{
+    from{
+        transform:scale(1);
+    }
+    to{
+        transform:scale(1.12);
+        filter:brightness(1.3);
+    }
+}
+
+.gameActions{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.smallButton{
+    flex:1;
+    min-height:50px;
+    border-radius:15px;
+    background:var(--panel);
+    color:var(--text);
+    cursor:pointer;
+    font-weight:800;
+}
+
+.smallButton.primarySmall{
+    background:var(--accent);
+}
+
+.disabled{
+    opacity:.45;
+    pointer-events:none;
+}
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:25px;
+    transform:translate(-50%,20px);
+    background:#020617ee;
+    border:1px solid #ffffff12;
+    color:white;
+    padding:12px 18px;
+    border-radius:13px;
+    box-shadow:0 15px 40px #0008;
+    opacity:0;
+    pointer-events:none;
+    transition:.2s;
+    z-index:100;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:#0008;
+    backdrop-filter:blur(10px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    z-index:50;
+}
+
+.modalCard{
+    width:min(100%,520px);
+    max-height:90vh;
+    overflow:auto;
+    background:var(--panel);
+    border:1px solid #ffffff10;
+    border-radius:25px;
+    padding:24px;
+    box-shadow:var(--shadow);
+}
+
+.modalHeader{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.modalHeader h2{
+    margin:0;
+}
+
+.close{
+    background:var(--panel2);
+    color:white;
+    border-radius:12px;
+    width:42px;
+    height:42px;
+    cursor:pointer;
+}
+
+.settingSection{
+    margin-bottom:22px;
+}
+
+.settingSection h3{
+    font-size:15px;
+    margin:0 0 11px;
+}
+
+.checkboxRow{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:var(--panel2);
+    padding:14px;
+    border-radius:14px;
+    margin-top:10px;
+}
+
+.checkboxRow input{
+    width:21px;
+    height:21px;
+}
+
+@media(max-width:520px){
+
+    .app{
+        width:94vw;
+        padding-top:14px;
     }
 
-    body {
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        font-family: Arial, sans-serif;
-
-        background: #111827;
-        color: white;
+    .panel{
+        padding:17px;
+        border-radius:21px;
     }
 
-    .container {
-        width: min(95vw, 600px);
-        text-align: center;
+    .settingsGrid{
+        grid-template-columns:1fr;
     }
 
-    h1 {
-        margin-bottom: 30px;
+    .gameHeader{
+        grid-template-columns:1fr auto 1fr;
     }
 
-    button,
-    input {
-        font-size: 18px;
-        padding: 12px 18px;
-        border-radius: 10px;
-        border: none;
+    .playerCard{
+        padding:9px;
+        font-size:13px;
     }
 
-    button {
-        cursor: pointer;
-        background: #2563eb;
-        color: white;
-        margin: 5px;
+    .playerPiece{
+        width:16px;
+        height:16px;
     }
 
-    button:hover {
-        background: #1d4ed8;
-    }
-
-    input {
-        width: 220px;
-        text-align: center;
-        text-transform: uppercase;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    #roomCode {
-        font-size: 32px;
-        letter-spacing: 5px;
-        margin: 20px;
-    }
-
-    #status {
-        margin: 15px;
-        min-height: 25px;
-    }
-
-    #board {
-        margin: 20px auto;
-
-        display: grid;
-
-        grid-template-columns: repeat(7, 1fr);
-
-        gap: 8px;
-
-        background: #1d4ed8;
-
-        padding: 10px;
-
-        border-radius: 15px;
-
-        max-width: 560px;
-    }
-
-    .cell {
-        aspect-ratio: 1;
-
-        border-radius: 50%;
-
-        background: #e5e7eb;
-
-        cursor: pointer;
-    }
-
-    .red {
-        background: #ef4444;
-    }
-
-    .yellow {
-        background: #facc15;
-    }
-
-    #game {
-        margin-top: 20px;
-    }
+}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
-    <h1>Connect 4</h1>
+    <div class="topbar">
 
-    <!-- MENU -->
+        <div class="logo">
+            <span class="logoDot"></span>
+            Connect 4
+        </div>
 
-    <div id="menu">
-
-        <button onclick="createRoom()">
-            Create Room
-        </button>
-
-        <br>
-
-        <input
-            id="roomInput"
-            placeholder="ROOM CODE"
-            maxlength="6"
+        <button
+            class="iconButton"
+            onclick="openSettings()"
+            aria-label="Settings"
         >
-
-        <button onclick="joinRoom()">
-            Join Room
+            ⚙️
         </button>
 
     </div>
+
+
+    <!-- HOME -->
+
+    <section id="homeScreen" class="screen">
+
+        <div class="hero">
+
+            <h1>CONNECT 4</h1>
+
+            <p>
+                Challenge your friends online.
+            </p>
+
+        </div>
+
+        <div class="panel">
+
+            <div class="menuButtons">
+
+                <button
+                    class="bigButton primary"
+                    onclick="showCreate()"
+                >
+                    🎮 Create Room
+                </button>
+
+                <button
+                    class="bigButton secondary"
+                    onclick="showJoin()"
+                >
+                    🔗 Join Room
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CREATE -->
+
+    <section id="createScreen" class="screen hidden">
+
+        <div class="panel">
+
+            <button
+                class="back"
+                onclick="goHome()"
+            >
+                ← Back
+            </button>
+
+            <h2>Create Room</h2>
+
+            <p style="color:var(--muted)">
+                Choose your game rules.
+            </p>
+
+            <div class="settingsGrid">
+
+                <div class="setting">
+
+                    <label>BOARD WIDTH</label>
+
+                    <select
+                        id="createCols"
+                        class="select"
+                    >
+                        <option value="4">4 columns</option>
+                        <option value="5">5 columns</option>
+                        <option value="6">6 columns</option>
+                        <option value="7" selected>7 columns</option>
+                        <option value="8">8 columns</option>
+                        <option value="9">9 columns</option>
+                        <option value="10">10 columns</option>
+                    </select>
+
+                </div>
+
+                <div class="setting">
+
+                    <label>BOARD HEIGHT</label>
+
+                    <select
+                        id="createRows"
+                        class="select"
+                    >
+                        <option value="4">4 rows</option>
+                        <option value="5">5 rows</option>
+                        <option value="6" selected>6 rows</option>
+                        <option value="7">7 rows</option>
+                        <option value="8">8 rows</option>
+                        <option value="9">9 rows</option>
+                    </select>
+
+                </div>
+
+                <div class="setting">
+
+                    <label>ROWS TO WIN</label>
+
+                    <select
+                        id="createWin"
+                        class="select"
+                    >
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="divider"></div>
+
+            <p class="formTitle">Theme</p>
+
+            <div class="themeGrid">
+
+                <button
+                    class="themeOption theme-indigo"
+                    data-theme="indigo"
+                    onclick="chooseTheme('indigo')"
+                >
+                    🌌 Indigo
+                </button>
+
+                <button
+                    class="themeOption theme-sunset"
+                    data-theme="sunset"
+                    onclick="chooseTheme('sunset')"
+                >
+                    🌅 Sunset
+                </button>
+
+                <button
+                    class="themeOption theme-forest"
+                    data-theme="forest"
+                    onclick="chooseTheme('forest')"
+                >
+                    🌲 Forest
+                </button>
+
+                <button
+                    class="themeOption theme-ice"
+                    data-theme="ice"
+                    onclick="chooseTheme('ice')"
+                >
+                    ❄️ Ice
+                </button>
+
+                <button
+                    class="themeOption theme-candy"
+                    data-theme="candy"
+                    onclick="chooseTheme('candy')"
+                >
+                    🍬 Candy
+                </button>
+
+                <button
+                    class="themeOption theme-mono"
+                    data-theme="mono"
+                    onclick="chooseTheme('mono')"
+                >
+                    🖤 Mono
+                </button>
+
+            </div>
+
+            <div class="divider"></div>
+
+            <button
+                class="bigButton primary"
+                onclick="createRoom()"
+            >
+                Create Room
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- JOIN -->
+
+    <section id="joinScreen" class="screen hidden">
+
+        <div class="panel">
+
+            <button
+                class="back"
+                onclick="goHome()"
+            >
+                ← Back
+            </button>
+
+            <h2>Join Room</h2>
+
+            <p style="color:var(--muted)">
+                Enter your friend's room code.
+            </p>
+
+            <input
+                id="joinCode"
+                class="input codeInput"
+                maxlength="6"
+                autocomplete="off"
+                placeholder="ABC123"
+            >
+
+            <br><br>
+
+            <button
+                class="bigButton primary"
+                onclick="joinRoom()"
+            >
+                Join Game
+            </button>
+
+        </div>
+
+    </section>
 
 
     <!-- ROOM -->
 
-    <div id="room" class="hidden">
+    <section id="roomScreen" class="screen hidden">
 
-        <p>Room code:</p>
+        <div class="panel">
 
-        <div id="roomCode"></div>
+            <p
+                style="
+                text-align:center;
+                color:var(--muted);
+                margin-bottom:0
+                "
+            >
+                Your room code
+            </p>
 
-        <p id="roomStatus">
-            Waiting for opponent...
-        </p>
+            <div
+                id="roomCode"
+                class="roomCode"
+            >
+                ------
+            </div>
 
-    </div>
+            <button
+                class="copyButton"
+                onclick="copyRoomCode()"
+            >
+                📋 Copy Room Code
+            </button>
+
+            <p
+                id="roomStatus"
+                class="roomHint"
+            >
+                Waiting for your opponent...
+            </p>
+
+            <div class="divider"></div>
+
+            <div
+                id="hostSettingsSummary"
+                style="
+                text-align:center;
+                color:var(--muted);
+                font-size:14px
+                "
+            ></div>
+
+            <br>
+
+            <button
+                class="bigButton secondary"
+                onclick="cancelRoom()"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    </section>
 
 
     <!-- GAME -->
 
-    <div id="game" class="hidden">
+    <section id="gameScreen" class="screen hidden">
 
-        <div id="status"></div>
+        <div class="gameHeader">
 
-        <div id="board"></div>
+            <div class="playerCard">
+
+                <span
+                    class="playerPiece red"
+                ></span>
+
+                <span class="playerName">
+                    Red
+                </span>
+
+            </div>
+
+            <div class="vs">VS</div>
+
+            <div class="playerCard right">
+
+                <span class="playerName">
+                    Yellow
+                </span>
+
+                <span
+                    class="playerPiece yellow"
+                ></span>
+
+            </div>
+
+        </div>
+
+        <div
+            id="gameStatus"
+            class="status"
+        >
+            Your turn
+        </div>
+
+        <div
+            id="connectionStatus"
+            class="connection"
+        >
+            🟢 Connected P2P
+        </div>
+
+        <div class="boardWrap">
+
+            <div
+                id="board"
+                class="board"
+            ></div>
+
+        </div>
+
+        <div class="gameActions">
+
+            <button
+                class="smallButton"
+                onclick="requestRematch()"
+            >
+                🔄 Rematch
+            </button>
+
+            <button
+                class="smallButton"
+                onclick="leaveGame()"
+            >
+                🚪 Leave
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- SETTINGS MODAL -->
+
+<div
+    id="settingsModal"
+    class="modal hidden"
+    onclick="closeSettingsOutside(event)"
+>
+
+    <div class="modalCard">
+
+        <div class="modalHeader">
+
+            <h2>Settings</h2>
+
+            <button
+                class="close"
+                onclick="closeSettings()"
+            >
+                ✕
+            </button>
+
+        </div>
+
+        <div class="settingSection">
+
+            <h3>Theme</h3>
+
+            <div class="themeGrid">
+
+                <button
+                    class="themeOption theme-indigo"
+                    data-theme="indigo"
+                    onclick="chooseTheme('indigo')"
+                >
+                    🌌 Indigo
+                </button>
+
+                <button
+                    class="themeOption theme-sunset"
+                    data-theme="sunset"
+                    onclick="chooseTheme('sunset')"
+                >
+                    🌅 Sunset
+                </button>
+
+                <button
+                    class="themeOption theme-forest"
+                    data-theme="forest"
+                    onclick="chooseTheme('forest')"
+                >
+                    🌲 Forest
+                </button>
+
+                <button
+                    class="themeOption theme-ice"
+                    data-theme="ice"
+                    onclick="chooseTheme('ice')"
+                >
+                    ❄️ Ice
+                </button>
+
+                <button
+                    class="themeOption theme-candy"
+                    data-theme="candy"
+                    onclick="chooseTheme('candy')"
+                >
+                    🍬 Candy
+                </button>
+
+                <button
+                    class="themeOption theme-mono"
+                    data-theme="mono"
+                    onclick="chooseTheme('mono')"
+                >
+                    🖤 Mono
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="settingSection">
+
+            <h3>Gameplay</h3>
+
+            <div class="checkboxRow">
+
+                <span>
+                    Drop animations
+                </span>
+
+                <input
+                    id="animationToggle"
+                    type="checkbox"
+                    checked
+                    onchange="saveSettings()"
+                >
+
+            </div>
+
+            <div class="checkboxRow">
+
+                <span>
+                    Sound effects
+                </span>
+
+                <input
+                    id="soundToggle"
+                    type="checkbox"
+                    checked
+                    onchange="saveSettings()"
+                >
+
+            </div>
+
+        </div>
 
     </div>
 
 </div>
 
 
+<div
+    id="toast"
+    class="toast"
+>
+</div>
+
+
 <script>
 
-const SIGNALING_SERVER =
-    "ws://YOUR_SERVER_IP:3000";
+/* =========================================================
+   CONNECT 4 ONLINE
+   PeerJS + WebRTC
+   No Node server required
+========================================================= */
 
-let socket;
 
-let peer;
+/* -------------------------
+   STATE
+------------------------- */
 
-let dataChannel;
+let peer = null;
+let connection = null;
 
 let isHost = false;
 
 let myColor = null;
 
-let currentTurn = "red";
+let roomCodeValue = null;
 
-let gameStarted = false;
+let ROWS = 6;
+let COLS = 7;
+let WIN = 4;
 
-const ROWS = 6;
-const COLS = 7;
+let board = [];
 
-let board =
-    Array.from(
-        { length: ROWS },
-        () => Array(COLS).fill(null)
+let turn = "red";
+
+let gameOver = false;
+
+let winningCells = [];
+
+let selectedTheme =
+    localStorage.getItem("c4-theme")
+    || "indigo";
+
+let animationsEnabled =
+    localStorage.getItem("c4-animation")
+    !== "false";
+
+let soundEnabled =
+    localStorage.getItem("c4-sound")
+    !== "false";
+
+
+/* -------------------------
+   THEME
+------------------------- */
+
+const themes = {
+
+    indigo: {
+        accent:"#6366f1",
+        accent2:"#818cf8",
+        board:"#2563eb"
+    },
+
+    sunset: {
+        accent:"#f43f5e",
+        accent2:"#f97316",
+        board:"#e11d48"
+    },
+
+    forest: {
+        accent:"#16a34a",
+        accent2:"#14b8a6",
+        board:"#15803d"
+    },
+
+    ice: {
+        accent:"#0284c7",
+        accent2:"#6366f1",
+        board:"#0369a1"
+    },
+
+    candy: {
+        accent:"#ec4899",
+        accent2:"#a855f7",
+        board:"#9333ea"
+    },
+
+    mono: {
+        accent:"#64748b",
+        accent2:"#94a3b8",
+        board:"#475569"
+    }
+
+};
+
+
+function applyTheme(name){
+
+    if(!themes[name])
+        name = "indigo";
+
+    selectedTheme = name;
+
+    const root =
+        document.documentElement;
+
+    root.style.setProperty(
+        "--accent",
+        themes[name].accent
     );
 
+    root.style.setProperty(
+        "--accent2",
+        themes[name].accent2
+    );
 
-// -------------------------
-// CONNECT SIGNALING SERVER
-// -------------------------
+    root.style.setProperty(
+        "--board",
+        themes[name].board
+    );
 
-function connectSocket() {
+    localStorage.setItem(
+        "c4-theme",
+        name
+    );
 
-    socket =
-        new WebSocket(SIGNALING_SERVER);
+    document
+        .querySelectorAll(".themeOption")
+        .forEach(button => {
 
-    socket.onmessage = async event => {
+            button.classList.toggle(
+                "active",
+                button.dataset.theme === name
+            );
 
-        const msg =
-            JSON.parse(event.data);
+        });
 
-        await handleSignal(msg);
-    };
-
-    socket.onclose = () => {
-
-        setStatus(
-            "Connection to signaling server lost."
-        );
-    };
 }
 
 
-// -------------------------
-// CREATE ROOM
-// -------------------------
+function chooseTheme(name){
 
-function createRoom() {
+    applyTheme(name);
+
+    saveSettings();
+
+}
+
+
+/* -------------------------
+   SETTINGS
+------------------------- */
+
+function loadSettings(){
+
+    applyTheme(selectedTheme);
+
+    const animation =
+        document.getElementById(
+            "animationToggle"
+        );
+
+    const sound =
+        document.getElementById(
+            "soundToggle"
+        );
+
+    if(animation)
+        animation.checked =
+            animationsEnabled;
+
+    if(sound)
+        sound.checked =
+            soundEnabled;
+
+}
+
+
+function saveSettings(){
+
+    const animation =
+        document.getElementById(
+            "animationToggle"
+        );
+
+    const sound =
+        document.getElementById(
+            "soundToggle"
+        );
+
+    if(animation)
+        animationsEnabled =
+            animation.checked;
+
+    if(sound)
+        soundEnabled =
+            sound.checked;
+
+    localStorage.setItem(
+        "c4-animation",
+        animationsEnabled
+    );
+
+    localStorage.setItem(
+        "c4-sound",
+        soundEnabled
+    );
+
+}
+
+
+function openSettings(){
+
+    document
+        .getElementById("settingsModal")
+        .classList.remove("hidden");
+
+}
+
+
+function closeSettings(){
+
+    document
+        .getElementById("settingsModal")
+        .classList.add("hidden");
+
+}
+
+
+function closeSettingsOutside(event){
+
+    if(
+        event.target.id ===
+        "settingsModal"
+    ){
+
+        closeSettings();
+
+    }
+
+}
+
+
+/* -------------------------
+   SCREENS
+------------------------- */
+
+function hideScreens(){
+
+    document
+        .querySelectorAll(".screen")
+        .forEach(screen =>
+            screen.classList.add("hidden")
+        );
+
+}
+
+
+function showScreen(id){
+
+    hideScreens();
+
+    document
+        .getElementById(id)
+        .classList.remove("hidden");
+
+}
+
+
+function goHome(){
+
+    if(peer){
+
+        try{
+            peer.destroy();
+        }catch{}
+
+    }
+
+    peer = null;
+    connection = null;
+
+    showScreen("homeScreen");
+
+}
+
+
+function showCreate(){
+
+    updateWinOptions();
+
+    showScreen("createScreen");
+
+}
+
+
+function showJoin(){
+
+    showScreen("joinScreen");
+
+    setTimeout(() => {
+
+        document
+            .getElementById("joinCode")
+            .focus();
+
+    },100);
+
+}
+
+
+/* -------------------------
+   WIN OPTIONS
+------------------------- */
+
+function updateWinOptions(){
+
+    const rows =
+        Number(
+            document
+                .getElementById("createRows")
+                .value
+        );
+
+    const cols =
+        Number(
+            document
+                .getElementById("createCols")
+                .value
+        );
+
+    const max =
+        Math.min(rows,cols);
+
+    const select =
+        document
+            .getElementById("createWin");
+
+    const old =
+        Number(select.value);
+
+    select.innerHTML = "";
+
+    for(
+        let i=3;
+        i<=max;
+        i++
+    ){
+
+        const option =
+            document.createElement("option");
+
+        option.value = i;
+
+        option.textContent =
+            `${i} in a row`;
+
+        select.appendChild(option);
+
+    }
+
+    if(old >= 3 && old <= max){
+
+        select.value = old;
+
+    }else{
+
+        select.value = max >= 4 ? 4 : 3;
+
+    }
+
+}
+
+
+document
+    .getElementById("createRows")
+    .addEventListener(
+        "change",
+        updateWinOptions
+    );
+
+document
+    .getElementById("createCols")
+    .addEventListener(
+        "change",
+        updateWinOptions
+    );
+
+
+/* -------------------------
+   ROOM CODE
+------------------------- */
+
+function generateRoomCode(){
+
+    const chars =
+        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    let result = "";
+
+    for(
+        let i=0;
+        i<6;
+        i++
+    ){
+
+        result +=
+            chars[
+                Math.floor(
+                    Math.random()*chars.length
+                )
+            ];
+
+    }
+
+    return result;
+
+}
+
+
+/* -------------------------
+   CREATE ROOM
+------------------------- */
+
+function createRoom(){
+
+    ROWS =
+        Number(
+            document
+                .getElementById("createRows")
+                .value
+        );
+
+    COLS =
+        Number(
+            document
+                .getElementById("createCols")
+                .value
+        );
+
+    WIN =
+        Number(
+            document
+                .getElementById("createWin")
+                .value
+        );
 
     isHost = true;
 
     myColor = "red";
 
-    connectSocket();
+    roomCodeValue =
+        generateRoomCode();
 
-    socket.onopen = () => {
+    showScreen("roomScreen");
 
-        socket.send(
-            JSON.stringify({
-                type: "create"
-            })
+    document
+        .getElementById("roomCode")
+        .textContent =
+            roomCodeValue;
+
+    document
+        .getElementById("roomStatus")
+        .textContent =
+            "Creating room...";
+
+    document
+        .getElementById(
+            "hostSettingsSummary"
+        )
+        .textContent =
+            `${COLS} × ${ROWS} board • ${WIN} in a row`;
+
+    /*
+      PeerJS room ID is the room code.
+      Prefix prevents collisions with unrelated
+      PeerJS users using the same numeric/string ID.
+    */
+
+    const peerId =
+        "c4-" + roomCodeValue;
+
+    peer =
+        new Peer(peerId,{
+
+            debug:0,
+
+            config:{
+                iceServers:[
+                    {
+                        urls:
+                        "stun:stun.l.google.com:19302"
+                    }
+                ]
+            }
+
+        });
+
+
+    peer.on("open",id => {
+
+        document
+            .getElementById("roomStatus")
+            .textContent =
+                "🟢 Room ready! Send the code to your friend.";
+
+    });
+
+
+    peer.on("connection",conn => {
+
+        if(connection){
+
+            conn.close();
+
+            return;
+
+        }
+
+        connection = conn;
+
+        setupConnection();
+
+    });
+
+
+    peer.on("error",error => {
+
+        console.error(error);
+
+        if(
+            error.type ===
+            "unavailable-id"
+        ){
+
+            roomCodeValue =
+                generateRoomCode();
+
+            document
+                .getElementById("roomCode")
+                .textContent =
+                    roomCodeValue;
+
+            peer.destroy();
+
+            setTimeout(
+                createRoom,
+                200
+            );
+
+            return;
+
+        }
+
+        document
+            .getElementById("roomStatus")
+            .textContent =
+                "❌ Could not create room.";
+
+        showToast(
+            "Could not create room."
         );
-    };
+
+    });
 
 }
 
 
-// -------------------------
-// JOIN ROOM
-// -------------------------
+/* -------------------------
+   JOIN ROOM
+------------------------- */
 
-function joinRoom() {
+function joinRoom(){
+
+    const input =
+        document
+            .getElementById("joinCode");
 
     const code =
-        document
-            .getElementById("roomInput")
-            .value
+        input.value
             .trim()
             .toUpperCase();
 
-    if (code.length !== 6) {
+    if(!/^[A-Z0-9]{6}$/.test(code)){
 
-        alert("Enter a 6-character room code.");
+        showToast(
+            "Enter a valid 6-character code."
+        );
 
         return;
+
     }
 
     isHost = false;
 
     myColor = "yellow";
 
-    connectSocket();
+    roomCodeValue = code;
 
-    socket.onopen = () => {
+    showScreen("roomScreen");
 
-        socket.send(
-            JSON.stringify({
-                type: "join",
-                code
-            })
-        );
-    };
+    document
+        .getElementById("roomCode")
+        .textContent =
+            code;
 
-}
-
-
-// -------------------------
-// SIGNALING
-// -------------------------
-
-async function handleSignal(msg) {
-
-    if (msg.type === "roomCreated") {
-
-        showRoom(msg.code);
-
-        return;
-    }
-
-
-    if (msg.type === "joined") {
-
-        showRoom(msg.code);
-
-        return;
-    }
-
-
-    if (msg.type === "playerJoined") {
-
-        document.getElementById(
-            "roomStatus"
-        ).textContent =
-            "Opponent connected!";
-
-        await createOffer();
-
-        return;
-    }
-
-
-    if (msg.type === "offer") {
-
-        await createPeerConnection();
-
-        await peer.setRemoteDescription(
-            msg.offer
-        );
-
-        const answer =
-            await peer.createAnswer();
-
-        await peer.setLocalDescription(
-            answer
-        );
-
-        socket.send(
-            JSON.stringify({
-                type: "answer",
-                answer
-            })
-        );
-
-        return;
-    }
-
-
-    if (msg.type === "answer") {
-
-        await peer.setRemoteDescription(
-            msg.answer
-        );
-
-        return;
-    }
-
-
-    if (msg.type === "candidate") {
-
-        if (peer) {
-
-            try {
-
-                await peer.addIceCandidate(
-                    msg.candidate
-                );
-
-            } catch (e) {
-
-                console.error(e);
-
-            }
-
-        }
-
-        return;
-    }
-
-
-    if (msg.type === "error") {
-
-        alert(msg.message);
-
-        return;
-    }
-
-
-    if (msg.type === "hostLeft") {
-
-        alert("Host left the game.");
-
-        location.reload();
-
-        return;
-    }
-
-
-    if (msg.type === "playerLeft") {
-
-        setStatus(
-            "Opponent disconnected."
-        );
-
-    }
-
-}
-
-
-// -------------------------
-// WEBRTC
-// -------------------------
-
-async function createPeerConnection() {
-
-    if (peer) return;
+    document
+        .getElementById("roomStatus")
+        .textContent =
+            "Connecting to host...";
 
     peer =
-        new RTCPeerConnection({
-            iceServers: [
-                {
-                    urls:
+        new Peer(undefined,{
+
+            debug:0,
+
+            config:{
+                iceServers:[
+                    {
+                        urls:
                         "stun:stun.l.google.com:19302"
-                }
-            ]
+                    }
+                ]
+            }
+
         });
 
 
-    peer.onicecandidate = event => {
+    peer.on("open",() => {
 
-        if (!event.candidate)
-            return;
+        connection =
+            peer.connect(
+                "c4-" + code,
+                {
+                    reliable:true
+                }
+            );
 
-        socket.send(
-            JSON.stringify({
-                type: "candidate",
-                candidate:
-                    event.candidate
-            })
-        );
-    };
+        setupConnection();
 
-
-    peer.onconnectionstatechange = () => {
-
-        console.log(
-            "WebRTC:",
-            peer.connectionState
-        );
-
-        if (
-            peer.connectionState ===
-            "connected"
-        ) {
-
-            startGame();
-        }
-
-    };
+    });
 
 
-    peer.ondatachannel = event => {
+    peer.on("error",error => {
 
-        dataChannel =
-            event.channel;
+        console.error(error);
 
-        setupDataChannel();
+        document
+            .getElementById("roomStatus")
+            .textContent =
+                "❌ Room not found or connection failed.";
 
-    };
-}
-
-
-// -------------------------
-// HOST CREATES OFFER
-// -------------------------
-
-async function createOffer() {
-
-    await createPeerConnection();
-
-    dataChannel =
-        peer.createDataChannel(
-            "game"
+        showToast(
+            "Could not join that room."
         );
 
-    setupDataChannel();
-
-    const offer =
-        await peer.createOffer();
-
-    await peer.setLocalDescription(
-        offer
-    );
-
-    socket.send(
-        JSON.stringify({
-            type: "offer",
-            offer
-        })
-    );
+    });
 
 }
 
 
-// -------------------------
-// DATA CHANNEL
-// -------------------------
+/* -------------------------
+   CONNECTION
+------------------------- */
 
-function setupDataChannel() {
+function setupConnection(){
 
-    dataChannel.onopen = () => {
-
-        startGame();
-
-    };
-
-
-    dataChannel.onmessage =
-        event => {
-
-            const msg =
-                JSON.parse(event.data);
-
-            handleGameMessage(msg);
-
-        };
-
-}
-
-
-// -------------------------
-// START GAME
-// -------------------------
-
-function startGame() {
-
-    if (gameStarted)
+    if(!connection)
         return;
 
-    gameStarted = true;
 
-    document
-        .getElementById("room")
-        .classList.add("hidden");
+    connection.on("open",() => {
 
-    document
-        .getElementById("game")
-        .classList.remove("hidden");
+        document
+            .getElementById(
+                "connectionStatus"
+            )
+            .textContent =
+                "🟢 Connected directly P2P";
 
-    if (isHost) {
 
-        currentTurn = "red";
+        if(isHost){
+
+            startNewGame();
+
+            send({
+
+                type:"settings",
+
+                rows:ROWS,
+
+                cols:COLS,
+
+                win:WIN,
+
+                board:board,
+
+                turn:turn,
+
+                gameOver:false,
+
+                winningCells:[]
+
+            });
+
+        }
+
+    });
+
+
+    connection.on("data",message => {
+
+        handleMessage(message);
+
+    });
+
+
+    connection.on("close",() => {
+
+        document
+            .getElementById(
+                "connectionStatus"
+            )
+            .textContent =
+                "🔴 Opponent disconnected";
+
+        showToast(
+            "Opponent disconnected."
+        );
+
+    });
+
+
+    connection.on("error",error => {
+
+        console.error(error);
+
+        showToast(
+            "Connection error."
+        );
+
+    });
+
+}
+
+
+/* -------------------------
+   SEND
+------------------------- */
+
+function send(message){
+
+    if(
+        connection &&
+        connection.open
+    ){
+
+        connection.send(message);
 
     }
 
-    updateStatus();
+}
+
+
+/* -------------------------
+   MESSAGE HANDLER
+------------------------- */
+
+function handleMessage(message){
+
+    if(!message)
+        return;
+
+
+    /*
+      Host sends complete settings/state.
+    */
+
+    if(
+        message.type ===
+        "settings"
+    ){
+
+        ROWS =
+            Number(message.rows);
+
+        COLS =
+            Number(message.cols);
+
+        WIN =
+            Number(message.win);
+
+        board =
+            message.board;
+
+        turn =
+            message.turn;
+
+        gameOver =
+            message.gameOver;
+
+        winningCells =
+            message.winningCells || [];
+
+        showScreen("gameScreen");
+
+        renderBoard();
+
+        updateStatus();
+
+        return;
+
+    }
+
+
+    if(
+        message.type ===
+        "move"
+    ){
+
+        board =
+            message.board;
+
+        turn =
+            message.turn;
+
+        gameOver =
+            message.gameOver;
+
+        winningCells =
+            message.winningCells || [];
+
+        renderBoard();
+
+        updateStatus();
+
+        return;
+
+    }
+
+
+    if(
+        message.type ===
+        "rematch"
+    ){
+
+        startNewGame();
+
+        if(isHost){
+
+            sendState();
+
+        }
+
+        return;
+
+    }
+
+
+    if(
+        message.type ===
+        "requestRematch"
+    ){
+
+        if(isHost){
+
+            startNewGame();
+
+            sendState();
+
+        }
+
+        return;
+
+    }
+
+
+    if(
+        message.type ===
+        "hostLeft"
+    ){
+
+        showToast(
+            "Host left the game."
+        );
+
+        setTimeout(
+            goHome,
+            700
+        );
+
+    }
+
+}
+
+
+/* -------------------------
+   START GAME
+------------------------- */
+
+function startNewGame(){
+
+    board =
+        Array.from(
+            {
+                length:ROWS
+            },
+            () =>
+                Array(COLS).fill(null)
+        );
+
+    turn = "red";
+
+    gameOver = false;
+
+    winningCells = [];
+
+    showScreen("gameScreen");
 
     renderBoard();
 
-}
-
-
-// -------------------------
-// GAME MESSAGE
-// -------------------------
-
-function handleGameMessage(msg) {
-
-    if (msg.type === "move") {
-
-        board =
-            msg.board;
-
-        currentTurn =
-            msg.turn;
-
-        renderBoard();
-
-        updateStatus();
-
-    }
-
-
-    if (msg.type === "restart") {
-
-        board =
-            Array.from(
-                { length: ROWS },
-                () => Array(COLS).fill(null)
-            );
-
-        currentTurn = "red";
-
-        renderBoard();
-
-        updateStatus();
-
-    }
+    updateStatus();
 
 }
 
 
-// -------------------------
-// MAKE MOVE
-// -------------------------
+function sendState(){
 
-function makeMove(col) {
+    send({
 
-    if (!gameStarted)
+        type:"move",
+
+        board:board,
+
+        turn:turn,
+
+        gameOver:gameOver,
+
+        winningCells:winningCells
+
+    });
+
+}
+
+
+/* -------------------------
+   PLAY
+------------------------- */
+
+function playColumn(col){
+
+    if(gameOver)
         return;
 
-    if (currentTurn !== myColor)
+    if(turn !== myColor)
         return;
+
 
     const row =
-        findAvailableRow(col);
+        findOpenRow(col);
 
-    if (row === -1)
+    if(row === -1){
+
+        showToast(
+            "That column is full!"
+        );
+
         return;
+
+    }
 
 
     board[row][col] =
         myColor;
 
 
-    if (checkWin(
-        row,
-        col,
-        myColor
-    )) {
+    winningCells = [];
 
-        renderBoard();
 
-        setStatus(
-            myColor === "red"
-                ? "You win! 🎉"
-                : "You win! 🎉"
-        );
+    if(
+        checkWin(
+            row,
+            col,
+            myColor
+        )
+    ){
 
-        sendGameState();
+        gameOver = true;
 
-        return;
+        winningCells =
+            findWinningCells(
+                row,
+                col,
+                myColor
+            );
+
+    }else{
+
+        turn =
+            turn === "red"
+                ? "yellow"
+                : "red";
+
     }
 
-
-    currentTurn =
-        currentTurn === "red"
-            ? "yellow"
-            : "red";
-
-
-    sendGameState();
 
     renderBoard();
 
     updateStatus();
 
+    sendState();
+
+    playSound(
+        gameOver
+            ? "win"
+            : "drop"
+    );
+
 }
 
 
-// -------------------------
-// FIND ROW
-// -------------------------
+function findOpenRow(col){
 
-function findAvailableRow(col) {
+    for(
+        let row=ROWS-1;
+        row>=0;
+        row--
+    ){
 
-    for (
-        let r = ROWS - 1;
-        r >= 0;
-        r--
-    ) {
+        if(
+            !board[row][col]
+        ){
 
-        if (!board[r][col])
-            return r;
+            return row;
+
+        }
 
     }
 
     return -1;
-}
-
-
-// -------------------------
-// SEND GAME STATE
-// -------------------------
-
-function sendGameState() {
-
-    if (
-        dataChannel &&
-        dataChannel.readyState ===
-        "open"
-    ) {
-
-        dataChannel.send(
-            JSON.stringify({
-                type: "move",
-                board,
-                turn:
-                    currentTurn
-            })
-        );
-
-    }
 
 }
 
 
-// -------------------------
-// WIN CHECK
-// -------------------------
+/* -------------------------
+   WIN DETECTION
+------------------------- */
 
-function checkWin(
-    row,
-    col,
-    color
-) {
+const directions = [
 
-    const directions = [
-        [1, 0],
-        [0, 1],
-        [1, 1],
-        [1, -1]
-    ];
+    [1,0],
+    [0,1],
+    [1,1],
+    [1,-1]
 
-
-    for (const [dr, dc]
-        of directions) {
-
-        let count = 1;
-
-        count += countDirection(
-            row,
-            col,
-            dr,
-            dc,
-            color
-        );
-
-        count += countDirection(
-            row,
-            col,
-            -dr,
-            -dc,
-            color
-        );
-
-
-        if (count >= 4)
-            return true;
-
-    }
-
-    return false;
-}
+];
 
 
 function countDirection(
@@ -765,21 +2214,26 @@ function countDirection(
     dr,
     dc,
     color
-) {
+){
 
     let count = 0;
 
-    let r = row + dr;
-    let c = col + dc;
+    let r =
+        row + dr;
+
+    let c =
+        col + dc;
 
 
-    while (
+    while(
+
         r >= 0 &&
         r < ROWS &&
         c >= 0 &&
         c < COLS &&
         board[r][c] === color
-    ) {
+
+    ){
 
         count++;
 
@@ -788,15 +2242,144 @@ function countDirection(
 
     }
 
+
     return count;
+
 }
 
 
-// -------------------------
-// RENDER BOARD
-// -------------------------
+function checkWin(
+    row,
+    col,
+    color
+){
 
-function renderBoard() {
+    for(
+        const [dr,dc]
+        of directions
+    ){
+
+        const total =
+            1 +
+
+            countDirection(
+                row,
+                col,
+                dr,
+                dc,
+                color
+            ) +
+
+            countDirection(
+                row,
+                col,
+                -dr,
+                -dc,
+                color
+            );
+
+
+        if(total >= WIN)
+            return true;
+
+    }
+
+    return false;
+
+}
+
+
+function findWinningCells(
+    row,
+    col,
+    color
+){
+
+    let best = [];
+
+
+    for(
+        const [dr,dc]
+        of directions
+    ){
+
+        const line = [
+            [row,col]
+        ];
+
+
+        let r =
+            row + dr;
+
+        let c =
+            col + dc;
+
+
+        while(
+
+            r >= 0 &&
+            r < ROWS &&
+            c >= 0 &&
+            c < COLS &&
+            board[r][c] === color
+
+        ){
+
+            line.push([r,c]);
+
+            r += dr;
+            c += dc;
+
+        }
+
+
+        r =
+            row - dr;
+
+        c =
+            col - dc;
+
+
+        while(
+
+            r >= 0 &&
+            r < ROWS &&
+            c >= 0 &&
+            c < COLS &&
+            board[r][c] === color
+
+        ){
+
+            line.unshift([r,c]);
+
+            r -= dr;
+            c -= dc;
+
+        }
+
+
+        if(
+            line.length >= WIN &&
+            line.length > best.length
+        ){
+
+            best = line;
+
+        }
+
+    }
+
+
+    return best;
+
+}
+
+
+/* -------------------------
+   RENDER BOARD
+------------------------- */
+
+function renderBoard(){
 
     const boardElement =
         document.getElementById(
@@ -805,32 +2388,77 @@ function renderBoard() {
 
     boardElement.innerHTML = "";
 
+    boardElement.style
+        .setProperty(
+            "--cols",
+            COLS
+        );
 
-    for (
-        let r = 0;
-        r < ROWS;
-        r++
-    ) {
+    boardElement.style
+        .setProperty(
+            "--rows",
+            ROWS
+        );
 
-        for (
-            let c = 0;
-            c < COLS;
-            c++
-        ) {
+
+    for(
+        let row=0;
+        row<ROWS;
+        row++
+    ){
+
+        for(
+            let col=0;
+            col<COLS;
+            col++
+        ){
 
             const cell =
                 document.createElement(
                     "div"
                 );
 
-            cell.className =
-                "cell";
+            cell.className = "cell";
 
 
-            if (board[r][c]) {
+            if(
+                winningCells.some(
+                    ([r,c]) =>
+                        r === row &&
+                        c === col
+                )
+            ){
 
                 cell.classList.add(
-                    board[r][c]
+                    "winner"
+                );
+
+            }
+
+
+            const value =
+                board[row][col];
+
+
+            if(value){
+
+                const piece =
+                    document.createElement(
+                        "div"
+                    );
+
+                piece.className =
+                    "piece " + value;
+
+                if(!animationsEnabled){
+
+                    piece.style.animation =
+                        "none";
+
+                }
+
+                cell.appendChild(
+                    piece
                 );
 
             }
@@ -838,7 +2466,7 @@ function renderBoard() {
 
             cell.onclick = () => {
 
-                makeMove(c);
+                playColumn(col);
 
             };
 
@@ -854,57 +2482,290 @@ function renderBoard() {
 }
 
 
-// -------------------------
-// UI
-// -------------------------
+/* -------------------------
+   STATUS
+------------------------- */
 
-function showRoom(code) {
+function updateStatus(){
 
-    document
-        .getElementById("menu")
-        .classList.add("hidden");
-
-    document
-        .getElementById("room")
-        .classList.remove("hidden");
-
-    document
-        .getElementById("roomCode")
-        .textContent = code;
-
-}
-
-
-function setStatus(text) {
-
-    document
-        .getElementById("status")
-        .textContent = text;
-
-}
-
-
-function updateStatus() {
-
-    if (
-        currentTurn === myColor
-    ) {
-
-        setStatus(
-            "Your turn"
+    const status =
+        document.getElementById(
+            "gameStatus"
         );
 
-    } else {
 
-        setStatus(
-            "Opponent's turn"
+    if(gameOver){
+
+        const winner =
+            winningCells.length
+                ? board[
+                    winningCells[0][0]
+                ][
+                    winningCells[0][1]
+                ]
+                : (
+                    turn === "red"
+                        ? "yellow"
+                        : "red"
+                );
+
+
+        if(winner === myColor){
+
+            status.textContent =
+                "🎉 YOU WIN!";
+
+        }else{
+
+            status.textContent =
+                "😢 YOU LOST";
+
+        }
+
+        return;
+
+    }
+
+
+    if(turn === myColor){
+
+        status.textContent =
+            "🟢 Your turn";
+
+    }else{
+
+        status.textContent =
+            "🟡 Opponent's turn";
+
+    }
+
+}
+
+
+/* -------------------------
+   REMATCH
+------------------------- */
+
+function requestRematch(){
+
+    if(!connection || !connection.open){
+
+        showToast(
+            "Opponent isn't connected."
+        );
+
+        return;
+
+    }
+
+
+    if(isHost){
+
+        startNewGame();
+
+        sendState();
+
+    }else{
+
+        send({
+            type:"requestRematch"
+        });
+
+        showToast(
+            "Rematch requested!"
         );
 
     }
 
 }
 
+
+/* -------------------------
+   LEAVE
+------------------------- */
+
+function leaveGame(){
+
+    if(connection){
+
+        send({
+            type:"hostLeft"
+        });
+
+    }
+
+    goHome();
+
+}
+
+
+/* -------------------------
+   CANCEL ROOM
+------------------------- */
+
+function cancelRoom(){
+
+    if(peer){
+
+        try{
+            peer.destroy();
+        }catch{}
+
+    }
+
+    peer = null;
+    connection = null;
+
+    goHome();
+
+}
+
+
+/* -------------------------
+   COPY CODE
+------------------------- */
+
+async function copyRoomCode(){
+
+    const code =
+        roomCodeValue;
+
+    try{
+
+        await navigator
+            .clipboard
+            .writeText(code);
+
+        showToast(
+            "Room code copied!"
+        );
+
+    }catch{
+
+        showToast(
+            "Your room code is " + code
+        );
+
+    }
+
+}
+
+
+/* -------------------------
+   TOAST
+------------------------- */
+
+let toastTimer = null;
+
+function showToast(text){
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+    toast.textContent = text;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer =
+        setTimeout(
+            () =>
+                toast.classList.remove("show"),
+            2200
+        );
+
+}
+
+
+/* -------------------------
+   SOUND
+------------------------- */
+
+let audioContext = null;
+
+
+function playSound(type){
+
+    if(!soundEnabled)
+        return;
+
+    try{
+
+        if(!audioContext){
+
+            audioContext =
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+
+        }
+
+
+        const osc =
+            audioContext.createOscillator();
+
+        const gain =
+            audioContext.createGain();
+
+
+        osc.connect(gain);
+
+        gain.connect(
+            audioContext.destination
+        );
+
+
+        if(type === "win"){
+
+            osc.frequency.value = 620;
+
+        }else{
+
+            osc.frequency.value = 320;
+
+        }
+
+
+        gain.gain.setValueAtTime(
+            .001,
+            audioContext.currentTime
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            .08,
+            audioContext.currentTime + .01
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            .001,
+            audioContext.currentTime + .12
+        );
+
+
+        osc.start();
+
+        osc.stop(
+            audioContext.currentTime + .13
+        );
+
+    }catch{}
+
+}
+
+
+/* -------------------------
+   INIT
+------------------------- */
+
+loadSettings();
+
+updateWinOptions();
+
 </script>
 
 </body>
-  </html>
+   </html>
