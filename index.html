@@ -6,8 +6,6 @@
 <meta name="theme-color" content="#080d1a">
 <title>Connect 4 Online</title>
 
-<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
-
 <style>
 :root{
     --bg:#080d1a;
@@ -36,7 +34,7 @@ body{
     min-height:100vh;
     min-height:100dvh;
     color:var(--text);
-    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     background:
         radial-gradient(circle at 15% 10%,#6366f120,transparent 35%),
         radial-gradient(circle at 85% 90%,#06b6d415,transparent 35%),
@@ -58,7 +56,7 @@ button{
 .app{
     width:min(94vw,760px);
     margin:auto;
-    padding:16px 0 40px;
+    padding:12px 0 40px;
 }
 
 .topbar{
@@ -74,7 +72,6 @@ button{
     gap:10px;
     font-size:23px;
     font-weight:900;
-    letter-spacing:-.8px;
 }
 
 .logoDot{
@@ -95,10 +92,10 @@ button{
 }
 
 .screen{
-    animation:screenIn .2s ease;
+    animation:in .2s ease;
 }
 
-@keyframes screenIn{
+@keyframes in{
     from{
         opacity:0;
         transform:translateY(8px);
@@ -111,7 +108,7 @@ button{
 
 .hero{
     text-align:center;
-    padding:42px 5px 28px;
+    padding:45px 5px 28px;
 }
 
 .hero h1{
@@ -221,7 +218,7 @@ h2{
 }
 
 .theme{
-    min-height:56px;
+    min-height:55px;
     border:2px solid transparent;
     border-radius:15px;
     color:white;
@@ -234,36 +231,19 @@ h2{
     box-shadow:0 0 0 2px var(--accent);
 }
 
-.t-indigo{
-    background:linear-gradient(135deg,#4f46e5,#06b6d4);
-}
-
-.t-sunset{
-    background:linear-gradient(135deg,#f43f5e,#f97316);
-}
-
-.t-forest{
-    background:linear-gradient(135deg,#15803d,#14b8a6);
-}
-
-.t-ice{
-    background:linear-gradient(135deg,#0284c7,#6366f1);
-}
-
-.t-candy{
-    background:linear-gradient(135deg,#ec4899,#a855f7);
-}
-
-.t-mono{
-    background:linear-gradient(135deg,#334155,#94a3b8);
-}
+.t-indigo{background:linear-gradient(135deg,#4f46e5,#06b6d4)}
+.t-sunset{background:linear-gradient(135deg,#f43f5e,#f97316)}
+.t-forest{background:linear-gradient(135deg,#15803d,#14b8a6)}
+.t-ice{background:linear-gradient(135deg,#0284c7,#6366f1)}
+.t-candy{background:linear-gradient(135deg,#ec4899,#a855f7)}
+.t-mono{background:linear-gradient(135deg,#334155,#94a3b8)}
 
 .code{
     text-align:center;
-    margin:14px 0 18px;
-    font-size:clamp(32px,10vw,56px);
+    margin:18px 0;
+    font-size:clamp(30px,9vw,54px);
     font-weight:1000;
-    letter-spacing:7px;
+    letter-spacing:6px;
     word-break:break-all;
 }
 
@@ -320,7 +300,7 @@ h2{
     grid-template-columns:1fr auto 1fr;
     align-items:center;
     gap:8px;
-    margin-bottom:10px;
+    margin-bottom:8px;
 }
 
 .player{
@@ -382,7 +362,8 @@ h2{
     text-align:center;
     color:var(--muted);
     font-size:12px;
-    margin-bottom:11px;
+    min-height:18px;
+    margin-bottom:10px;
 }
 
 .board{
@@ -424,11 +405,6 @@ h2{
         0 1px 0 #ffffff18;
 
     cursor:pointer;
-    transition:transform .1s;
-}
-
-.cell:active{
-    transform:scale(.95);
 }
 
 .piece{
@@ -443,11 +419,9 @@ h2{
         transform:scale(.15);
         opacity:0;
     }
-
     70%{
         transform:scale(1.08);
     }
-
     100%{
         transform:scale(1);
         opacity:1;
@@ -475,18 +449,12 @@ h2{
 }
 
 .cell.winner .piece{
-    animation:pulseWinner .55s ease-in-out infinite alternate;
+    animation:pulse .55s ease-in-out infinite alternate;
 }
 
-@keyframes pulseWinner{
-    from{
-        transform:scale(1);
-    }
-
-    to{
-        transform:scale(1.13);
-        filter:brightness(1.3);
-    }
+@keyframes pulse{
+    from{transform:scale(1)}
+    to{transform:scale(1.13);filter:brightness(1.3)}
 }
 
 .gameButtons{
@@ -602,7 +570,6 @@ h2{
 
     .app{
         width:94vw;
-        padding-top:10px;
     }
 
     .panel{
@@ -611,15 +578,6 @@ h2{
 
     .settingsGrid{
         grid-template-columns:1fr;
-    }
-
-    .player{
-        padding:8px;
-    }
-
-    .dot{
-        width:16px;
-        height:16px;
     }
 
     .name{
@@ -633,547 +591,407 @@ h2{
 
 <div class="app">
 
-    <div class="topbar">
+<div class="topbar">
 
-        <div class="logo">
-            <span class="logoDot"></span>
-            Connect 4
-        </div>
+    <div class="logo">
+        <span class="logoDot"></span>
+        Connect 4
+    </div>
 
-        <button
-            class="iconBtn"
-            onclick="openSettings()"
-        >
-            ⚙️
-        </button>
+    <button class="iconBtn" onclick="openSettings()">
+        ⚙️
+    </button>
+
+</div>
+
+
+<!-- HOME -->
+
+<section id="home" class="screen">
+
+    <div class="hero">
+
+        <h1>CONNECT 4</h1>
+
+        <p>
+            Real-time multiplayer with your friends.
+        </p>
 
     </div>
 
+    <div class="panel">
 
-    <!-- HOME -->
-
-    <section id="home" class="screen">
-
-        <div class="hero">
-
-            <h1>CONNECT 4</h1>
-
-            <p>
-                Play online with your friends.
-            </p>
-
-        </div>
-
-        <div class="panel">
-
-            <div class="menu">
-
-                <button
-                    class="bigBtn primary"
-                    onclick="showCreate()"
-                >
-                    🎮 Create Room
-                </button>
-
-                <button
-                    class="bigBtn secondary"
-                    onclick="showJoin()"
-                >
-                    🔗 Join Room
-                </button>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- CREATE -->
-
-    <section
-        id="create"
-        class="screen hidden"
-    >
-
-        <div class="panel">
-
-            <button
-                class="back"
-                onclick="goHome()"
-            >
-                ← Back
-            </button>
-
-            <h2>Create Room</h2>
-
-            <p class="muted">
-                Choose the rules for your game.
-            </p>
-
-            <div class="settingsGrid">
-
-                <div class="setting">
-
-                    <label>BOARD WIDTH</label>
-
-                    <select
-                        id="cols"
-                        class="select"
-                    >
-
-                        <option value="4">4 columns</option>
-                        <option value="5">5 columns</option>
-                        <option value="6">6 columns</option>
-                        <option value="7" selected>7 columns</option>
-                        <option value="8">8 columns</option>
-                        <option value="9">9 columns</option>
-                        <option value="10">10 columns</option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="setting">
-
-                    <label>BOARD HEIGHT</label>
-
-                    <select
-                        id="rows"
-                        class="select"
-                    >
-
-                        <option value="4">4 rows</option>
-                        <option value="5">5 rows</option>
-                        <option value="6" selected>6 rows</option>
-                        <option value="7">7 rows</option>
-                        <option value="8">8 rows</option>
-                        <option value="9">9 rows</option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="setting">
-
-                    <label>WIN CONDITION</label>
-
-                    <select
-                        id="win"
-                        class="select"
-                    ></select>
-
-                </div>
-
-            </div>
-
-
-            <div class="divider"></div>
-
-            <p><b>Theme</b></p>
-
-            <div class="themeGrid">
-
-                <button
-                    class="theme t-indigo"
-                    data-theme="indigo"
-                    onclick="setTheme('indigo')"
-                >
-                    🌌 Indigo
-                </button>
-
-                <button
-                    class="theme t-sunset"
-                    data-theme="sunset"
-                    onclick="setTheme('sunset')"
-                >
-                    🌅 Sunset
-                </button>
-
-                <button
-                    class="theme t-forest"
-                    data-theme="forest"
-                    onclick="setTheme('forest')"
-                >
-                    🌲 Forest
-                </button>
-
-                <button
-                    class="theme t-ice"
-                    data-theme="ice"
-                    onclick="setTheme('ice')"
-                >
-                    ❄️ Ice
-                </button>
-
-                <button
-                    class="theme t-candy"
-                    data-theme="candy"
-                    onclick="setTheme('candy')"
-                >
-                    🍬 Candy
-                </button>
-
-                <button
-                    class="theme t-mono"
-                    data-theme="mono"
-                    onclick="setTheme('mono')"
-                >
-                    🖤 Mono
-                </button>
-
-            </div>
-
-
-            <div class="divider"></div>
+        <div class="menu">
 
             <button
                 class="bigBtn primary"
-                onclick="createRoom()"
-            >
-                Create Room
+                onclick="showCreate()">
+                🎮 Create Room
             </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- JOIN -->
-
-    <section
-        id="join"
-        class="screen hidden"
-    >
-
-        <div class="panel">
-
-            <button
-                class="back"
-                onclick="goHome()"
-            >
-                ← Back
-            </button>
-
-            <h2>Join Room</h2>
-
-            <p class="muted">
-                Paste your friend's 8-character room code.
-            </p>
-
-            <input
-                id="joinCode"
-                class="input codeInput"
-                maxlength="8"
-                minlength="8"
-                placeholder="AB12CD34"
-                autocomplete="off"
-                autocapitalize="characters"
-                spellcheck="false"
-            >
-
-            <div
-                id="joinError"
-                class="error"
-            ></div>
-
-            <br>
-
-            <button
-                class="bigBtn primary"
-                onclick="joinRoom()"
-            >
-                Join Game
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- WAITING -->
-
-    <section
-        id="waiting"
-        class="screen hidden"
-    >
-
-        <div class="panel">
-
-            <p
-                class="roomText"
-                style="margin-bottom:0"
-            >
-                Your room code
-            </p>
-
-            <div
-                id="roomCode"
-                class="code"
-            >
-                --------
-            </div>
-
-            <button
-                class="copy"
-                onclick="copyCode()"
-            >
-                📋 Copy Room Code
-            </button>
-
-            <p
-                id="waitingText"
-                class="roomText"
-            >
-                Starting connection...
-            </p>
-
-            <div
-                id="waitingError"
-                class="error"
-            ></div>
-
-            <div class="divider"></div>
-
-            <div
-                id="roomRules"
-                class="roomText"
-            ></div>
-
-            <br>
 
             <button
                 class="bigBtn secondary"
-                onclick="cancelRoom()"
-            >
-                Cancel
+                onclick="showJoin()">
+                🔗 Join Room
             </button>
 
         </div>
 
-    </section>
+    </div>
+
+</section>
 
 
-    <!-- GAME -->
+<!-- CREATE -->
 
-    <section
-        id="game"
-        class="screen hidden"
-    >
+<section id="create" class="screen hidden">
 
-        <div class="gameTop">
+<div class="panel">
 
-            <div class="player">
+<button class="back" onclick="goHome()">
+    ← Back
+</button>
 
-                <span class="dot red"></span>
+<h2>Create Room</h2>
 
-                <span class="name">
-                    You / Red
-                </span>
+<p class="muted">
+    Choose your board and win condition.
+</p>
 
-            </div>
+<div class="settingsGrid">
 
-            <div class="vs">VS</div>
+<div class="setting">
 
-            <div class="player right">
+<label>BOARD WIDTH</label>
 
-                <span class="name">
-                    Yellow
-                </span>
+<select id="cols" class="select">
 
-                <span class="dot yellow"></span>
+<option value="4">4 columns</option>
+<option value="5">5 columns</option>
+<option value="6">6 columns</option>
+<option value="7" selected>7 columns</option>
+<option value="8">8 columns</option>
+<option value="9">9 columns</option>
+<option value="10">10 columns</option>
 
-            </div>
+</select>
 
-        </div>
-
-
-        <div
-            id="status"
-            class="status"
-        >
-            Connecting...
-        </div>
+</div>
 
 
-        <div
-            id="connection"
-            class="connection"
-        >
-            🔄 Connecting...
-        </div>
+<div class="setting">
+
+<label>BOARD HEIGHT</label>
+
+<select id="rows" class="select">
+
+<option value="4">4 rows</option>
+<option value="5">5 rows</option>
+<option value="6" selected>6 rows</option>
+<option value="7">7 rows</option>
+<option value="8">8 rows</option>
+<option value="9">9 rows</option>
+
+</select>
+
+</div>
 
 
-        <div
-            id="board"
-            class="board"
-        ></div>
+<div class="setting">
+
+<label>WIN CONDITION</label>
+
+<select id="win" class="select"></select>
+
+</div>
+
+</div>
 
 
-        <div class="gameButtons">
+<div class="divider"></div>
 
-            <button
-                class="smallBtn"
-                onclick="rematch()"
-            >
-                🔄 Rematch
-            </button>
+<p><b>Theme</b></p>
 
-            <button
-                class="smallBtn"
-                onclick="leaveGame()"
-            >
-                🚪 Leave
-            </button>
+<div class="themeGrid">
 
-        </div>
+<button class="theme t-indigo" data-theme="indigo" onclick="setTheme('indigo')">
+🌌 Indigo
+</button>
 
-    </section>
+<button class="theme t-sunset" data-theme="sunset" onclick="setTheme('sunset')">
+🌅 Sunset
+</button>
+
+<button class="theme t-forest" data-theme="forest" onclick="setTheme('forest')">
+🌲 Forest
+</button>
+
+<button class="theme t-ice" data-theme="ice" onclick="setTheme('ice')">
+❄️ Ice
+</button>
+
+<button class="theme t-candy" data-theme="candy" onclick="setTheme('candy')">
+🍬 Candy
+</button>
+
+<button class="theme t-mono" data-theme="mono" onclick="setTheme('mono')">
+🖤 Mono
+</button>
+
+</div>
+
+
+<div class="divider"></div>
+
+<button class="bigBtn primary" onclick="createRoom()">
+    Create Room
+</button>
+
+</div>
+
+</section>
+
+
+<!-- JOIN -->
+
+<section id="join" class="screen hidden">
+
+<div class="panel">
+
+<button class="back" onclick="goHome()">
+    ← Back
+</button>
+
+<h2>Join Room</h2>
+
+<p class="muted">
+    Enter your friend's 8-character code.
+</p>
+
+<input
+    id="joinCode"
+    class="input codeInput"
+    maxlength="8"
+    placeholder="AB12CD34"
+    autocomplete="off"
+    autocapitalize="characters"
+    spellcheck="false">
+
+<div id="joinError" class="error"></div>
+
+<br>
+
+<button class="bigBtn primary" onclick="joinRoom()">
+    Join Game
+</button>
+
+</div>
+
+</section>
+
+
+<!-- WAITING -->
+
+<section id="waiting" class="screen hidden">
+
+<div class="panel">
+
+<p class="roomText">
+    Your room code
+</p>
+
+<div id="roomCode" class="code">
+    --------
+</div>
+
+<button class="copy" onclick="copyCode()">
+    📋 Copy Room Code
+</button>
+
+<p id="waitingText" class="roomText">
+    🔄 Looking for your opponent...
+</p>
+
+<div id="waitingError" class="error"></div>
+
+<div class="divider"></div>
+
+<div id="roomRules" class="roomText"></div>
+
+<br>
+
+<button class="bigBtn secondary" onclick="cancelRoom()">
+    Cancel
+</button>
+
+</div>
+
+</section>
+
+
+<!-- GAME -->
+
+<section id="game" class="screen hidden">
+
+<div class="gameTop">
+
+<div class="player">
+
+<span class="dot red"></span>
+
+<span class="name">
+    You / Red
+</span>
+
+</div>
+
+<div class="vs">
+    VS
+</div>
+
+<div class="player right">
+
+<span class="name">
+    Opponent
+</span>
+
+<span class="dot yellow"></span>
+
+</div>
+
+</div>
+
+
+<div id="status" class="status">
+    Waiting...
+</div>
+
+<div id="connection" class="connection">
+    🔄 Connecting...
+</div>
+
+<div id="board" class="board"></div>
+
+<div class="gameButtons">
+
+<button class="smallBtn" onclick="rematch()">
+    🔄 Rematch
+</button>
+
+<button class="smallBtn" onclick="leaveGame()">
+    🚪 Leave
+</button>
+
+</div>
+
+</section>
 
 </div>
 
 
 <!-- SETTINGS -->
 
-<div
-    id="settingsModal"
-    class="modal hidden"
-    onclick="modalOutside(event)"
->
+<div id="settingsModal" class="modal hidden" onclick="modalOutside(event)">
 
-    <div class="modalCard">
+<div class="modalCard">
 
-        <div class="modalHeader">
+<div class="modalHeader">
 
-            <h2>Settings</h2>
+<h2>Settings</h2>
 
-            <button
-                class="close"
-                onclick="closeSettings()"
-            >
-                ✕
-            </button>
-
-        </div>
-
-
-        <div class="settingSection">
-
-            <h3>Theme</h3>
-
-            <div class="themeGrid">
-
-                <button
-                    class="theme t-indigo"
-                    data-theme="indigo"
-                    onclick="setTheme('indigo')"
-                >
-                    🌌 Indigo
-                </button>
-
-                <button
-                    class="theme t-sunset"
-                    data-theme="sunset"
-                    onclick="setTheme('sunset')"
-                >
-                    🌅 Sunset
-                </button>
-
-                <button
-                    class="theme t-forest"
-                    data-theme="forest"
-                    onclick="setTheme('forest')"
-                >
-                    🌲 Forest
-                </button>
-
-                <button
-                    class="theme t-ice"
-                    data-theme="ice"
-                    onclick="setTheme('ice')"
-                >
-                    ❄️ Ice
-                </button>
-
-                <button
-                    class="theme t-candy"
-                    data-theme="candy"
-                    onclick="setTheme('candy')"
-                >
-                    🍬 Candy
-                </button>
-
-                <button
-                    class="theme t-mono"
-                    data-theme="mono"
-                    onclick="setTheme('mono')"
-                >
-                    🖤 Mono
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="settingSection">
-
-            <h3>Gameplay</h3>
-
-            <div class="check">
-
-                <span>Drop animations</span>
-
-                <input
-                    id="animations"
-                    type="checkbox"
-                    checked
-                    onchange="saveSettings()"
-                >
-
-            </div>
-
-
-            <div class="check">
-
-                <span>Sound effects</span>
-
-                <input
-                    id="sounds"
-                    type="checkbox"
-                    checked
-                    onchange="saveSettings()"
-                >
-
-            </div>
-
-        </div>
-
-    </div>
+<button class="close" onclick="closeSettings()">
+    ✕
+</button>
 
 </div>
 
 
-<div
-    id="toast"
-    class="toast"
-></div>
+<div class="settingSection">
+
+<h3>Theme</h3>
+
+<div class="themeGrid">
+
+<button class="theme t-indigo" data-theme="indigo" onclick="setTheme('indigo')">
+🌌 Indigo
+</button>
+
+<button class="theme t-sunset" data-theme="sunset" onclick="setTheme('sunset')">
+🌅 Sunset
+</button>
+
+<button class="theme t-forest" data-theme="forest" onclick="setTheme('forest')">
+🌲 Forest
+</button>
+
+<button class="theme t-ice" data-theme="ice" onclick="setTheme('ice')">
+❄️ Ice
+</button>
+
+<button class="theme t-candy" data-theme="candy" onclick="setTheme('candy')">
+🍬 Candy
+</button>
+
+<button class="theme t-mono" data-theme="mono" onclick="setTheme('mono')">
+🖤 Mono
+</button>
+
+</div>
+
+</div>
 
 
-<script>
+<div class="settingSection">
 
-/* =========================================================
-   CONNECT 4 ONLINE
-   PeerJS / WebRTC
-========================================================= */
+<h3>Gameplay</h3>
 
-let peer = null;
-let conn = null;
+<div class="check">
+
+<span>Drop animations</span>
+
+<input id="animations" type="checkbox" checked>
+
+</div>
+
+<div class="check">
+
+<span>Sound effects</span>
+
+<input id="sounds" type="checkbox" checked>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div id="toast" class="toast"></div>
+
+
+<!-- =====================================================
+     IMPORTANT:
+     THIS IS THE NEW NETWORKING SYSTEM.
+     NO PEERJS.
+     ===================================================== -->
+
+<script type="module">
+
+import { joinRoom }
+    from "https://esm.run/trystero@0.25.3";
+
+
+/* =====================================================
+   GLOBALS
+===================================================== */
+
+let room = null;
+let action = null;
 
 let isHost = false;
-let myColor = null;
+let myColor = "red";
 
 let roomCode = "";
 
@@ -1187,12 +1005,24 @@ let turn = "red";
 let gameOver = false;
 let winningCells = [];
 
-let connectingTimeout = null;
+let connected = false;
+
+let reconnectTimer = null;
 
 
-/* =========================================================
-   SETTINGS
-========================================================= */
+/*
+   Unique app namespace.
+
+   Everyone using this HTML is on the same game network,
+   but rooms are separated by roomCode.
+*/
+const APP_ID =
+    "connect4-online-tomer-v3";
+
+
+/* =====================================================
+   THEME
+===================================================== */
 
 let theme =
     localStorage.getItem("c4-theme") ||
@@ -1207,248 +1037,208 @@ let sounds =
 
 const themeData = {
 
-    indigo:{
-        accent:"#6366f1",
-        accent2:"#8b5cf6",
-        board:"#2563eb"
-    },
+indigo:{
+    accent:"#6366f1",
+    accent2:"#8b5cf6",
+    board:"#2563eb"
+},
 
-    sunset:{
-        accent:"#f43f5e",
-        accent2:"#f97316",
-        board:"#e11d48"
-    },
+sunset:{
+    accent:"#f43f5e",
+    accent2:"#f97316",
+    board:"#e11d48"
+},
 
-    forest:{
-        accent:"#16a34a",
-        accent2:"#14b8a6",
-        board:"#15803d"
-    },
+forest:{
+    accent:"#16a34a",
+    accent2:"#14b8a6",
+    board:"#15803d"
+},
 
-    ice:{
-        accent:"#0284c7",
-        accent2:"#6366f1",
-        board:"#0369a1"
-    },
+ice:{
+    accent:"#0284c7",
+    accent2:"#6366f1",
+    board:"#0369a1"
+},
 
-    candy:{
-        accent:"#ec4899",
-        accent2:"#a855f7",
-        board:"#9333ea"
-    },
+candy:{
+    accent:"#ec4899",
+    accent2:"#a855f7",
+    board:"#9333ea"
+},
 
-    mono:{
-        accent:"#64748b",
-        accent2:"#94a3b8",
-        board:"#475569"
-    }
+mono:{
+    accent:"#64748b",
+    accent2:"#94a3b8",
+    board:"#475569"
+}
 
 };
 
 
-function setTheme(name){
+window.setTheme = function(name){
 
-    if(!themeData[name]){
-        name = "indigo";
-    }
+const t =
+    themeData[name] ||
+    themeData.indigo;
 
-    theme = name;
+theme = name;
 
-    const t = themeData[name];
+document.documentElement.style
+    .setProperty("--accent",t.accent);
 
-    document.documentElement.style
-        .setProperty("--accent",t.accent);
+document.documentElement.style
+    .setProperty("--accent2",t.accent2);
 
-    document.documentElement.style
-        .setProperty("--accent2",t.accent2);
+document.documentElement.style
+    .setProperty("--board",t.board);
 
-    document.documentElement.style
-        .setProperty("--board",t.board);
+localStorage.setItem(
+    "c4-theme",
+    name
+);
 
-    localStorage.setItem(
-        "c4-theme",
-        name
+document
+    .querySelectorAll(".theme")
+    .forEach(x =>
+        x.classList.toggle(
+            "active",
+            x.dataset.theme === name
+        )
     );
 
-    document.querySelectorAll(".theme")
-        .forEach(button => {
-
-            button.classList.toggle(
-                "active",
-                button.dataset.theme === name
-            );
-
-        });
-
-}
+};
 
 
-function saveSettings(){
+window.openSettings = function(){
 
-    const a =
-        document.getElementById("animations");
+document
+    .getElementById("settingsModal")
+    .classList.remove("hidden");
 
-    const s =
-        document.getElementById("sounds");
-
-    if(a)
-        animations = a.checked;
-
-    if(s)
-        sounds = s.checked;
-
-    localStorage.setItem(
-        "c4-animations",
-        animations
-    );
-
-    localStorage.setItem(
-        "c4-sounds",
-        sounds
-    );
-
-}
+};
 
 
-function openSettings(){
+window.closeSettings = function(){
 
-    document
-        .getElementById("settingsModal")
-        .classList.remove("hidden");
+document
+    .getElementById("settingsModal")
+    .classList.add("hidden");
 
-}
-
-
-function closeSettings(){
-
-    document
-        .getElementById("settingsModal")
-        .classList.add("hidden");
-
-}
+};
 
 
-function modalOutside(event){
+window.modalOutside = function(e){
 
-    if(event.target.id === "settingsModal"){
-        closeSettings();
-    }
+if(e.target.id === "settingsModal")
+    closeSettings();
 
-}
+};
 
 
-/* =========================================================
-   SCREEN CONTROL
-========================================================= */
+/* =====================================================
+   SCREEN
+===================================================== */
 
 function hideScreens(){
 
-    document
-        .querySelectorAll(".screen")
-        .forEach(element =>
-            element.classList.add("hidden")
-        );
+document
+    .querySelectorAll(".screen")
+    .forEach(x =>
+        x.classList.add("hidden")
+    );
 
 }
 
 
 function screen(id){
 
-    hideScreens();
+hideScreens();
 
+document
+    .getElementById(id)
+    .classList.remove("hidden");
+
+}
+
+
+window.goHome = function(){
+
+leaveNetwork();
+
+screen("home");
+
+};
+
+
+window.showCreate = function(){
+
+updateWinOptions();
+
+screen("create");
+
+};
+
+
+window.showJoin = function(){
+
+screen("join");
+
+setTimeout(() =>
     document
-        .getElementById(id)
-        .classList.remove("hidden");
+        .getElementById("joinCode")
+        .focus(),
+    100
+);
 
-}
-
-
-function goHome(){
-
-    clearTimeout(connectingTimeout);
-
-    destroyPeer();
-
-    screen("home");
-
-}
+};
 
 
-function showCreate(){
-
-    updateWinOptions();
-
-    screen("create");
-
-}
-
-
-function showJoin(){
-
-    screen("join");
-
-    setTimeout(() => {
-
-        document
-            .getElementById("joinCode")
-            .focus();
-
-    },100);
-
-}
-
-
-/* =========================================================
+/* =====================================================
    WIN OPTIONS
-========================================================= */
+===================================================== */
 
 function updateWinOptions(){
 
-    const rows =
-        Number(
-            document.getElementById("rows").value
-        );
+const rows =
+    Number(
+        document.getElementById("rows").value
+    );
 
-    const cols =
-        Number(
-            document.getElementById("cols").value
-        );
+const cols =
+    Number(
+        document.getElementById("cols").value
+    );
 
-    const max =
-        Math.min(rows,cols);
+const max =
+    Math.min(rows,cols);
 
-    const select =
-        document.getElementById("win");
+const select =
+    document.getElementById("win");
 
-    const old =
-        Number(select.value);
+const old =
+    Number(select.value);
 
-    select.innerHTML = "";
+select.innerHTML = "";
 
-    for(let i=3;i<=max;i++){
+for(let i=3;i<=max;i++){
 
-        const option =
-            document.createElement("option");
+const option =
+    document.createElement("option");
 
-        option.value = i;
-        option.textContent = `${i} in a row`;
+option.value = i;
 
-        select.appendChild(option);
+option.textContent =
+    `${i} in a row`;
 
-    }
+select.appendChild(option);
 
-    if(old >= 3 && old <= max){
+}
 
-        select.value = old;
-
-    }else{
-
-        select.value =
-            max >= 4
-                ? 4
-                : 3;
-
-    }
+if(old >= 3 && old <= max)
+    select.value = old;
+else
+    select.value = max >= 4 ? 4 : 3;
 
 }
 
@@ -1468,425 +1258,256 @@ document
     );
 
 
-/* =========================================================
+/* =====================================================
    ROOM CODE
-========================================================= */
+===================================================== */
+
+function makeCode(){
+
+const chars =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+const bytes =
+    new Uint32Array(8);
+
+crypto
+    .getRandomValues(bytes);
+
+let result = "";
+
+for(let i=0;i<8;i++){
+
+result +=
+    chars[
+        bytes[i] %
+        chars.length
+    ];
+
+}
+
+return result;
+
+}
+
+
+/* =====================================================
+   CREATE
+===================================================== */
+
+window.createRoom = function(){
+
+ROWS =
+    Number(
+        document.getElementById("rows").value
+    );
+
+COLS =
+    Number(
+        document.getElementById("cols").value
+    );
+
+WIN =
+    Number(
+        document.getElementById("win").value
+    );
+
+isHost = true;
+
+myColor = "red";
+
+roomCode = makeCode();
+
+showWaiting();
+
+connectToTrystero();
+
+};
+
+
+/* =====================================================
+   JOIN
+===================================================== */
+
+window.joinRoom = function(){
+
+const input =
+    document.getElementById("joinCode");
+
+const error =
+    document.getElementById("joinError");
+
+const code =
+    input.value
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g,"");
+
+input.value = code;
+
+error.textContent = "";
+
+if(!/^[A-Z0-9]{8}$/.test(code)){
+
+error.textContent =
+    "Enter exactly 8 letters/numbers.";
+
+return;
+
+}
+
+isHost = false;
+
+myColor = "yellow";
+
+roomCode = code;
+
+showWaiting();
+
+connectToTrystero();
+
+};
+
+
+/* =====================================================
+   WAITING
+===================================================== */
+
+function showWaiting(){
+
+screen("waiting");
+
+document
+    .getElementById("roomCode")
+    .textContent =
+        roomCode;
+
+document
+    .getElementById("waitingText")
+    .textContent =
+        isHost
+            ? "🟢 Room created! Send the code to your friend."
+            : "🔎 Looking for the host...";
+
+document
+    .getElementById("waitingError")
+    .textContent = "";
+
+document
+    .getElementById("roomRules")
+    .textContent =
+        isHost
+            ? `${COLS} × ${ROWS} • ${WIN} in a row`
+            : "Waiting for the host to send the game settings...";
+
+}
+
+
+/* =====================================================
+   TRYSTERO
+===================================================== */
+
+function connectToTrystero(){
+
+connected = false;
+
+try{
+
+room =
+    joinRoom(
+        {
+            appId:APP_ID,
+
+            /*
+               Encrypt the signaling information.
+               This password is identical for both clients.
+            */
+            password:
+                "connect4-online-public-v3"
+
+        },
+
+        roomCode,
+
+        {
+
+            /*
+               If WebRTC itself fails, DON'T
+               stay stuck forever.
+            */
+            handshakeTimeoutMs:10000,
+
+            onJoinError(details){
+
+                console.error(
+                    "TRYSTERO JOIN ERROR",
+                    details
+                );
+
+                document
+                    .getElementById("waitingError")
+                    .textContent =
+                        "Connection failed. Try creating a new room.";
+
+                document
+                    .getElementById("waitingText")
+                    .textContent =
+                        "🔴 Could not connect.";
+
+            }
+
+        }
+    );
+
 
 /*
-   EXACTLY 8 CHARACTERS.
-
-   No prefix.
-   No c4-.
+   ONE action is used for all game messages.
 */
 
-function randomRoomCode(){
-
-    const chars =
-        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-    let code = "";
-
-    for(let i=0;i<8;i++){
-
-        code += chars[
-            Math.floor(
-                Math.random() *
-                chars.length
-            )
-        ];
-
-    }
-
-    return code;
-
-}
+action =
+    room.makeAction("game-state");
 
 
-/* =========================================================
-   PEER CREATION
-========================================================= */
+/*
+   Someone entered our room.
+*/
 
-function createPeer(id){
-
-    /*
-       The room code itself is the PeerJS ID.
-    */
-
-    return new Peer(
-        id,
-        {
-            debug:1
-        }
-    );
-
-}
-
-
-/* =========================================================
-   CREATE ROOM
-========================================================= */
-
-function createRoom(){
-
-    ROWS =
-        Number(
-            document.getElementById("rows").value
-        );
-
-    COLS =
-        Number(
-            document.getElementById("cols").value
-        );
-
-    WIN =
-        Number(
-            document.getElementById("win").value
-        );
-
-    isHost = true;
-
-    myColor = "red";
-
-
-    /*
-       Example:
-
-       roomCode = "A7KQ2M9X"
-
-       This SAME string becomes
-       the PeerJS ID.
-    */
-
-    roomCode =
-        randomRoomCode();
-
-
-    screen("waiting");
-
-
-    document
-        .getElementById("roomCode")
-        .textContent =
-            roomCode;
-
-
-    document
-        .getElementById("waitingText")
-        .textContent =
-            "🔄 Creating room...";
-
-
-    document
-        .getElementById("waitingError")
-        .textContent = "";
-
-
-    document
-        .getElementById("roomRules")
-        .textContent =
-            `${COLS} × ${ROWS} board • ${WIN} in a row`;
-
-
-    peer =
-        createPeer(roomCode);
-
-
-    peer.on("open",id => {
+room.onPeerJoin =
+    peerId => {
 
         console.log(
-            "HOST PEER OPEN:",
-            id
+            "PEER JOINED:",
+            peerId
         );
 
-        document
-            .getElementById("waitingText")
-            .textContent =
-                "🟢 Room ready! Send the code to your friend.";
-
-    });
-
-
-    peer.on("connection",incoming => {
-
-        console.log(
-            "Incoming connection:",
-            incoming
-        );
-
-        if(conn){
-
-            incoming.close();
-
-            return;
-
-        }
-
-        conn = incoming;
-
-        setupConnection();
-
-    });
-
-
-    peer.on("disconnected",() => {
-
-        document
-            .getElementById("waitingText")
-            .textContent =
-                "⚠️ Reconnecting...";
-
-        if(peer && !peer.destroyed){
-
-            peer.reconnect();
-
-        }
-
-    });
-
-
-    peer.on("error",error => {
-
-        console.error(
-            "HOST ERROR:",
-            error
-        );
-
-        handlePeerError(error);
-
-    });
-
-
-    connectingTimeout =
-        setTimeout(() => {
-
-            if(
-                peer &&
-                !peer.open
-            ){
-
-                document
-                    .getElementById("waitingError")
-                    .textContent =
-                        "Could not connect to the multiplayer service.";
-
-            }
-
-        },12000);
-
-}
-
-
-/* =========================================================
-   JOIN ROOM
-========================================================= */
-
-function joinRoom(){
-
-    const input =
-        document.getElementById("joinCode");
-
-    const error =
-        document.getElementById("joinError");
-
-
-    const code =
-        input.value
-            .trim()
-            .toUpperCase()
-            .replace(/\s/g,"");
-
-
-    input.value = code;
-
-    error.textContent = "";
-
-
-    /*
-       EXACTLY 8 characters.
-
-       No c4- prefix.
-    */
-
-    if(!/^[A-Z0-9]{8}$/.test(code)){
-
-        error.textContent =
-            "Enter the 8-character room code.";
-
-        return;
-
-    }
-
-
-    isHost = false;
-
-    myColor = "yellow";
-
-    roomCode = code;
-
-
-    screen("waiting");
-
-
-    document
-        .getElementById("roomCode")
-        .textContent =
-            roomCode;
-
-
-    document
-        .getElementById("waitingText")
-        .textContent =
-            "🔄 Connecting to host...";
-
-
-    document
-        .getElementById("waitingError")
-        .textContent = "";
-
-
-    /*
-       The JOINER gets its own random PeerJS ID.
-    */
-
-    peer =
-        new Peer(
-            undefined,
-            {
-                debug:1
-            }
-        );
-
-
-    peer.on("open",id => {
-
-        console.log(
-            "JOINER PEER OPEN:",
-            id
-        );
-
-        connectToHost();
-
-    });
-
-
-    peer.on("error",error => {
-
-        console.error(
-            "JOINER ERROR:",
-            error
-        );
-
-        handlePeerError(error);
-
-    });
-
-
-    peer.on("disconnected",() => {
-
-        if(peer && !peer.destroyed){
-
-            peer.reconnect();
-
-        }
-
-    });
-
-
-    connectingTimeout =
-        setTimeout(() => {
-
-            if(!conn){
-
-                document
-                    .getElementById("waitingError")
-                    .textContent =
-                        "Could not connect. Check the room code.";
-
-            }
-
-        },12000);
-
-}
-
-
-/* =========================================================
-   CONNECT TO HOST
-========================================================= */
-
-function connectToHost(){
-
-    if(!peer)
-        return;
-
-
-    console.log(
-        "Connecting directly to room:",
-        roomCode
-    );
-
-
-    /*
-       IMPORTANT:
-
-       roomCode is exactly:
-
-       A7KQ2M9X
-
-       NOT:
-
-       c4-A7KQ2M9X
-    */
-
-    conn =
-        peer.connect(
-            roomCode,
-            {
-                reliable:true,
-                serialization:"json"
-            }
-        );
-
-
-    setupConnection();
-
-}
-
-
-/* =========================================================
-   CONNECTION
-========================================================= */
-
-function setupConnection(){
-
-    if(!conn)
-        return;
-
-
-    conn.on("open",() => {
-
-        console.log(
-            "P2P CONNECTION OPEN"
-        );
-
+        connected = true;
 
         clearTimeout(
-            connectingTimeout
+            reconnectTimer
         );
+
+
+        document
+            .getElementById("waitingText")
+            .textContent =
+                "🟢 Opponent connected!";
 
 
         document
             .getElementById("connection")
             .textContent =
-                "🟢 Connected directly P2P";
+                "🟢 Connected P2P";
 
 
         if(isHost){
 
             startGame();
 
+            /*
+               Send the complete game state
+               to the new player.
+            */
 
             send({
-
                 type:"start",
 
                 rows:ROWS,
@@ -1894,33 +1515,47 @@ function setupConnection(){
                 win:WIN,
 
                 board:board,
-
                 turn:turn,
 
                 gameOver:false,
-
                 winningCells:[]
-
             });
 
         }
 
-    });
+    };
 
 
-    conn.on("data",message => {
+/*
+   Receive game messages.
+*/
+
+action.onMessage =
+    (message,{peerId}) => {
 
         console.log(
-            "DATA:",
+            "GAME MESSAGE",
             message
         );
 
         handleMessage(message);
 
-    });
+    };
 
 
-    conn.on("close",() => {
+/*
+   Opponent leaves.
+*/
+
+room.onPeerLeave =
+    peerId => {
+
+        console.log(
+            "PEER LEFT:",
+            peerId
+        );
+
+        connected = false;
 
         document
             .getElementById("connection")
@@ -1931,395 +1566,235 @@ function setupConnection(){
             "Opponent disconnected."
         );
 
-    });
+    };
 
 
-    conn.on("error",error => {
+/*
+   This timer exists specifically so you
+   NEVER get another 2-hour "Connecting..."
+   situation.
+*/
 
-        console.error(
-            "Connection error:",
-            error
-        );
+reconnectTimer =
+    setTimeout(() => {
 
-    });
+        if(!connected){
+
+            document
+                .getElementById("waitingText")
+                .textContent =
+                    "⚠️ Nobody has joined yet.";
+
+            document
+                .getElementById("waitingError")
+                .textContent =
+                    isHost
+                        ? "Keep this page open and send the code to your friend."
+                        : "Check that the host is still on the room screen.";
+
+        }
+
+    },15000);
+
+
+}catch(error){
+
+console.error(
+    "TRYSTERO ERROR:",
+    error
+);
+
+document
+    .getElementById("waitingError")
+    .textContent =
+        error.message ||
+        "Could not start multiplayer.";
+
+}
 
 }
 
 
-/* =========================================================
-   ERROR HANDLING
-========================================================= */
-
-function handlePeerError(error){
-
-    console.error(error);
-
-    let message =
-        "Connection failed.";
-
-    switch(error.type){
-
-        case "peer-unavailable":
-
-            message =
-                "Room not found. Check the code.";
-
-            break;
-
-        case "unavailable-id":
-
-            message =
-                "That room code is already being used. Try creating another room.";
-
-            break;
-
-        case "network":
-
-            message =
-                "Network connection failed.";
-
-            break;
-
-        case "server-error":
-
-            message =
-                "Multiplayer service error.";
-
-            break;
-
-        case "socket-error":
-
-            message =
-                "Could not connect to multiplayer service.";
-
-            break;
-
-        case "browser-incompatible":
-
-            message =
-                "Your browser does not support WebRTC.";
-
-            break;
-
-        case "webrtc":
-
-            message =
-                "WebRTC connection failed.";
-
-            break;
-
-        default:
-
-            message =
-                error.message ||
-                error.type ||
-                "Unknown connection error.";
-
-    }
-
-
-    const element =
-        document.getElementById(
-            "waitingError"
-        );
-
-    if(element){
-
-        element.textContent =
-            message;
-
-    }
-
-}
-
-
-/* =========================================================
+/* =====================================================
    SEND
-========================================================= */
+===================================================== */
 
 function send(data){
 
-    if(
-        conn &&
-        conn.open
-    ){
+if(!action)
+    return;
 
-        conn.send(data);
+try{
 
-    }
+action.send(data);
+
+}catch(error){
+
+console.error(
+    "SEND ERROR",
+    error
+);
+
+}
 
 }
 
 
-/* =========================================================
+/* =====================================================
    RECEIVE
-========================================================= */
+===================================================== */
 
 function handleMessage(message){
 
-    if(!message)
-        return;
+if(!message)
+    return;
 
 
-    if(message.type === "start"){
+if(message.type === "start"){
 
-        ROWS =
-            Number(message.rows);
+ROWS =
+    Number(message.rows);
 
-        COLS =
-            Number(message.cols);
+COLS =
+    Number(message.cols);
 
-        WIN =
-            Number(message.win);
+WIN =
+    Number(message.win);
 
-        board =
-            message.board;
+board =
+    message.board;
 
-        turn =
-            message.turn;
+turn =
+    message.turn;
 
-        gameOver =
-            message.gameOver;
+gameOver =
+    message.gameOver;
 
-        winningCells =
-            message.winningCells || [];
+winningCells =
+    message.winningCells || [];
 
+screen("game");
 
-        screen("game");
+render();
 
-        render();
+updateStatus();
 
-        updateStatus();
-
-        return;
-
-    }
-
-
-    if(message.type === "state"){
-
-        board =
-            message.board;
-
-        turn =
-            message.turn;
-
-        gameOver =
-            message.gameOver;
-
-        winningCells =
-            message.winningCells || [];
-
-
-        render();
-
-        updateStatus();
-
-        return;
-
-    }
-
-
-    if(message.type === "rematchRequest"){
-
-        if(isHost){
-
-            startGame();
-
-            sendState();
-
-        }
-
-        return;
-
-    }
-
-
-    if(message.type === "hostLeft"){
-
-        showToast(
-            "Opponent left the game."
-        );
-
-        setTimeout(
-            goHome,
-            700
-        );
-
-    }
+return;
 
 }
 
 
-/* =========================================================
+if(message.type === "state"){
+
+board =
+    message.board;
+
+turn =
+    message.turn;
+
+gameOver =
+    message.gameOver;
+
+winningCells =
+    message.winningCells || [];
+
+render();
+
+updateStatus();
+
+return;
+
+}
+
+
+if(message.type === "rematch"){
+
+if(isHost){
+
+startGame();
+
+sendState();
+
+}
+
+return;
+
+}
+
+}
+
+
+/* =====================================================
    START GAME
-========================================================= */
+===================================================== */
 
 function startGame(){
 
-    board =
-        Array.from(
-            {length:ROWS},
-            () =>
-                Array(COLS).fill(null)
-        );
+board =
+    Array.from(
+        {length:ROWS},
+        () =>
+            Array(COLS).fill(null)
+    );
 
+turn = "red";
 
-    turn = "red";
+gameOver = false;
 
-    gameOver = false;
+winningCells = [];
 
-    winningCells = [];
+screen("game");
 
+render();
 
-    screen("game");
-
-    render();
-
-    updateStatus();
+updateStatus();
 
 }
 
 
-/* =========================================================
+/* =====================================================
    SEND STATE
-========================================================= */
+===================================================== */
 
 function sendState(){
 
-    send({
+send({
 
-        type:"state",
+type:"state",
 
-        board:board,
+board:board,
 
-        turn:turn,
+turn:turn,
 
-        gameOver:gameOver,
+gameOver:gameOver,
 
-        winningCells:
-            winningCells
+winningCells:winningCells
 
-    });
-
-}
-
-
-/* =========================================================
-   PLAY
-========================================================= */
-
-function playColumn(col){
-
-    if(gameOver)
-        return;
-
-
-    if(turn !== myColor)
-        return;
-
-
-    const row =
-        findOpenRow(col);
-
-
-    if(row < 0){
-
-        showToast(
-            "That column is full!"
-        );
-
-        return;
-
-    }
-
-
-    board[row][col] =
-        myColor;
-
-
-    winningCells = [];
-
-
-    if(
-        checkWin(
-            row,
-            col,
-            myColor
-        )
-    ){
-
-        gameOver = true;
-
-        winningCells =
-            getWinningCells(
-                row,
-                col,
-                myColor
-            );
-
-    }else{
-
-        turn =
-            turn === "red"
-                ? "yellow"
-                : "red";
-
-    }
-
-
-    render();
-
-    updateStatus();
-
-    sendState();
-
-    playTone(
-        gameOver
-            ? "win"
-            : "move"
-    );
+});
 
 }
 
 
-/* =========================================================
-   FIND ROW
-========================================================= */
+/* =====================================================
+   GAMEPLAY
+===================================================== */
 
 function findOpenRow(col){
 
-    for(
-        let r=ROWS-1;
-        r>=0;
-        r--
-    ){
+for(
+    let r=ROWS-1;
+    r>=0;
+    r--
+){
 
-        if(board[r][col] === null){
-
-            return r;
-
-        }
-
-    }
-
-    return -1;
+if(board[r][col] === null)
+    return r;
 
 }
 
+return -1;
 
-/* =========================================================
-   WIN LOGIC
-========================================================= */
-
-const dirs = [
-
-    [1,0],
-    [0,1],
-    [1,1],
-    [1,-1]
-
-];
+}
 
 
 function count(
@@ -2330,36 +1805,44 @@ function count(
     color
 ){
 
-    let total = 0;
+let total = 0;
 
-    let r =
-        row + dr;
+let r =
+    row + dr;
 
-    let c =
-        col + dc;
+let c =
+    col + dc;
 
+while(
 
-    while(
+r >= 0 &&
+r < ROWS &&
+c >= 0 &&
+c < COLS &&
+board[r][c] === color
 
-        r >= 0 &&
-        r < ROWS &&
-        c >= 0 &&
-        c < COLS &&
-        board[r][c] === color
+){
 
-    ){
+total++;
 
-        total++;
-
-        r += dr;
-        c += dc;
-
-    }
-
-
-    return total;
+r += dr;
+c += dc;
 
 }
+
+return total;
+
+}
+
+
+const directions = [
+
+[1,0],
+[0,1],
+[1,1],
+[1,-1]
+
+];
 
 
 function checkWin(
@@ -2368,48 +1851,39 @@ function checkWin(
     color
 ){
 
-    for(
-        const [dr,dc]
-        of dirs
-    ){
+for(
+    const [dr,dc]
+    of directions
+){
 
-        const total =
-            1 +
+const total =
+    1 +
 
-            count(
-                row,
-                col,
-                dr,
-                dc,
-                color
-            ) +
+    count(
+        row,
+        col,
+        dr,
+        dc,
+        color
+    ) +
 
-            count(
-                row,
-                col,
-                -dr,
-                -dc,
-                color
-            );
+    count(
+        row,
+        col,
+        -dr,
+        -dc,
+        color
+    );
 
-
-        if(total >= WIN){
-
-            return true;
-
-        }
-
-    }
-
-
-    return false;
+if(total >= WIN)
+    return true;
 
 }
 
+return false;
 
-/* =========================================================
-   WINNING CELLS
-========================================================= */
+}
+
 
 function getWinningCells(
     row,
@@ -2417,546 +1891,493 @@ function getWinningCells(
     color
 ){
 
-    let best = [];
+let best = [];
 
+for(
+    const [dr,dc]
+    of directions
+){
 
-    for(
-        const [dr,dc]
-        of dirs
-    ){
+let line =
+    [[row,col]];
 
-        const line = [
-            [row,col]
-        ];
+let r =
+    row + dr;
 
+let c =
+    col + dc;
 
-        let r =
-            row + dr;
+while(
 
-        let c =
-            col + dc;
+r >= 0 &&
+r < ROWS &&
+c >= 0 &&
+c < COLS &&
+board[r][c] === color
 
+){
 
-        while(
+line.push([r,c]);
 
-            r >= 0 &&
-            r < ROWS &&
-            c >= 0 &&
-            c < COLS &&
-            board[r][c] === color
+r += dr;
+c += dc;
 
-        ){
+}
 
-            line.push([
-                r,
-                c
-            ]);
+r =
+    row - dr;
 
-            r += dr;
-            c += dc;
+c =
+    col - dc;
 
-        }
+while(
 
+r >= 0 &&
+r < ROWS &&
+c >= 0 &&
+c < COLS &&
+board[r][c] === color
 
-        r =
-            row - dr;
+){
 
-        c =
-            col - dc;
+line.unshift([r,c]);
 
+r -= dr;
+c -= dc;
 
-        while(
+}
 
-            r >= 0 &&
-            r < ROWS &&
-            c >= 0 &&
-            c < COLS &&
-            board[r][c] === color
+if(
+    line.length >= WIN &&
+    line.length > best.length
+){
 
-        ){
+best = line;
 
-            line.unshift([
-                r,
-                c
-            ]);
+}
 
-            r -= dr;
-            c -= dc;
+}
 
-        }
-
-
-        if(
-            line.length >= WIN &&
-            line.length > best.length
-        ){
-
-            best = line;
-
-        }
-
-    }
-
-
-    return best;
+return best;
 
 }
 
 
-/* =========================================================
+window.playColumn = function(col){
+
+if(gameOver)
+    return;
+
+if(turn !== myColor)
+    return;
+
+if(!connected)
+    return;
+
+const row =
+    findOpenRow(col);
+
+if(row < 0){
+
+showToast(
+    "That column is full!"
+);
+
+return;
+
+}
+
+board[row][col] =
+    myColor;
+
+winningCells = [];
+
+if(
+    checkWin(
+        row,
+        col,
+        myColor
+    )
+){
+
+gameOver = true;
+
+winningCells =
+    getWinningCells(
+        row,
+        col,
+        myColor
+    );
+
+}else{
+
+turn =
+    turn === "red"
+        ? "yellow"
+        : "red";
+
+}
+
+render();
+
+updateStatus();
+
+sendState();
+
+playTone(
+    gameOver
+        ? "win"
+        : "move"
+);
+
+};
+
+
+/* =====================================================
    RENDER
-========================================================= */
+===================================================== */
 
 function render(){
 
-    const boardEl =
-        document.getElementById(
-            "board"
-        );
+const boardEl =
+    document.getElementById("board");
+
+boardEl.innerHTML = "";
+
+boardEl.style.setProperty(
+    "--cols",
+    COLS
+);
+
+boardEl.style.setProperty(
+    "--rows",
+    ROWS
+);
 
 
-    boardEl.innerHTML = "";
+for(
+    let r=0;
+    r<ROWS;
+    r++
+){
+
+for(
+    let c=0;
+    c<COLS;
+    c++
+){
+
+const cell =
+    document.createElement("div");
+
+cell.className = "cell";
 
 
-    boardEl.style.setProperty(
-        "--cols",
-        COLS
+const winner =
+    winningCells.some(
+        ([wr,wc]) =>
+            wr === r &&
+            wc === c
     );
 
-    boardEl.style.setProperty(
-        "--rows",
-        ROWS
-    );
+if(winner)
+    cell.classList.add("winner");
 
 
-    for(
-        let r=0;
-        r<ROWS;
-        r++
-    ){
+const value =
+    board[r][c];
 
-        for(
-            let c=0;
-            c<COLS;
-            c++
-        ){
+if(value){
 
-            const cell =
-                document.createElement(
-                    "div"
-                );
+const piece =
+    document.createElement("div");
 
+piece.className =
+    `piece ${value}`;
 
-            cell.className =
-                "cell";
+if(!animations)
+    piece.style.animation = "none";
 
-
-            const winner =
-                winningCells.some(
-                    ([wr,wc]) =>
-                        wr === r &&
-                        wc === c
-                );
-
-
-            if(winner){
-
-                cell.classList.add(
-                    "winner"
-                );
-
-            }
-
-
-            const value =
-                board[r][c];
-
-
-            if(value){
-
-                const piece =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                piece.className =
-                    "piece " +
-                    value;
-
-
-                if(!animations){
-
-                    piece.style.animation =
-                        "none";
-
-                }
-
-
-                cell.appendChild(
-                    piece
-                );
-
-            }
-
-
-            cell.onclick =
-                () => playColumn(c);
-
-
-            boardEl.appendChild(
-                cell
-            );
-
-        }
-
-    }
+cell.appendChild(piece);
 
 }
 
 
-/* =========================================================
+cell.onclick =
+    () => playColumn(c);
+
+boardEl.appendChild(cell);
+
+}
+
+}
+
+}
+
+
+/* =====================================================
    STATUS
-========================================================= */
+===================================================== */
 
 function updateStatus(){
 
-    const status =
-        document.getElementById(
-            "status"
-        );
+const status =
+    document.getElementById("status");
 
+if(gameOver){
 
-    if(gameOver){
+let winner = null;
 
-        let winner = null;
+if(winningCells.length){
 
+const [r,c] =
+    winningCells[0];
 
-        if(winningCells.length){
+winner =
+    board[r][c];
 
-            const [r,c] =
-                winningCells[0];
+}
 
-            winner =
-                board[r][c];
+if(winner === myColor){
 
-        }
+status.textContent =
+    "🎉 YOU WIN!";
 
+}else{
 
-        if(winner === myColor){
+status.textContent =
+    "😢 YOU LOST";
 
-            status.textContent =
-                "🎉 YOU WIN!";
+}
 
-        }else{
+return;
 
-            status.textContent =
-                "😢 YOU LOST";
+}
 
-        }
+if(turn === myColor){
 
-        return;
+status.textContent =
+    "🟢 Your turn";
 
-    }
+}else{
 
+status.textContent =
+    "🟡 Opponent's turn";
 
-    if(turn === myColor){
-
-        status.textContent =
-            "🟢 Your turn";
-
-    }else{
-
-        status.textContent =
-            "🟡 Opponent's turn";
-
-    }
+}
 
 }
 
 
-/* =========================================================
+/* =====================================================
    REMATCH
-========================================================= */
+===================================================== */
 
-function rematch(){
+window.rematch = function(){
 
-    if(
-        !conn ||
-        !conn.open
-    ){
+if(!connected){
 
-        showToast(
-            "Opponent isn't connected."
-        );
+showToast(
+    "Opponent isn't connected."
+);
 
-        return;
-
-    }
-
-
-    if(isHost){
-
-        startGame();
-
-        sendState();
-
-    }else{
-
-        send({
-            type:"rematchRequest"
-        });
-
-        showToast(
-            "Rematch requested!"
-        );
-
-    }
+return;
 
 }
 
+if(isHost){
 
-/* =========================================================
+startGame();
+
+sendState();
+
+}else{
+
+send({
+    type:"rematch"
+});
+
+showToast(
+    "Rematch requested!"
+);
+
+}
+
+};
+
+
+/* =====================================================
    LEAVE
-========================================================= */
+===================================================== */
 
-function leaveGame(){
+window.leaveGame = function(){
 
-    send({
-        type:"hostLeft"
-    });
+leaveNetwork();
 
-    goHome();
+screen("home");
+
+};
+
+
+function leaveNetwork(){
+
+clearTimeout(reconnectTimer);
+
+if(room){
+
+try{
+    room.leave();
+}catch{}
+
+}
+
+room = null;
+
+action = null;
+
+connected = false;
 
 }
 
 
-/* =========================================================
-   CANCEL
-========================================================= */
-
-function cancelRoom(){
-
-    destroyPeer();
-
-    screen("home");
-
-}
-
-
-/* =========================================================
-   DESTROY PEER
-========================================================= */
-
-function destroyPeer(){
-
-    clearTimeout(
-        connectingTimeout
-    );
-
-
-    if(conn){
-
-        try{
-            conn.close();
-        }catch{}
-
-    }
-
-
-    if(peer){
-
-        try{
-            peer.destroy();
-        }catch{}
-
-    }
-
-
-    conn = null;
-    peer = null;
-
-}
-
-
-/* =========================================================
+/* =====================================================
    COPY
-========================================================= */
+===================================================== */
 
-async function copyCode(){
+window.copyCode = async function(){
 
-    try{
+try{
 
-        await navigator.clipboard.writeText(
-            roomCode
-        );
+await navigator.clipboard.writeText(
+    roomCode
+);
 
-        showToast(
-            "Room code copied!"
-        );
+showToast(
+    "Room code copied!"
+);
 
-    }catch{
+}catch{
 
-        showToast(
-            roomCode
-        );
-
-    }
+showToast(
+    roomCode
+);
 
 }
 
+};
 
-/* =========================================================
+
+/* =====================================================
    TOAST
-========================================================= */
+===================================================== */
 
-let toastTimer = null;
-
+let toastTimer;
 
 function showToast(text){
 
-    const element =
-        document.getElementById(
-            "toast"
-        );
+const toast =
+    document.getElementById("toast");
 
+toast.textContent = text;
 
-    element.textContent =
-        text;
+toast.classList.add("show");
 
+clearTimeout(toastTimer);
 
-    element.classList.add(
-        "show"
+toastTimer =
+    setTimeout(
+        () =>
+            toast.classList.remove("show"),
+        2200
     );
-
-
-    clearTimeout(
-        toastTimer
-    );
-
-
-    toastTimer =
-        setTimeout(
-            () => {
-
-                element.classList.remove(
-                    "show"
-                );
-
-            },
-            2200
-        );
 
 }
 
 
-/* =========================================================
+/* =====================================================
    SOUND
-========================================================= */
+===================================================== */
 
-let audio = null;
-
+let audioContext = null;
 
 function playTone(type){
 
-    if(!sounds)
-        return;
+if(!sounds)
+    return;
 
+try{
 
-    try{
+if(!audioContext){
 
-        if(!audio){
+audioContext =
+    new (
+        window.AudioContext ||
+        window.webkitAudioContext
+    )();
 
-            audio =
-                new (
-                    window.AudioContext ||
-                    window.webkitAudioContext
-                )();
+}
 
-        }
+const oscillator =
+    audioContext.createOscillator();
 
+const gain =
+    audioContext.createGain();
 
-        const oscillator =
-            audio.createOscillator();
+oscillator.connect(gain);
 
-        const gain =
-            audio.createGain();
+gain.connect(
+    audioContext.destination
+);
 
+oscillator.frequency.value =
+    type === "win"
+        ? 650
+        : 340;
 
-        oscillator.connect(gain);
-        gain.connect(audio.destination);
+gain.gain.setValueAtTime(
+    .001,
+    audioContext.currentTime
+);
 
+gain.gain.exponentialRampToValueAtTime(
+    .06,
+    audioContext.currentTime + .01
+);
 
-        oscillator.frequency.value =
-            type === "win"
-                ? 650
-                : 340;
+gain.gain.exponentialRampToValueAtTime(
+    .001,
+    audioContext.currentTime + .12
+);
 
+oscillator.start();
 
-        gain.gain.setValueAtTime(
-            .001,
-            audio.currentTime
-        );
+oscillator.stop(
+    audioContext.currentTime + .13
+);
 
-
-        gain.gain.exponentialRampToValueAtTime(
-            .06,
-            audio.currentTime + .01
-        );
-
-
-        gain.gain.exponentialRampToValueAtTime(
-            .001,
-            audio.currentTime + .12
-        );
-
-
-        oscillator.start();
-
-
-        oscillator.stop(
-            audio.currentTime + .13
-        );
-
-    }catch{}
+}catch{}
 
 }
 
 
-/* =========================================================
-   JOIN INPUT
-========================================================= */
+/* =====================================================
+   INPUT
+===================================================== */
 
 document
     .getElementById("joinCode")
     .addEventListener(
         "input",
-        event => {
+        e => {
 
-            let value =
-                event.target.value
+            e.target.value =
+                e.target.value
                     .toUpperCase()
-                    .replace(/\s/g,"");
-
-
-            /*
-               Only letters and numbers.
-               NO hyphen.
-            */
-
-            value =
-                value.replace(
-                    /[^A-Z0-9]/g,
-                    ""
-                );
-
-
-            /*
-               EXACTLY 8 MAX.
-            */
-
-            event.target.value =
-                value.slice(0,8);
+                    .replace(
+                        /[^A-Z0-9]/g,
+                        ""
+                    )
+                    .slice(0,8);
 
         }
     );
@@ -2966,46 +2387,64 @@ document
     .getElementById("joinCode")
     .addEventListener(
         "keydown",
-        event => {
+        e => {
 
-            if(event.key === "Enter"){
-
+            if(e.key === "Enter")
                 joinRoom();
-
-            }
 
         }
     );
 
 
-/* =========================================================
-   INITIALIZE
-========================================================= */
+/* =====================================================
+   SETTINGS INIT
+===================================================== */
 
 setTheme(theme);
 
-
-const animationInput =
-    document.getElementById(
-        "animations"
-    );
-
-
-const soundInput =
-    document.getElementById(
-        "sounds"
-    );
-
-
-if(animationInput)
-    animationInput.checked =
+document
+    .getElementById("animations")
+    .checked =
         animations;
 
-
-if(soundInput)
-    soundInput.checked =
+document
+    .getElementById("sounds")
+    .checked =
         sounds;
 
+document
+    .getElementById("animations")
+    .addEventListener(
+        "change",
+        e => {
+
+            animations =
+                e.target.checked;
+
+            localStorage.setItem(
+                "c4-animations",
+                animations
+            );
+
+        }
+    );
+
+document
+    .getElementById("sounds")
+    .addEventListener(
+        "change",
+        e => {
+
+            sounds =
+                e.target.checked;
+
+            localStorage.setItem(
+                "c4-sounds",
+                sounds
+            );
+
+        }
+    );
 
 updateWinOptions();
 
