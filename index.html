@@ -1403,12 +1403,14 @@ document
 
 
 /* =====================================================
-   TRYSTERO
+   TRYSTERO - FIXED
 ===================================================== */
 
 function connectToTrystero(){
 
 connected = false;
+
+let connectionAttempted = false;
 
 try{
 
@@ -1431,10 +1433,33 @@ room =
         {
 
             /*
-               If WebRTC itself fails, DON'T
-               stay stuck forever.
+               Increased timeout to allow more time
+               for peers to discover each other.
             */
-            handshakeTimeoutMs:10000,
+            handshakeTimeoutMs:30000,
+
+            onError(error){
+
+                console.error(
+                    "TRYSTERO ERROR",
+                    error
+                );
+
+                if(!connectionAttempted){
+
+                    document
+                        .getElementById("waitingError")
+                        .textContent =
+                            "Connection failed. Check your internet and try again.";
+
+                    document
+                        .getElementById("waitingText")
+                        .textContent =
+                            "🔴 Could not connect.";
+
+                }
+
+            },
 
             onJoinError(details){
 
@@ -1443,21 +1468,32 @@ room =
                     details
                 );
 
-                document
-                    .getElementById("waitingError")
-                    .textContent =
-                        "Connection failed. Try creating a new room.";
+                if(!connectionAttempted){
 
-                document
-                    .getElementById("waitingText")
-                    .textContent =
-                        "🔴 Could not connect.";
+                    document
+                        .getElementById("waitingError")
+                        .textContent =
+                            "Could not reach signaling server. Try creating a new room.";
+
+                    document
+                        .getElementById("waitingText")
+                        .textContent =
+                            "🔴 Connection failed.";
+
+                }
 
             }
 
         }
     );
 
+if(!room){
+
+throw new Error(
+    "Failed to initialize room"
+);
+
+}
 
 /*
    ONE action is used for all game messages.
@@ -1466,6 +1502,13 @@ room =
 action =
     room.makeAction("game-state");
 
+if(!action){
+
+throw new Error(
+    "Failed to create action"
+);
+
+}
 
 /*
    Someone entered our room.
@@ -1479,24 +1522,27 @@ room.onPeerJoin =
             peerId
         );
 
+        connectionAttempted = true;
+
         connected = true;
 
         clearTimeout(
             reconnectTimer
         );
 
-
         document
             .getElementById("waitingText")
             .textContent =
                 "🟢 Opponent connected!";
-
 
         document
             .getElementById("connection")
             .textContent =
                 "🟢 Connected P2P";
 
+        document
+            .getElementById("waitingError")
+            .textContent = "";
 
         if(isHost){
 
@@ -1578,37 +1624,41 @@ room.onPeerLeave =
 reconnectTimer =
     setTimeout(() => {
 
-        if(!connected){
+        if(!connected && !connectionAttempted){
 
             document
                 .getElementById("waitingText")
                 .textContent =
-                    "⚠️ Nobody has joined yet.";
+                    "⚠️ No connection yet.";
 
             document
                 .getElementById("waitingError")
                 .textContent =
                     isHost
-                        ? "Keep this page open and send the code to your friend."
-                        : "Check that the host is still on the room screen.";
+                        ? "Make sure your friend has your room code and can access the internet."
+                        : "Double-check the room code and make sure the host is still waiting.";
 
         }
 
-    },15000);
+    },30000);
 
 
 }catch(error){
 
 console.error(
-    "TRYSTERO ERROR:",
+    "TRYSTERO CONNECTION ERROR:",
     error
 );
 
 document
     .getElementById("waitingError")
     .textContent =
-        error.message ||
-        "Could not start multiplayer.";
+        "Could not initialize connection. " + (error.message || "Please try again.");
+
+document
+    .getElementById("waitingText")
+    .textContent =
+        "🔴 Connection error";
 
 }
 
@@ -1621,8 +1671,15 @@ document
 
 function send(data){
 
-if(!action)
-    return;
+if(!action){
+
+console.warn(
+    "Action not ready, cannot send"
+);
+
+return;
+
+}
 
 try{
 
@@ -1633,6 +1690,10 @@ action.send(data);
 console.error(
     "SEND ERROR",
     error
+);
+
+showToast(
+    "Failed to send move. Reconnecting..."
 );
 
 }
