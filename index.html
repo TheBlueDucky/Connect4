@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080d1a">
-
 <title>Connect 4 Online</title>
 
 <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
@@ -16,12 +15,9 @@
     --panel2:#1a2640;
     --text:#f8fafc;
     --muted:#94a3b8;
-
     --accent:#6366f1;
     --accent2:#8b5cf6;
-
     --board:#2563eb;
-
     --red:#ef4444;
     --yellow:#facc15;
 }
@@ -39,34 +35,15 @@ html,body{
 body{
     min-height:100vh;
     min-height:100dvh;
-
     color:var(--text);
-
-    font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     background:
-        radial-gradient(
-            circle at 15% 10%,
-            #6366f120,
-            transparent 35%
-        ),
-        radial-gradient(
-            circle at 85% 90%,
-            #06b6d415,
-            transparent 35%
-        ),
+        radial-gradient(circle at 15% 10%,#6366f120,transparent 35%),
+        radial-gradient(circle at 85% 90%,#06b6d415,transparent 35%),
         var(--bg);
 }
 
-button,
-input,
-select{
+button,input,select{
     font:inherit;
 }
 
@@ -75,7 +52,7 @@ button{
 }
 
 .hidden{
-    display:none !important;
+    display:none!important;
 }
 
 .app{
@@ -86,7 +63,6 @@ button{
 
 .topbar{
     height:52px;
-
     display:flex;
     align-items:center;
     justify-content:space-between;
@@ -95,129 +71,83 @@ button{
 .logo{
     display:flex;
     align-items:center;
-
     gap:10px;
-
     font-size:23px;
     font-weight:900;
-
     letter-spacing:-.8px;
 }
 
 .logoDot{
     width:13px;
     height:13px;
-
     border-radius:50%;
-
     background:var(--accent);
-
-    box-shadow:
-        0 0 20px var(--accent);
+    box-shadow:0 0 20px var(--accent);
 }
 
 .iconBtn{
     width:44px;
     height:44px;
-
     border-radius:14px;
-
     background:var(--panel);
     color:white;
-
     cursor:pointer;
 }
 
 .screen{
-    animation:
-        screenIn .2s ease;
+    animation:screenIn .2s ease;
 }
 
 @keyframes screenIn{
-
     from{
         opacity:0;
         transform:translateY(8px);
     }
-
     to{
         opacity:1;
         transform:none;
     }
-
 }
 
 .hero{
     text-align:center;
-
-    padding:
-        42px
-        5px
-        28px;
+    padding:42px 5px 28px;
 }
 
 .hero h1{
     margin:0;
-
-    font-size:
-        clamp(
-            43px,
-            11vw,
-            72px
-        );
-
+    font-size:clamp(43px,11vw,72px);
     line-height:.95;
-
     letter-spacing:-4px;
 }
 
 .hero p{
     color:var(--muted);
-
-    margin:
-        16px
-        0
-        0;
+    margin:16px 0 0;
 }
 
 .panel{
     padding:22px;
-
     border-radius:24px;
-
     background:
-        linear-gradient(
-            145deg,
-            #ffffff09,
-            #ffffff02
-        ),
+        linear-gradient(145deg,#ffffff09,#ffffff02),
         var(--panel);
-
-    border:
-        1px solid #ffffff0d;
-
-    box-shadow:
-        0 20px 70px #0008;
+    border:1px solid #ffffff0d;
+    box-shadow:0 20px 70px #0008;
 }
 
 .menu{
     display:grid;
-
     gap:12px;
 }
 
 .bigBtn{
     width:100%;
-
     min-height:58px;
-
     border-radius:17px;
-
     font-size:18px;
     font-weight:850;
-
     cursor:pointer;
-
     transition:.14s;
 }
 
@@ -227,36 +157,23 @@ button{
 
 .primary{
     color:white;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--accent),
-            var(--accent2)
-        );
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
 }
 
 .secondary{
     color:white;
-
     background:var(--panel2);
 }
 
 .back{
     padding:4px 0;
-
     color:var(--muted);
-
     background:none;
-
     cursor:pointer;
 }
 
 h2{
-    margin:
-        18px
-        0
-        8px;
+    margin:18px 0 8px;
 }
 
 .muted{
@@ -265,282 +182,156 @@ h2{
 
 .divider{
     height:1px;
-
     background:#ffffff0d;
-
-    margin:
-        22px
-        0;
+    margin:22px 0;
 }
 
 .settingsGrid{
     display:grid;
-
-    grid-template-columns:
-        1fr
-        1fr;
-
+    grid-template-columns:1fr 1fr;
     gap:12px;
 }
 
 .setting{
     display:grid;
-
     gap:8px;
 }
 
 .setting label{
     font-size:11px;
-
     color:var(--muted);
-
     font-weight:900;
 }
 
 .select{
     width:100%;
-
     min-height:50px;
-
-    padding:
-        0
-        12px;
-
+    padding:0 12px;
     color:white;
-
     background:var(--panel2);
-
-    border:
-        1px solid #ffffff10;
-
+    border:1px solid #ffffff10;
     border-radius:14px;
-
     outline:none;
 }
 
 .themeGrid{
     display:grid;
-
-    grid-template-columns:
-        repeat(
-            2,
-            1fr
-        );
-
+    grid-template-columns:repeat(2,1fr);
     gap:10px;
 }
 
 .theme{
     min-height:56px;
-
-    border:
-        2px solid
-        transparent;
-
+    border:2px solid transparent;
     border-radius:15px;
-
     color:white;
-
     font-weight:800;
-
     cursor:pointer;
 }
 
 .theme.active{
     border-color:white;
-
-    box-shadow:
-        0 0 0 2px
-        var(--accent);
+    box-shadow:0 0 0 2px var(--accent);
 }
 
 .t-indigo{
-    background:
-        linear-gradient(
-            135deg,
-            #4f46e5,
-            #06b6d4
-        );
+    background:linear-gradient(135deg,#4f46e5,#06b6d4);
 }
 
 .t-sunset{
-    background:
-        linear-gradient(
-            135deg,
-            #f43f5e,
-            #f97316
-        );
+    background:linear-gradient(135deg,#f43f5e,#f97316);
 }
 
 .t-forest{
-    background:
-        linear-gradient(
-            135deg,
-            #15803d,
-            #14b8a6
-        );
+    background:linear-gradient(135deg,#15803d,#14b8a6);
 }
 
 .t-ice{
-    background:
-        linear-gradient(
-            135deg,
-            #0284c7,
-            #6366f1
-        );
+    background:linear-gradient(135deg,#0284c7,#6366f1);
 }
 
 .t-candy{
-    background:
-        linear-gradient(
-            135deg,
-            #ec4899,
-            #a855f7
-        );
+    background:linear-gradient(135deg,#ec4899,#a855f7);
 }
 
 .t-mono{
-    background:
-        linear-gradient(
-            135deg,
-            #334155,
-            #94a3b8
-        );
+    background:linear-gradient(135deg,#334155,#94a3b8);
 }
 
 .code{
     text-align:center;
-
-    margin:
-        14px
-        0
-        18px;
-
-    font-size:
-        clamp(
-            32px,
-            10vw,
-            56px
-        );
-
+    margin:14px 0 18px;
+    font-size:clamp(32px,10vw,56px);
     font-weight:1000;
-
-    letter-spacing:5px;
-
-    word-break:
-        break-all;
+    letter-spacing:7px;
+    word-break:break-all;
 }
 
 .roomText{
     text-align:center;
-
     line-height:1.5;
-
     color:var(--muted);
 }
 
 .copy{
     width:100%;
-
     min-height:51px;
-
     border-radius:14px;
-
     color:white;
-
     background:var(--panel2);
-
     font-weight:800;
-
     cursor:pointer;
 }
 
 .input{
     width:100%;
-
     min-height:55px;
-
     border-radius:15px;
-
-    border:
-        1px solid
-        #ffffff12;
-
+    border:1px solid #ffffff12;
     outline:none;
-
     color:white;
-
     background:#0005;
-
-    padding:
-        0
-        16px;
+    padding:0 16px;
 }
 
 .input:focus{
-    border-color:
-        var(--accent);
+    border-color:var(--accent);
 }
 
 .codeInput{
     text-align:center;
-
-    font-size:20px;
-
+    font-size:24px;
     font-weight:900;
-
-    letter-spacing:4px;
-
+    letter-spacing:6px;
     text-transform:uppercase;
 }
 
 .error{
     min-height:20px;
-
     margin-top:12px;
-
     text-align:center;
-
     color:#f87171;
-
     font-size:13px;
-
     font-weight:700;
 }
 
 .gameTop{
     display:grid;
-
-    grid-template-columns:
-        1fr
-        auto
-        1fr;
-
+    grid-template-columns:1fr auto 1fr;
     align-items:center;
-
     gap:8px;
-
     margin-bottom:10px;
 }
 
 .player{
     display:flex;
-
     align-items:center;
-
     gap:8px;
-
     min-width:0;
-
     padding:10px;
-
     border-radius:16px;
-
     background:var(--panel);
-
-    border:
-        1px solid
-        #ffffff0c;
+    border:1px solid #ffffff0c;
 }
 
 .player.right{
@@ -549,152 +340,91 @@ h2{
 
 .name{
     min-width:0;
-
     overflow:hidden;
-
     white-space:nowrap;
-
     text-overflow:ellipsis;
-
     font-weight:850;
-
     font-size:14px;
 }
 
 .dot{
     width:18px;
     height:18px;
-
     border-radius:50%;
-
     flex:none;
 }
 
 .dot.red{
     background:var(--red);
-
-    box-shadow:
-        0 0 15px
-        #ef444466;
+    box-shadow:0 0 15px #ef444466;
 }
 
 .dot.yellow{
     background:var(--yellow);
-
-    box-shadow:
-        0 0 15px
-        #facc1566;
+    box-shadow:0 0 15px #facc1566;
 }
 
 .vs{
     color:var(--muted);
-
     font-size:12px;
-
     font-weight:900;
 }
 
 .status{
     text-align:center;
-
     min-height:30px;
-
-    margin:
-        6px
-        0;
-
+    margin:6px 0;
     font-size:20px;
-
     font-weight:900;
 }
 
 .connection{
     text-align:center;
-
     color:var(--muted);
-
     font-size:12px;
-
     margin-bottom:11px;
 }
 
 .board{
-
     --cols:7;
     --rows:6;
 
     width:100%;
-
-    aspect-ratio:
-        var(--cols) /
-        var(--rows);
+    aspect-ratio:var(--cols) / var(--rows);
 
     display:grid;
 
-    grid-template-columns:
-        repeat(
-            var(--cols),
-            1fr
-        );
+    grid-template-columns:repeat(var(--cols),1fr);
+    grid-template-rows:repeat(var(--rows),1fr);
 
-    grid-template-rows:
-        repeat(
-            var(--rows),
-            1fr
-        );
+    gap:clamp(4px,1vw,8px);
 
-    gap:
-        clamp(
-            4px,
-            1vw,
-            8px
-        );
-
-    padding:
-        clamp(
-            7px,
-            2vw,
-            12px
-        );
+    padding:clamp(7px,2vw,12px);
 
     background:
-        linear-gradient(
-            145deg,
-            #ffffff12,
-            #ffffff03
-        ),
+        linear-gradient(145deg,#ffffff12,#ffffff03),
         var(--board);
 
     border-radius:24px;
 
     box-shadow:
         0 25px 70px #0007,
-        inset
-        0 2px 0
-        #ffffff18;
+        inset 0 2px 0 #ffffff18;
 }
 
 .cell{
     position:relative;
-
     min-width:0;
     min-height:0;
-
     border-radius:50%;
-
     background:#02061770;
 
     box-shadow:
-        inset
-        0 5px 9px
-        #0006,
-        0 1px 0
-        #ffffff18;
+        inset 0 5px 9px #0006,
+        0 1px 0 #ffffff18;
 
     cursor:pointer;
-
-    transition:
-        transform .1s;
+    transition:transform .1s;
 }
 
 .cell:active{
@@ -703,17 +433,12 @@ h2{
 
 .piece{
     position:absolute;
-
     inset:5%;
-
     border-radius:50%;
-
-    animation:
-        drop .2s ease-out;
+    animation:drop .2s ease-out;
 }
 
 @keyframes drop{
-
     0%{
         transform:scale(.15);
         opacity:0;
@@ -727,149 +452,84 @@ h2{
         transform:scale(1);
         opacity:1;
     }
-
 }
 
 .piece.red{
     background:
-        radial-gradient(
-            circle at 34% 25%,
-            #ffffff55,
-            transparent 18%
-        ),
-        radial-gradient(
-            circle,
-            #ff5b5b,
-            #dc2626
-        );
+        radial-gradient(circle at 34% 25%,#ffffff55,transparent 18%),
+        radial-gradient(circle,#ff5b5b,#dc2626);
 
     box-shadow:
-        inset
-        0 -5px 8px
-        #0003,
-
-        0 5px 15px
-        #ef444455;
+        inset 0 -5px 8px #0003,
+        0 5px 15px #ef444455;
 }
 
 .piece.yellow{
     background:
-        radial-gradient(
-            circle at 34% 25%,
-            #ffffff66,
-            transparent 18%
-        ),
-        radial-gradient(
-            circle,
-            #fde047,
-            #eab308
-        );
+        radial-gradient(circle at 34% 25%,#ffffff66,transparent 18%),
+        radial-gradient(circle,#fde047,#eab308);
 
     box-shadow:
-        inset
-        0 -5px 8px
-        #0003,
-
-        0 5px 15px
-        #facc1555;
+        inset 0 -5px 8px #0003,
+        0 5px 15px #facc1555;
 }
 
 .cell.winner .piece{
-
-    animation:
-        pulseWinner
-        .55s
-        ease-in-out
-        infinite
-        alternate;
+    animation:pulseWinner .55s ease-in-out infinite alternate;
 }
 
 @keyframes pulseWinner{
-
     from{
         transform:scale(1);
     }
 
     to{
         transform:scale(1.13);
-
-        filter:
-            brightness(1.3);
+        filter:brightness(1.3);
     }
-
 }
 
 .gameButtons{
     display:flex;
-
     gap:10px;
-
     margin-top:14px;
 }
 
 .smallBtn{
     flex:1;
-
     min-height:50px;
-
     border-radius:15px;
-
     color:white;
-
     background:var(--panel);
-
     cursor:pointer;
-
     font-weight:800;
 }
 
 .modal{
     position:fixed;
-
     inset:0;
-
     z-index:100;
-
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
     padding:18px;
-
     background:#000a;
-
-    backdrop-filter:
-        blur(10px);
+    backdrop-filter:blur(10px);
 }
 
 .modalCard{
-    width:min(
-        100%,
-        520px
-    );
-
+    width:min(100%,520px);
     max-height:90vh;
-
     overflow:auto;
-
     padding:23px;
-
     border-radius:24px;
-
     background:var(--panel);
-
-    box-shadow:
-        0 25px 80px
-        #000;
+    box-shadow:0 25px 80px #000;
 }
 
 .modalHeader{
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
 }
 
@@ -880,13 +540,9 @@ h2{
 .close{
     width:42px;
     height:42px;
-
     border-radius:12px;
-
     color:white;
-
     background:var(--panel2);
-
     cursor:pointer;
 }
 
@@ -895,27 +551,17 @@ h2{
 }
 
 .settingSection h3{
-    margin:
-        0
-        0
-        10px;
-
+    margin:0 0 10px;
     font-size:15px;
 }
 
 .check{
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     padding:14px;
-
     margin-top:9px;
-
     border-radius:14px;
-
     background:var(--panel2);
 }
 
@@ -926,55 +572,36 @@ h2{
 
 .toast{
     position:fixed;
-
     left:50%;
-
     bottom:25px;
-
     z-index:200;
 
-    transform:
-        translate(
-            -50%,
-            20px
-        );
-
+    transform:translate(-50%,20px);
     opacity:0;
 
     pointer-events:none;
 
-    padding:
-        12px
-        18px;
+    padding:12px 18px;
 
     border-radius:13px;
 
     color:white;
-
     background:#020617ef;
 
-    box-shadow:
-        0 15px 45px
-        #0009;
+    box-shadow:0 15px 45px #0009;
 
     transition:.2s;
 }
 
 .toast.show{
     opacity:1;
-
-    transform:
-        translate(
-            -50%,
-            0
-        );
+    transform:translate(-50%,0);
 }
 
 @media(max-width:520px){
 
     .app{
         width:94vw;
-
         padding-top:10px;
     }
 
@@ -998,7 +625,6 @@ h2{
     .name{
         font-size:12px;
     }
-
 }
 </style>
 </head>
@@ -1010,11 +636,8 @@ h2{
     <div class="topbar">
 
         <div class="logo">
-
             <span class="logoDot"></span>
-
             Connect 4
-
         </div>
 
         <button
@@ -1029,16 +652,11 @@ h2{
 
     <!-- HOME -->
 
-    <section
-        id="home"
-        class="screen"
-    >
+    <section id="home" class="screen">
 
         <div class="hero">
 
-            <h1>
-                CONNECT 4
-            </h1>
+            <h1>CONNECT 4</h1>
 
             <p>
                 Play online with your friends.
@@ -1087,9 +705,7 @@ h2{
                 ← Back
             </button>
 
-            <h2>
-                Create Room
-            </h2>
+            <h2>Create Room</h2>
 
             <p class="muted">
                 Choose the rules for your game.
@@ -1099,97 +715,50 @@ h2{
 
                 <div class="setting">
 
-                    <label>
-                        BOARD WIDTH
-                    </label>
+                    <label>BOARD WIDTH</label>
 
                     <select
                         id="cols"
                         class="select"
                     >
 
-                        <option value="4">
-                            4 columns
-                        </option>
-
-                        <option value="5">
-                            5 columns
-                        </option>
-
-                        <option value="6">
-                            6 columns
-                        </option>
-
-                        <option
-                            value="7"
-                            selected
-                        >
-                            7 columns
-                        </option>
-
-                        <option value="8">
-                            8 columns
-                        </option>
-
-                        <option value="9">
-                            9 columns
-                        </option>
-
-                        <option value="10">
-                            10 columns
-                        </option>
+                        <option value="4">4 columns</option>
+                        <option value="5">5 columns</option>
+                        <option value="6">6 columns</option>
+                        <option value="7" selected>7 columns</option>
+                        <option value="8">8 columns</option>
+                        <option value="9">9 columns</option>
+                        <option value="10">10 columns</option>
 
                     </select>
 
                 </div>
 
+
                 <div class="setting">
 
-                    <label>
-                        BOARD HEIGHT
-                    </label>
+                    <label>BOARD HEIGHT</label>
 
                     <select
                         id="rows"
                         class="select"
                     >
 
-                        <option value="4">
-                            4 rows
-                        </option>
-
-                        <option value="5">
-                            5 rows
-                        </option>
-
-                        <option
-                            value="6"
-                            selected
-                        >
-                            6 rows
-                        </option>
-
-                        <option value="7">
-                            7 rows
-                        </option>
-
-                        <option value="8">
-                            8 rows
-                        </option>
-
-                        <option value="9">
-                            9 rows
-                        </option>
+                        <option value="4">4 rows</option>
+                        <option value="5">5 rows</option>
+                        <option value="6" selected>6 rows</option>
+                        <option value="7">7 rows</option>
+                        <option value="8">8 rows</option>
+                        <option value="9">9 rows</option>
 
                     </select>
 
                 </div>
 
+
                 <div class="setting">
 
-                    <label>
-                        WIN CONDITION
-                    </label>
+                    <label>WIN CONDITION</label>
 
                     <select
                         id="win"
@@ -1200,11 +769,10 @@ h2{
 
             </div>
 
+
             <div class="divider"></div>
 
-            <p>
-                <b>Theme</b>
-            </p>
+            <p><b>Theme</b></p>
 
             <div class="themeGrid">
 
@@ -1258,6 +826,7 @@ h2{
 
             </div>
 
+
             <div class="divider"></div>
 
             <button
@@ -1288,20 +857,18 @@ h2{
                 ← Back
             </button>
 
-            <h2>
-                Join Room
-            </h2>
+            <h2>Join Room</h2>
 
             <p class="muted">
-                Paste your friend's room code.
+                Paste your friend's 8-character room code.
             </p>
 
             <input
                 id="joinCode"
                 class="input codeInput"
-                maxlength="11"
-                minlength="11"
-                placeholder="c4-AB12CD34"
+                maxlength="8"
+                minlength="8"
+                placeholder="AB12CD34"
                 autocomplete="off"
                 autocapitalize="characters"
                 spellcheck="false"
@@ -1408,9 +975,7 @@ h2{
 
             </div>
 
-            <div class="vs">
-                VS
-            </div>
+            <div class="vs">VS</div>
 
             <div class="player right">
 
@@ -1424,12 +989,14 @@ h2{
 
         </div>
 
+
         <div
             id="status"
             class="status"
         >
             Connecting...
         </div>
+
 
         <div
             id="connection"
@@ -1438,10 +1005,12 @@ h2{
             🔄 Connecting...
         </div>
 
+
         <div
             id="board"
             class="board"
         ></div>
+
 
         <div class="gameButtons">
 
@@ -1478,9 +1047,7 @@ h2{
 
         <div class="modalHeader">
 
-            <h2>
-                Settings
-            </h2>
+            <h2>Settings</h2>
 
             <button
                 class="close"
@@ -1491,11 +1058,10 @@ h2{
 
         </div>
 
+
         <div class="settingSection">
 
-            <h3>
-                Theme
-            </h3>
+            <h3>Theme</h3>
 
             <div class="themeGrid">
 
@@ -1551,17 +1117,14 @@ h2{
 
         </div>
 
+
         <div class="settingSection">
 
-            <h3>
-                Gameplay
-            </h3>
+            <h3>Gameplay</h3>
 
             <div class="check">
 
-                <span>
-                    Drop animations
-                </span>
+                <span>Drop animations</span>
 
                 <input
                     id="animations"
@@ -1572,11 +1135,10 @@ h2{
 
             </div>
 
+
             <div class="check">
 
-                <span>
-                    Sound effects
-                </span>
+                <span>Sound effects</span>
 
                 <input
                     id="sounds"
@@ -1603,32 +1165,26 @@ h2{
 <script>
 
 /* =========================================================
-   CONNECT 4
-   PEERJS + WEBRTC
+   CONNECT 4 ONLINE
+   PeerJS / WebRTC
 ========================================================= */
 
 let peer = null;
-
 let conn = null;
 
 let isHost = false;
-
 let myColor = null;
 
 let roomCode = "";
 
 let ROWS = 6;
-
 let COLS = 7;
-
 let WIN = 4;
 
 let board = [];
-
 let turn = "red";
 
 let gameOver = false;
-
 let winningCells = [];
 
 let connectingTimeout = null;
@@ -1639,20 +1195,14 @@ let connectingTimeout = null;
 ========================================================= */
 
 let theme =
-    localStorage.getItem(
-        "c4-theme"
-    ) ||
+    localStorage.getItem("c4-theme") ||
     "indigo";
 
 let animations =
-    localStorage.getItem(
-        "c4-animations"
-    ) !== "false";
+    localStorage.getItem("c4-animations") !== "false";
 
 let sounds =
-    localStorage.getItem(
-        "c4-sounds"
-    ) !== "false";
+    localStorage.getItem("c4-sounds") !== "false";
 
 
 const themeData = {
@@ -1698,49 +1248,29 @@ const themeData = {
 
 function setTheme(name){
 
-    if(
-        !themeData[name]
-    ){
-
+    if(!themeData[name]){
         name = "indigo";
-
     }
 
     theme = name;
 
-    const t =
-        themeData[name];
+    const t = themeData[name];
 
-    document.documentElement
-        .style
-        .setProperty(
-            "--accent",
-            t.accent
-        );
+    document.documentElement.style
+        .setProperty("--accent",t.accent);
 
-    document.documentElement
-        .style
-        .setProperty(
-            "--accent2",
-            t.accent2
-        );
+    document.documentElement.style
+        .setProperty("--accent2",t.accent2);
 
-    document.documentElement
-        .style
-        .setProperty(
-            "--board",
-            t.board
-        );
+    document.documentElement.style
+        .setProperty("--board",t.board);
 
     localStorage.setItem(
         "c4-theme",
         name
     );
 
-    document
-        .querySelectorAll(
-            ".theme"
-        )
+    document.querySelectorAll(".theme")
         .forEach(button => {
 
             button.classList.toggle(
@@ -1756,22 +1286,16 @@ function setTheme(name){
 function saveSettings(){
 
     const a =
-        document.getElementById(
-            "animations"
-        );
+        document.getElementById("animations");
 
     const s =
-        document.getElementById(
-            "sounds"
-        );
+        document.getElementById("sounds");
 
     if(a)
-        animations =
-            a.checked;
+        animations = a.checked;
 
     if(s)
-        sounds =
-            s.checked;
+        sounds = s.checked;
 
     localStorage.setItem(
         "c4-animations",
@@ -1789,12 +1313,8 @@ function saveSettings(){
 function openSettings(){
 
     document
-        .getElementById(
-            "settingsModal"
-        )
-        .classList.remove(
-            "hidden"
-        );
+        .getElementById("settingsModal")
+        .classList.remove("hidden");
 
 }
 
@@ -1802,25 +1322,16 @@ function openSettings(){
 function closeSettings(){
 
     document
-        .getElementById(
-            "settingsModal"
-        )
-        .classList.add(
-            "hidden"
-        );
+        .getElementById("settingsModal")
+        .classList.add("hidden");
 
 }
 
 
 function modalOutside(event){
 
-    if(
-        event.target.id ===
-        "settingsModal"
-    ){
-
+    if(event.target.id === "settingsModal"){
         closeSettings();
-
     }
 
 }
@@ -1833,14 +1344,9 @@ function modalOutside(event){
 function hideScreens(){
 
     document
-        .querySelectorAll(
-            ".screen"
-        )
-        .forEach(
-            element =>
-                element.classList.add(
-                    "hidden"
-                )
+        .querySelectorAll(".screen")
+        .forEach(element =>
+            element.classList.add("hidden")
         );
 
 }
@@ -1852,18 +1358,14 @@ function screen(id){
 
     document
         .getElementById(id)
-        .classList.remove(
-            "hidden"
-        );
+        .classList.remove("hidden");
 
 }
 
 
 function goHome(){
 
-    clearTimeout(
-        connectingTimeout
-    );
+    clearTimeout(connectingTimeout);
 
     destroyPeer();
 
@@ -1885,18 +1387,13 @@ function showJoin(){
 
     screen("join");
 
-    setTimeout(
-        () => {
+    setTimeout(() => {
 
-            document
-                .getElementById(
-                    "joinCode"
-                )
-                .focus();
+        document
+            .getElementById("joinCode")
+            .focus();
 
-        },
-        100
-    );
+    },100);
 
 }
 
@@ -1909,70 +1406,40 @@ function updateWinOptions(){
 
     const rows =
         Number(
-            document
-                .getElementById(
-                    "rows"
-                )
-                .value
+            document.getElementById("rows").value
         );
 
     const cols =
         Number(
-            document
-                .getElementById(
-                    "cols"
-                )
-                .value
+            document.getElementById("cols").value
         );
 
     const max =
-        Math.min(
-            rows,
-            cols
-        );
+        Math.min(rows,cols);
 
     const select =
-        document
-            .getElementById(
-                "win"
-            );
+        document.getElementById("win");
 
     const old =
-        Number(
-            select.value
-        );
+        Number(select.value);
 
     select.innerHTML = "";
 
-    for(
-        let i=3;
-        i<=max;
-        i++
-    ){
+    for(let i=3;i<=max;i++){
 
         const option =
-            document.createElement(
-                "option"
-            );
+            document.createElement("option");
 
         option.value = i;
+        option.textContent = `${i} in a row`;
 
-        option.textContent =
-            `${i} in a row`;
-
-        select.appendChild(
-            option
-        );
+        select.appendChild(option);
 
     }
 
-    if(
-        old >= 3 &&
-        old <= max
-    ){
+    if(old >= 3 && old <= max){
 
-        select.value =
-            old;
+        select.value = old;
 
     }else{
 
@@ -1987,18 +1454,14 @@ function updateWinOptions(){
 
 
 document
-    .getElementById(
-        "rows"
-    )
+    .getElementById("rows")
     .addEventListener(
         "change",
         updateWinOptions
     );
 
 document
-    .getElementById(
-        "cols"
-    )
+    .getElementById("cols")
     .addEventListener(
         "change",
         updateWinOptions
@@ -2009,6 +1472,13 @@ document
    ROOM CODE
 ========================================================= */
 
+/*
+   EXACTLY 8 CHARACTERS.
+
+   No prefix.
+   No c4-.
+*/
+
 function randomRoomCode(){
 
     const chars =
@@ -2016,19 +1486,14 @@ function randomRoomCode(){
 
     let code = "";
 
-    for(
-        let i=0;
-        i<8;
-        i++
-    ){
+    for(let i=0;i<8;i++){
 
-        code +=
-            chars[
-                Math.floor(
-                    Math.random() *
-                    chars.length
-                )
-            ];
+        code += chars[
+            Math.floor(
+                Math.random() *
+                chars.length
+            )
+        ];
 
     }
 
@@ -2037,23 +1502,15 @@ function randomRoomCode(){
 }
 
 
-/*
-   The COMPLETE PeerJS ID is:
-
-       c4-XXXXXXXX
-
-   That's 11 characters total.
-
-   The same ID is shown to the user,
-   so there is no conversion or lookup.
-*/
-
-
 /* =========================================================
-   CREATE PEER
+   PEER CREATION
 ========================================================= */
 
 function createPeer(id){
+
+    /*
+       The room code itself is the PeerJS ID.
+    */
 
     return new Peer(
         id,
@@ -2073,31 +1530,18 @@ function createRoom(){
 
     ROWS =
         Number(
-            document
-                .getElementById(
-                    "rows"
-                )
-                .value
+            document.getElementById("rows").value
         );
 
     COLS =
         Number(
-            document
-                .getElementById(
-                    "cols"
-                )
-                .value
+            document.getElementById("cols").value
         );
 
     WIN =
         Number(
-            document
-                .getElementById(
-                    "win"
-                )
-                .value
+            document.getElementById("win").value
         );
-
 
     isHost = true;
 
@@ -2105,11 +1549,15 @@ function createRoom(){
 
 
     /*
-       Generate the COMPLETE ID here.
+       Example:
+
+       roomCode = "A7KQ2M9X"
+
+       This SAME string becomes
+       the PeerJS ID.
     */
 
     roomCode =
-        "c4-" +
         randomRoomCode();
 
 
@@ -2117,172 +1565,113 @@ function createRoom(){
 
 
     document
-        .getElementById(
-            "roomCode"
-        )
+        .getElementById("roomCode")
         .textContent =
             roomCode;
 
 
     document
-        .getElementById(
-            "waitingText"
-        )
+        .getElementById("waitingText")
         .textContent =
-            "🔄 Connecting to multiplayer service...";
+            "🔄 Creating room...";
 
 
     document
-        .getElementById(
-            "waitingError"
-        )
-        .textContent =
-            "";
+        .getElementById("waitingError")
+        .textContent = "";
 
 
     document
-        .getElementById(
-            "roomRules"
-        )
+        .getElementById("roomRules")
         .textContent =
             `${COLS} × ${ROWS} board • ${WIN} in a row`;
 
 
-    /*
-       IMPORTANT:
-
-       roomCode already contains c4-.
-
-       DO NOT add c4- again.
-    */
-
     peer =
-        createPeer(
-            roomCode
+        createPeer(roomCode);
+
+
+    peer.on("open",id => {
+
+        console.log(
+            "HOST PEER OPEN:",
+            id
         );
 
+        document
+            .getElementById("waitingText")
+            .textContent =
+                "🟢 Room ready! Send the code to your friend.";
 
-    peer.on(
-        "open",
-        id => {
-
-            console.log(
-                "HOST PEER OPEN:",
-                id
-            );
-
-            document
-                .getElementById(
-                    "waitingText"
-                )
-                .textContent =
-                    "🟢 Room ready! Send the code to your friend.";
-
-        }
-    );
+    });
 
 
-    peer.on(
-        "connection",
-        incoming => {
+    peer.on("connection",incoming => {
 
-            console.log(
-                "Incoming connection:",
-                incoming
-            );
+        console.log(
+            "Incoming connection:",
+            incoming
+        );
 
-            if(conn){
+        if(conn){
 
-                incoming.close();
+            incoming.close();
 
-                return;
-
-            }
-
-            conn =
-                incoming;
-
-            setupConnection();
+            return;
 
         }
-    );
+
+        conn = incoming;
+
+        setupConnection();
+
+    });
 
 
-    peer.on(
-        "disconnected",
-        () => {
+    peer.on("disconnected",() => {
 
-            document
-                .getElementById(
-                    "waitingText"
-                )
-                .textContent =
-                    "⚠️ Multiplayer server disconnected. Reconnecting...";
+        document
+            .getElementById("waitingText")
+            .textContent =
+                "⚠️ Reconnecting...";
 
-            if(
-                peer &&
-                !peer.destroyed
-            ){
+        if(peer && !peer.destroyed){
 
-                peer.reconnect();
-
-            }
+            peer.reconnect();
 
         }
-    );
+
+    });
 
 
-    peer.on(
-        "error",
-        error => {
+    peer.on("error",error => {
 
-            console.error(
-                "HOST PEER ERROR:",
-                error
-            );
+        console.error(
+            "HOST ERROR:",
+            error
+        );
 
-            handlePeerError(
-                error
-            );
+        handlePeerError(error);
 
-        }
-    );
-
-
-    peer.on(
-        "close",
-        () => {
-
-            console.log(
-                "Host peer closed."
-            );
-
-        }
-    );
+    });
 
 
     connectingTimeout =
-        setTimeout(
-            () => {
+        setTimeout(() => {
 
-                if(
-                    !conn &&
-                    peer &&
-                    !peer.open
-                ){
+            if(
+                peer &&
+                !peer.open
+            ){
 
-                    document
-                        .getElementById(
-                            "waitingError"
-                        )
-                        .textContent =
-                            "Still connecting. Check your internet connection and make sure the page is running over HTTPS.";
+                document
+                    .getElementById("waitingError")
+                    .textContent =
+                        "Could not connect to the multiplayer service.";
 
-                }
+            }
 
-            },
-            12000
-        );
+        },12000);
 
 }
 
@@ -2294,55 +1683,34 @@ function createRoom(){
 function joinRoom(){
 
     const input =
-        document
-            .getElementById(
-                "joinCode"
-            );
+        document.getElementById("joinCode");
 
     const error =
-        document
-            .getElementById(
-                "joinError"
-            );
+        document.getElementById("joinError");
 
-
-    /*
-       Remove spaces and normalize.
-    */
 
     const code =
         input.value
             .trim()
             .toUpperCase()
-            .replace(
-                /\s/g,
-                ""
-            );
+            .replace(/\s/g,"");
 
 
-    input.value =
-        code;
-
+    input.value = code;
 
     error.textContent = "";
 
 
     /*
-       FULL room code:
+       EXACTLY 8 characters.
 
-       c4-XXXXXXXX
-
-       3 + 8 = 11 chars
+       No c4- prefix.
     */
 
-    if(
-        !/^C4-[A-Z0-9]{8}$/.test(
-            code
-        )
-    ){
+    if(!/^[A-Z0-9]{8}$/.test(code)){
 
         error.textContent =
-            "Enter the full 11-character code, e.g. c4-AB12CD34.";
+            "Enter the 8-character room code.";
 
         return;
 
@@ -2360,31 +1728,24 @@ function joinRoom(){
 
 
     document
-        .getElementById(
-            "roomCode"
-        )
+        .getElementById("roomCode")
         .textContent =
             roomCode;
 
 
     document
-        .getElementById(
-            "waitingText"
-        )
+        .getElementById("waitingText")
         .textContent =
             "🔄 Connecting to host...";
 
 
     document
-        .getElementById(
-            "waitingError"
-        )
-        .textContent =
-            "";
+        .getElementById("waitingError")
+        .textContent = "";
 
 
     /*
-       Joiner gets a RANDOM PeerJS ID.
+       The JOINER gets its own random PeerJS ID.
     */
 
     peer =
@@ -2396,80 +1757,54 @@ function joinRoom(){
         );
 
 
-    peer.on(
-        "open",
-        id => {
+    peer.on("open",id => {
 
-            console.log(
-                "JOINER PEER OPEN:",
-                id
-            );
+        console.log(
+            "JOINER PEER OPEN:",
+            id
+        );
 
-            connectToHost();
+        connectToHost();
 
-        }
-    );
+    });
 
 
-    peer.on(
-        "error",
-        error => {
+    peer.on("error",error => {
 
-            console.error(
-                "JOINER PEER ERROR:",
-                error
-            );
+        console.error(
+            "JOINER ERROR:",
+            error
+        );
 
-            handlePeerError(
-                error
-            );
+        handlePeerError(error);
 
-        }
-    );
+    });
 
 
-    peer.on(
-        "disconnected",
-        () => {
+    peer.on("disconnected",() => {
 
-            document
-                .getElementById(
-                    "waitingText"
-                )
-                .textContent =
-                    "⚠️ Connection server disconnected. Reconnecting...";
+        if(peer && !peer.destroyed){
 
-            if(
-                peer &&
-                !peer.destroyed
-            ){
-
-                peer.reconnect();
-
-            }
+            peer.reconnect();
 
         }
-    );
+
+    });
 
 
     connectingTimeout =
-        setTimeout(
-            () => {
+        setTimeout(() => {
 
-                if(!conn){
+            if(!conn){
 
-                    document
-                        .getElementById(
-                            "waitingError"
-                        )
-                        .textContent =
-                            "Could not connect. Check the room code and try again.";
+                document
+                    .getElementById("waitingError")
+                    .textContent =
+                        "Could not connect. Check the room code.";
 
-                }
+            }
 
-            },
-            12000
-        );
+        },12000);
 
 }
 
@@ -2485,17 +1820,21 @@ function connectToHost(){
 
 
     console.log(
-        "Connecting to host:",
+        "Connecting directly to room:",
         roomCode
     );
 
 
     /*
-       roomCode is already:
+       IMPORTANT:
 
-       c4-XXXXXXXX
+       roomCode is exactly:
 
-       So DO NOT add another c4-.
+       A7KQ2M9X
+
+       NOT:
+
+       c4-A7KQ2M9X
     */
 
     conn =
@@ -2503,9 +1842,7 @@ function connectToHost(){
             roomCode,
             {
                 reliable:true,
-
-                serialization:
-                    "json"
+                serialization:"json"
             }
         );
 
@@ -2516,7 +1853,7 @@ function connectToHost(){
 
 
 /* =========================================================
-   DATA CONNECTION
+   CONNECTION
 ========================================================= */
 
 function setupConnection(){
@@ -2525,113 +1862,86 @@ function setupConnection(){
         return;
 
 
-    conn.on(
-        "open",
-        () => {
+    conn.on("open",() => {
 
-            console.log(
-                "DATA CONNECTION OPEN"
-            );
+        console.log(
+            "P2P CONNECTION OPEN"
+        );
 
 
-            clearTimeout(
-                connectingTimeout
-            );
+        clearTimeout(
+            connectingTimeout
+        );
 
 
-            document
-                .getElementById(
-                    "connection"
-                )
-                .textContent =
-                    "🟢 Connected directly P2P";
+        document
+            .getElementById("connection")
+            .textContent =
+                "🟢 Connected directly P2P";
 
 
-            if(isHost){
+        if(isHost){
 
-                startGame();
+            startGame();
 
 
-                send({
+            send({
 
-                    type:"start",
+                type:"start",
 
-                    rows:ROWS,
+                rows:ROWS,
+                cols:COLS,
+                win:WIN,
 
-                    cols:COLS,
+                board:board,
 
-                    win:WIN,
+                turn:turn,
 
-                    board:board,
+                gameOver:false,
 
-                    turn:turn,
+                winningCells:[]
 
-                    gameOver:false,
-
-                    winningCells:[]
-
-                });
-
-            }
+            });
 
         }
-    );
+
+    });
 
 
-    conn.on(
-        "data",
-        message => {
+    conn.on("data",message => {
 
-            console.log(
-                "DATA:",
-                message
-            );
+        console.log(
+            "DATA:",
+            message
+        );
 
-            handleMessage(
-                message
-            );
+        handleMessage(message);
 
-        }
-    );
+    });
 
 
-    conn.on(
-        "close",
-        () => {
+    conn.on("close",() => {
 
-            document
-                .getElementById(
-                    "connection"
-                )
-                .textContent =
-                    "🔴 Opponent disconnected";
+        document
+            .getElementById("connection")
+            .textContent =
+                "🔴 Opponent disconnected";
 
-            showToast(
-                "Opponent disconnected."
-            );
+        showToast(
+            "Opponent disconnected."
+        );
 
-        }
-    );
+    });
 
 
-    conn.on(
-        "error",
-        error => {
+    conn.on("error",error => {
 
-            console.error(
-                "DATA CONNECTION ERROR:",
-                error
-            );
+        console.error(
+            "Connection error:",
+            error
+        );
 
-            document
-                .getElementById(
-                    "waitingError"
-                )
-                .textContent =
-                    "WebRTC connection failed.";
-
-        }
-    );
+    });
 
 }
 
@@ -2642,18 +1952,12 @@ function setupConnection(){
 
 function handlePeerError(error){
 
-    console.error(
-        error
-    );
-
+    console.error(error);
 
     let message =
         "Connection failed.";
 
-
-    switch(
-        error.type
-    ){
+    switch(error.type){
 
         case "peer-unavailable":
 
@@ -2662,46 +1966,40 @@ function handlePeerError(error){
 
             break;
 
-
         case "unavailable-id":
 
             message =
-                "That room code is already being used.";
+                "That room code is already being used. Try creating another room.";
 
             break;
-
 
         case "network":
 
             message =
-                "Could not reach the multiplayer service.";
+                "Network connection failed.";
 
             break;
-
 
         case "server-error":
 
             message =
-                "Multiplayer server error.";
+                "Multiplayer service error.";
 
             break;
-
 
         case "socket-error":
 
             message =
-                "Connection to multiplayer service failed.";
+                "Could not connect to multiplayer service.";
 
             break;
-
 
         case "browser-incompatible":
 
             message =
-                "This browser does not support WebRTC.";
+                "Your browser does not support WebRTC.";
 
             break;
-
 
         case "webrtc":
 
@@ -2709,7 +2007,6 @@ function handlePeerError(error){
                 "WebRTC connection failed.";
 
             break;
-
 
         default:
 
@@ -2721,16 +2018,14 @@ function handlePeerError(error){
     }
 
 
-    const waitingError =
-        document
-            .getElementById(
-                "waitingError"
-            );
+    const element =
+        document.getElementById(
+            "waitingError"
+        );
 
+    if(element){
 
-    if(waitingError){
-
-        waitingError.textContent =
+        element.textContent =
             message;
 
     }
@@ -2749,15 +2044,7 @@ function send(data){
         conn.open
     ){
 
-        conn.send(
-            data
-        );
-
-    }else{
-
-        console.warn(
-            "No open connection."
-        );
+        conn.send(data);
 
     }
 
@@ -2765,36 +2052,25 @@ function send(data){
 
 
 /* =========================================================
-   HANDLE MESSAGES
+   RECEIVE
 ========================================================= */
 
-function handleMessage(
-    message
-){
+function handleMessage(message){
 
     if(!message)
         return;
 
 
-    if(
-        message.type ===
-        "start"
-    ){
+    if(message.type === "start"){
 
         ROWS =
-            Number(
-                message.rows
-            );
+            Number(message.rows);
 
         COLS =
-            Number(
-                message.cols
-            );
+            Number(message.cols);
 
         WIN =
-            Number(
-                message.win
-            );
+            Number(message.win);
 
         board =
             message.board;
@@ -2806,14 +2082,10 @@ function handleMessage(
             message.gameOver;
 
         winningCells =
-            message.winningCells ||
-            [];
+            message.winningCells || [];
 
 
-        screen(
-            "game"
-        );
-
+        screen("game");
 
         render();
 
@@ -2824,10 +2096,7 @@ function handleMessage(
     }
 
 
-    if(
-        message.type ===
-        "state"
-    ){
+    if(message.type === "state"){
 
         board =
             message.board;
@@ -2839,8 +2108,7 @@ function handleMessage(
             message.gameOver;
 
         winningCells =
-            message.winningCells ||
-            [];
+            message.winningCells || [];
 
 
         render();
@@ -2852,22 +2120,13 @@ function handleMessage(
     }
 
 
-    if(
-        message.type ===
-        "rematchRequest"
-    ){
+    if(message.type === "rematchRequest"){
 
         if(isHost){
 
             startGame();
 
             sendState();
-
-        }else{
-
-            showToast(
-                "Opponent requested a rematch."
-            );
 
         }
 
@@ -2876,15 +2135,11 @@ function handleMessage(
     }
 
 
-    if(
-        message.type ===
-        "hostLeft"
-    ){
+    if(message.type === "hostLeft"){
 
         showToast(
             "Opponent left the game."
         );
-
 
         setTimeout(
             goHome,
@@ -2904,15 +2159,9 @@ function startGame(){
 
     board =
         Array.from(
-            {
-                length:ROWS
-            },
+            {length:ROWS},
             () =>
-                Array(
-                    COLS
-                ).fill(
-                    null
-                )
+                Array(COLS).fill(null)
         );
 
 
@@ -2923,10 +2172,7 @@ function startGame(){
     winningCells = [];
 
 
-    screen(
-        "game"
-    );
-
+    screen("game");
 
     render();
 
@@ -2936,7 +2182,7 @@ function startGame(){
 
 
 /* =========================================================
-   SEND GAME STATE
+   SEND STATE
 ========================================================= */
 
 function sendState(){
@@ -2963,24 +2209,18 @@ function sendState(){
    PLAY
 ========================================================= */
 
-function playColumn(
-    col
-){
+function playColumn(col){
 
     if(gameOver)
         return;
 
 
-    if(
-        turn !== myColor
-    )
+    if(turn !== myColor)
         return;
 
 
     const row =
-        findOpenRow(
-            col
-        );
+        findOpenRow(col);
 
 
     if(row < 0){
@@ -3034,7 +2274,6 @@ function playColumn(
 
     sendState();
 
-
     playTone(
         gameOver
             ? "win"
@@ -3045,33 +2284,24 @@ function playColumn(
 
 
 /* =========================================================
-   FIND OPEN ROW
+   FIND ROW
 ========================================================= */
 
-function findOpenRow(
-    col
-){
+function findOpenRow(col){
 
     for(
-        let r =
-            ROWS - 1;
-
-        r >= 0;
-
+        let r=ROWS-1;
+        r>=0;
         r--
     ){
 
-        if(
-            board[r][col] ===
-            null
-        ){
+        if(board[r][col] === null){
 
             return r;
 
         }
 
     }
-
 
     return -1;
 
@@ -3085,28 +2315,22 @@ function findOpenRow(
 const dirs = [
 
     [1,0],
-
     [0,1],
-
     [1,1],
-
     [1,-1]
 
 ];
 
 
 function count(
-
     row,
     col,
     dr,
     dc,
     color
-
 ){
 
     let total = 0;
-
 
     let r =
         row + dr;
@@ -3128,7 +2352,6 @@ function count(
         total++;
 
         r += dr;
-
         c += dc;
 
     }
@@ -3140,11 +2363,9 @@ function count(
 
 
 function checkWin(
-
     row,
     col,
     color
-
 ){
 
     for(
@@ -3172,9 +2393,7 @@ function checkWin(
             );
 
 
-        if(
-            total >= WIN
-        ){
+        if(total >= WIN){
 
             return true;
 
@@ -3193,11 +2412,9 @@ function checkWin(
 ========================================================= */
 
 function getWinningCells(
-
     row,
     col,
     color
-
 ){
 
     let best = [];
@@ -3208,13 +2425,9 @@ function getWinningCells(
         of dirs
     ){
 
-        const line =
-            [
-                [
-                    row,
-                    col
-                ]
-            ];
+        const line = [
+            [row,col]
+        ];
 
 
         let r =
@@ -3240,7 +2453,6 @@ function getWinningCells(
             ]);
 
             r += dr;
-
             c += dc;
 
         }
@@ -3269,21 +2481,17 @@ function getWinningCells(
             ]);
 
             r -= dr;
-
             c -= dc;
 
         }
 
 
         if(
-
             line.length >= WIN &&
             line.length > best.length
-
         ){
 
-            best =
-                line;
+            best = line;
 
         }
 
@@ -3296,33 +2504,29 @@ function getWinningCells(
 
 
 /* =========================================================
-   RENDER BOARD
+   RENDER
 ========================================================= */
 
 function render(){
 
     const boardEl =
-        document
-            .getElementById(
-                "board"
-            );
+        document.getElementById(
+            "board"
+        );
 
 
     boardEl.innerHTML = "";
 
 
-    boardEl.style
-        .setProperty(
-            "--cols",
-            COLS
-        );
+    boardEl.style.setProperty(
+        "--cols",
+        COLS
+    );
 
-
-    boardEl.style
-        .setProperty(
-            "--rows",
-            ROWS
-        );
+    boardEl.style.setProperty(
+        "--rows",
+        ROWS
+    );
 
 
     for(
@@ -3381,9 +2585,7 @@ function render(){
                     value;
 
 
-                if(
-                    !animations
-                ){
+                if(!animations){
 
                     piece.style.animation =
                         "none";
@@ -3399,10 +2601,7 @@ function render(){
 
 
             cell.onclick =
-                () =>
-                    playColumn(
-                        c
-                    );
+                () => playColumn(c);
 
 
             boardEl.appendChild(
@@ -3423,28 +2622,20 @@ function render(){
 function updateStatus(){
 
     const status =
-        document
-            .getElementById(
-                "status"
-            );
+        document.getElementById(
+            "status"
+        );
 
 
     if(gameOver){
 
-        let winner =
-            null;
+        let winner = null;
 
 
-        if(
-            winningCells.length
-        ){
+        if(winningCells.length){
 
-            const [
-                r,
-                c
-            ] =
+            const [r,c] =
                 winningCells[0];
-
 
             winner =
                 board[r][c];
@@ -3452,10 +2643,7 @@ function updateStatus(){
         }
 
 
-        if(
-            winner ===
-            myColor
-        ){
+        if(winner === myColor){
 
             status.textContent =
                 "🎉 YOU WIN!";
@@ -3467,15 +2655,12 @@ function updateStatus(){
 
         }
 
-
         return;
 
     }
 
 
-    if(
-        turn === myColor
-    ){
+    if(turn === myColor){
 
         status.textContent =
             "🟢 Your turn";
@@ -3519,10 +2704,8 @@ function rematch(){
     }else{
 
         send({
-            type:
-                "rematchRequest"
+            type:"rematchRequest"
         });
-
 
         showToast(
             "Rematch requested!"
@@ -3540,10 +2723,8 @@ function rematch(){
 function leaveGame(){
 
     send({
-        type:
-            "hostLeft"
+        type:"hostLeft"
     });
-
 
     goHome();
 
@@ -3558,9 +2739,7 @@ function cancelRoom(){
 
     destroyPeer();
 
-    screen(
-        "home"
-    );
+    screen("home");
 
 }
 
@@ -3579,9 +2758,7 @@ function destroyPeer(){
     if(conn){
 
         try{
-
             conn.close();
-
         }catch{}
 
     }
@@ -3590,35 +2767,29 @@ function destroyPeer(){
     if(peer){
 
         try{
-
             peer.destroy();
-
         }catch{}
 
     }
 
 
     conn = null;
-
     peer = null;
 
 }
 
 
 /* =========================================================
-   COPY CODE
+   COPY
 ========================================================= */
 
 async function copyCode(){
 
     try{
 
-        await navigator
-            .clipboard
-            .writeText(
-                roomCode
-            );
-
+        await navigator.clipboard.writeText(
+            roomCode
+        );
 
         showToast(
             "Room code copied!"
@@ -3627,7 +2798,6 @@ async function copyCode(){
     }catch{
 
         showToast(
-            "Room: " +
             roomCode
         );
 
@@ -3643,15 +2813,12 @@ async function copyCode(){
 let toastTimer = null;
 
 
-function showToast(
-    text
-){
+function showToast(text){
 
     const element =
-        document
-            .getElementById(
-                "toast"
-            );
+        document.getElementById(
+            "toast"
+        );
 
 
     element.textContent =
@@ -3690,9 +2857,7 @@ function showToast(
 let audio = null;
 
 
-function playTone(
-    type
-){
+function playTone(type){
 
     if(!sounds)
         return;
@@ -3714,19 +2879,12 @@ function playTone(
         const oscillator =
             audio.createOscillator();
 
-
         const gain =
             audio.createGain();
 
 
-        oscillator.connect(
-            gain
-        );
-
-
-        gain.connect(
-            audio.destination
-        );
+        oscillator.connect(gain);
+        gain.connect(audio.destination);
 
 
         oscillator.frequency.value =
@@ -3741,28 +2899,23 @@ function playTone(
         );
 
 
-        gain.gain
-            .exponentialRampToValueAtTime(
-                .06,
-                audio.currentTime +
-                .01
-            );
+        gain.gain.exponentialRampToValueAtTime(
+            .06,
+            audio.currentTime + .01
+        );
 
 
-        gain.gain
-            .exponentialRampToValueAtTime(
-                .001,
-                audio.currentTime +
-                .12
-            );
+        gain.gain.exponentialRampToValueAtTime(
+            .001,
+            audio.currentTime + .12
+        );
 
 
         oscillator.start();
 
 
         oscillator.stop(
-            audio.currentTime +
-            .13
+            audio.currentTime + .13
         );
 
     }catch{}
@@ -3775,9 +2928,7 @@ function playTone(
 ========================================================= */
 
 document
-    .getElementById(
-        "joinCode"
-    )
+    .getElementById("joinCode")
     .addEventListener(
         "input",
         event => {
@@ -3785,53 +2936,39 @@ document
             let value =
                 event.target.value
                     .toUpperCase()
-                    .replace(
-                        /\s/g,
-                        ""
-                    );
+                    .replace(/\s/g,"");
+
 
             /*
-               Keep only:
-               letters,
-               numbers,
-               hyphen.
+               Only letters and numbers.
+               NO hyphen.
             */
 
             value =
                 value.replace(
-                    /[^A-Z0-9-]/g,
+                    /[^A-Z0-9]/g,
                     ""
                 );
 
 
             /*
-               Maximum:
-               c4-XXXXXXXX
-               = 11 chars
+               EXACTLY 8 MAX.
             */
 
             event.target.value =
-                value.slice(
-                    0,
-                    11
-                );
+                value.slice(0,8);
 
         }
     );
 
 
 document
-    .getElementById(
-        "joinCode"
-    )
+    .getElementById("joinCode")
     .addEventListener(
         "keydown",
         event => {
 
-            if(
-                event.key ===
-                "Enter"
-            ){
+            if(event.key === "Enter"){
 
                 joinRoom();
 
@@ -3842,12 +2979,10 @@ document
 
 
 /* =========================================================
-   INITIALIZATION
+   INITIALIZE
 ========================================================= */
 
-setTheme(
-    theme
-);
+setTheme(theme);
 
 
 const animationInput =
@@ -3862,20 +2997,14 @@ const soundInput =
     );
 
 
-if(animationInput){
-
+if(animationInput)
     animationInput.checked =
         animations;
 
-}
 
-
-if(soundInput){
-
+if(soundInput)
     soundInput.checked =
         sounds;
-
-}
 
 
 updateWinOptions();
@@ -3883,4 +3012,4 @@ updateWinOptions();
 </script>
 
 </body>
-    </html>
+</html>
